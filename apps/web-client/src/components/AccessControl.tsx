@@ -1,0 +1,48 @@
+'use client';
+
+import { useAuth } from '@/components/AuthProvider';
+import Link from 'next/link';
+import { Lock } from 'lucide-react';
+
+interface AccessControlProps {
+  children: React.ReactNode;
+  requiredPlan: 'Free' | 'Professional' | 'Premium';
+  moduleName: string;
+}
+
+export default function AccessControl({ children, requiredPlan, moduleName }: AccessControlProps) {
+  const { user, isLoading } = useAuth();
+
+  if (isLoading) return null;
+
+  const planLevels = {
+    'Free': 0,
+    'Professional': 1,
+    'Premium': 2
+  };
+
+  const userLevel = user ? planLevels[user.plan] : -1;
+  const requiredLevel = planLevels[requiredPlan];
+
+  if (user?.role === 'Super Admin' || user?.role === 'Administrator' || userLevel >= requiredLevel) {
+    return <>{children}</>;
+  }
+
+  return (
+    <div className="h-full min-h-[400px] flex flex-col items-center justify-center border border-zinc-800/50 bg-zinc-900/20 rounded-xl p-6 text-center">
+      <div className="w-16 h-16 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center mb-6">
+        <Lock className="w-6 h-6 text-zinc-500" />
+      </div>
+      <h2 className="text-xl font-medium text-zinc-100 mb-2">Access Restricted</h2>
+      <p className="text-zinc-400 max-w-md mb-8">
+        The <span className="text-emerald-500 font-mono">{moduleName}</span> module requires a {requiredPlan} subscription or higher. Upgrade your account to unlock this intelligence layer.
+      </p>
+      <Link 
+        href="/pricing"
+        className="bg-emerald-500 hover:bg-emerald-600 text-zinc-950 font-bold py-2 px-6 rounded transition-colors"
+      >
+        VIEW UPGRADE OPTIONS
+      </Link>
+    </div>
+  );
+}

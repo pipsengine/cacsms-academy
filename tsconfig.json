@@ -1,0 +1,10 @@
+{
+  "extends": "./apps/web-client/tsconfig.json",
+  "include": [
+    "apps/web-client/next-env.d.ts",
+    "apps/web-client/src/**/*.ts",
+    "apps/web-client/src/**/*.tsx",
+    "apps/web-client/.next/types/**/*.ts"
+  ],
+  "exclude": ["node_modules"]
+}

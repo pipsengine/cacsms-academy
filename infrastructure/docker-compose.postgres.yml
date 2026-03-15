@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: inteltrader-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-inteltrader}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-inteltrader}
+      POSTGRES_DB: ${POSTGRES_DB:-inteltrader_db}
+    volumes:
+      - inteltrader_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  inteltrader_postgres_data:

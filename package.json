@@ -1,0 +1,17 @@
+{
+  "name": "intel-trader",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm --workspace apps/web-client run dev",
+    "build": "npm --workspace apps/web-client run build",
+    "start": "npm --workspace apps/web-client run start",
+    "lint": "npm --workspace apps/web-client run lint",
+    "typecheck": "npm --workspace apps/web-client run typecheck",
+    "clean": "npm --workspace apps/web-client run clean"
+  }
+}
