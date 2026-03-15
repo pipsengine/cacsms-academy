@@ -15,7 +15,8 @@ type AuthModalProps = {
 };
 
 export default function AuthModal({ isOpen, onClose, mode, defaultCountry = 'International' }: AuthModalProps) {
-  const title = mode === 'register' ? 'Create your account' : 'Sign in';
+  const [activeMode, setActiveMode] = useState<AuthMode>(mode);
+  const title = activeMode === 'register' ? 'Create your account' : 'Sign in';
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
@@ -26,12 +27,13 @@ export default function AuthModal({ isOpen, onClose, mode, defaultCountry = 'Int
   useEffect(() => {
     if (isOpen) {
       const id = setTimeout(() => {
+        setActiveMode(mode);
         setError(null);
         setBusy(false);
       }, 0);
       return () => clearTimeout(id);
     }
-  }, [isOpen]);
+  }, [isOpen, mode]);
 
   const [oauthProviders, setOauthProviders] = useState<Array<{ id: string; label: string }>>([]);
 
@@ -63,7 +65,7 @@ export default function AuthModal({ isOpen, onClose, mode, defaultCountry = 'Int
         return;
       }
 
-      if (mode === 'register') {
+      if (activeMode === 'register') {
         const res = await fetch('/api/auth/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -138,7 +140,7 @@ export default function AuthModal({ isOpen, onClose, mode, defaultCountry = 'Int
               </div>
             )}
 
-            {mode === 'register' && (
+            {activeMode === 'register' && (
               <>
                 <div>
                   <label className="block text-xs font-mono text-zinc-400 uppercase tracking-wider mb-1">Full name</label>
@@ -190,19 +192,33 @@ export default function AuthModal({ isOpen, onClose, mode, defaultCountry = 'Int
               disabled={busy}
               className="w-full bg-emerald-500 hover:bg-emerald-600 text-zinc-950 font-bold py-2.5 px-4 rounded transition-colors disabled:opacity-50"
             >
-              {busy ? 'Please wait...' : mode === 'register' ? 'Create account' : 'Sign in'}
+              {busy ? 'Please wait...' : activeMode === 'register' ? 'Create account' : 'Sign in'}
             </button>
           </form>
 
           <div className="text-center text-sm text-zinc-500">
-            {mode === 'register' ? (
-              <>
-                Already have an account? <Link href="/login" className="text-emerald-400 hover:underline">Sign in</Link>
-              </>
+            {activeMode === 'register' ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setError(null);
+                  setActiveMode('login');
+                }}
+                className="text-emerald-400 hover:underline"
+              >
+                Already have an account? Sign in
+              </button>
             ) : (
-              <>
-                Don&apos;t have an account? <Link href="/register" className="text-emerald-400 hover:underline">Create one</Link>
-              </>
+              <button
+                type="button"
+                onClick={() => {
+                  setError(null);
+                  setActiveMode('register');
+                }}
+                className="text-emerald-400 hover:underline"
+              >
+                Don&apos;t have an account? Create one
+              </button>
             )}
           </div>
         </div>
