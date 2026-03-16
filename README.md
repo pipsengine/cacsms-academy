@@ -31,7 +31,7 @@ This app uses Prisma with PostgreSQL.
    - Migrations: `npm --workspace apps/web-client run db:migrate`
    - Push (no migrations): `npm --workspace apps/web-client run db:push`
 
-If you want a local Postgres container, a compose file is available at [docker-compose.postgres.yml](infrastructure/docker-compose.postgres.yml).
+If you want a local Postgres container, a compose file is available at [docker-compose.postgres.yml](infrastructure/docker-compose.postgres.yml). It maps the container's 5432 to your host port 5433 by default.
 
 ## Auth (GitHub/Google + Email/Password)
 
