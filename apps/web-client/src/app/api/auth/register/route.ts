@@ -5,6 +5,10 @@ import { prisma } from '@/lib/prisma';
 
 export async function POST(request: Request) {
   try {
+    if (!process.env.DATABASE_URL) {
+      return NextResponse.json({ error: 'Database not configured' }, { status: 503 });
+    }
+
     const ip = getClientIp(request);
     const limitResult = rateLimit({ key: `auth:register:${ip}`, limit: 10, windowMs: 60_000 });
     if (!limitResult.allowed) {
@@ -61,6 +65,10 @@ export async function POST(request: Request) {
       }
     });
   } catch (error) {
+    const code = (error as any)?.code;
+    if (typeof code === 'string' && code.startsWith('P')) {
+      return NextResponse.json({ error: 'Database error' }, { status: 503 });
+    }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

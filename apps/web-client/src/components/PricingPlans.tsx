@@ -13,23 +13,33 @@ type PricingPlansProps = {
   mode?: 'section' | 'page';
 };
 
-function getInitialRegion(userCountry: string | undefined): Region {
-  if (typeof window !== 'undefined') {
-    const stored = window.localStorage.getItem('pricing-region');
-    if (stored === 'international' || stored === 'nigeria') return stored;
-  }
-  return userCountry === 'Nigeria' ? 'nigeria' : 'international';
-}
-
 export default function PricingPlans({ mode = 'section' }: PricingPlansProps) {
   const { user } = useAuth();
-  const [region, setRegion] = useState<Region>(() => getInitialRegion(user?.country));
+  const [region, setRegion] = useState<Region>('international');
   const [loading, setLoading] = useState<PlanType | null>(null);
   const [authOpen, setAuthOpen] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    const stored = window.localStorage.getItem('pricing-region');
+    if (stored === 'international' || stored === 'nigeria') {
+      setRegion(stored);
+      return;
+    }
+    if (user?.country === 'Nigeria') {
+      setRegion('nigeria');
+    }
+  }, [hydrated, user?.country]);
+
+  useEffect(() => {
+    if (!hydrated) return;
     window.localStorage.setItem('pricing-region', region);
-  }, [region]);
+  }, [region, hydrated]);
 
   const pricing = useMemo(() => {
     const isNigeria = region === 'nigeria';

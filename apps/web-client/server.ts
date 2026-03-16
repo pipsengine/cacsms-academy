@@ -8,7 +8,7 @@ import { setTimeout as delay } from 'node:timers/promises';
 import { fileURLToPath } from 'node:url';
 
 if (!process.env.NODE_ENV) {
-  process.env.NODE_ENV = process.env.npm_lifecycle_event === 'start' ? 'production' : 'development';
+  (process.env as any).NODE_ENV = process.env.npm_lifecycle_event === 'start' ? 'production' : 'development';
 }
 
 const dev = process.env.NODE_ENV !== 'production';
@@ -27,7 +27,7 @@ app.prepare().then(() => {
         const staticPath = path.join(__dirname, '.next', 'static', relativePath);
         if (!existsSync(staticPath)) {
           (async () => {
-            for (let i = 0; i < 40; i++) {
+            for (let i = 0; i < 200; i++) {
               if (existsSync(staticPath)) break;
               await delay(50);
             }
