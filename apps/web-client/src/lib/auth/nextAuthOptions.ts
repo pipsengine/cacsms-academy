@@ -6,6 +6,9 @@ import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
 
+const hasDatabase = !!process.env.DATABASE_URL;
+const authSecret = process.env.NEXTAUTH_SECRET || process.env.JWT_SECRET;
+
 async function getPlanForUser(userId: string): Promise<'Free' | 'Professional' | 'Premium'> {
   const sub = await prisma.subscription.findFirst({
     where: { userId, status: 'Active' },
@@ -17,9 +20,10 @@ async function getPlanForUser(userId: string): Promise<'Free' | 'Professional' |
 }
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
+  secret: authSecret,
+  adapter: hasDatabase ? PrismaAdapter(prisma) : undefined,
   session: {
-    strategy: 'database',
+    strategy: hasDatabase ? 'database' : 'jwt',
   },
   providers: [
     process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET
@@ -34,39 +38,47 @@ export const authOptions: NextAuthOptions = {
           clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         })
       : null,
-    CredentialsProvider({
-      name: 'Email',
-      credentials: {
-        email: { label: 'Email', type: 'email' },
-        password: { label: 'Password', type: 'password' },
-      },
-      async authorize(credentials) {
-        const email = credentials?.email?.toLowerCase().trim();
-        const password = credentials?.password;
-        if (!email || !password) return null;
+    hasDatabase
+      ? CredentialsProvider({
+          name: 'Email',
+          credentials: {
+            email: { label: 'Email', type: 'email' },
+            password: { label: 'Password', type: 'password' },
+          },
+          async authorize(credentials) {
+            const email = credentials?.email?.toLowerCase().trim();
+            const password = credentials?.password;
+            if (!email || !password) return null;
 
-        const user = await prisma.user.findUnique({ where: { email } });
-        if (!user?.passwordHash) return null;
-        const ok = await bcrypt.compare(password, user.passwordHash);
-        if (!ok) return null;
+            const user = await prisma.user.findUnique({ where: { email } });
+            if (!user?.passwordHash) return null;
+            const ok = await bcrypt.compare(password, user.passwordHash);
+            if (!ok) return null;
 
-        return {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          image: user.image,
-        };
-      },
-    }),
+            return {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              image: user.image,
+            };
+          },
+        })
+      : null,
   ].filter(Boolean) as NextAuthOptions['providers'],
   callbacks: {
     async session({ session, user }) {
       if (session.user) {
         (session.user as any).id = user.id;
-        const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
-        (session.user as any).role = dbUser?.role || 'User';
-        (session.user as any).country = dbUser?.country || 'International';
-        (session.user as any).plan = await getPlanForUser(user.id);
+        if (hasDatabase) {
+          const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
+          (session.user as any).role = dbUser?.role || 'User';
+          (session.user as any).country = dbUser?.country || 'International';
+          (session.user as any).plan = await getPlanForUser(user.id);
+        } else {
+          (session.user as any).role = 'User';
+          (session.user as any).country = 'International';
+          (session.user as any).plan = 'Free';
+        }
       }
       return session;
     },
@@ -75,4 +87,3 @@ export const authOptions: NextAuthOptions = {
     signIn: '/login',
   },
 };
-

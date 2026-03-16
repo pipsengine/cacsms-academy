@@ -2,22 +2,46 @@ import { createServer } from 'http';
 import { parse } from 'url';
 import next from 'next';
 import { Server } from 'socket.io';
+import { existsSync } from 'node:fs';
 import path from 'node:path';
+import { setTimeout as delay } from 'node:timers/promises';
 import { fileURLToPath } from 'node:url';
 
+if (!process.env.NODE_ENV) {
+  process.env.NODE_ENV = process.env.npm_lifecycle_event === 'start' ? 'production' : 'development';
+}
+
 const dev = process.env.NODE_ENV !== 'production';
-const hostname = process.env.HOSTNAME || 'localhost';
 const port = parseInt(process.env.PORT || '3000', 10);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const app = next({ dev, hostname, port, dir: __dirname });
+const app = next({ dev, dir: __dirname });
 const handle = app.getRequestHandler();
 
 app.prepare().then(() => {
   const server = createServer((req, res) => {
     try {
-      const parsedUrl = parse(req.url!, true);
-      handle(req, res, parsedUrl);
+      const pathname = parse(req.url || '/', true).pathname || '/';
+      if (dev && pathname.startsWith('/_next/static/')) {
+        const relativePath = pathname.replace('/_next/static/', '');
+        const staticPath = path.join(__dirname, '.next', 'static', relativePath);
+        if (!existsSync(staticPath)) {
+          (async () => {
+            for (let i = 0; i < 40; i++) {
+              if (existsSync(staticPath)) break;
+              await delay(50);
+            }
+            handle(req, res);
+          })().catch((err) => {
+            console.error('Error occurred handling', req.url, err);
+            res.statusCode = 500;
+            res.end('internal server error');
+          });
+          return;
+        }
+      }
+
+      handle(req, res);
     } catch (err) {
       console.error('Error occurred handling', req.url, err);
       res.statusCode = 500;
@@ -62,7 +86,7 @@ app.prepare().then(() => {
   });
 
   server.listen(port, () => {
-    console.log(`> Ready on http://${hostname}:${port}`);
+    console.log(`> Ready on http://localhost:${port}`);
   });
 });
 

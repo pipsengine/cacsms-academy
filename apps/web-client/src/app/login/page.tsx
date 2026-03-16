@@ -7,7 +7,7 @@ export default function LoginPage() {
   const [open, setOpen] = useState(true);
 
   return (
-    <div className="min-h-screen bg-zinc-950">
+    <div className="min-h-screen bg-zinc-50">
       <AuthModal isOpen={open} onClose={() => setOpen(false)} mode="login" />
     </div>
   );

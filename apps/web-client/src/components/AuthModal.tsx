@@ -104,11 +104,11 @@ export default function AuthModal({ isOpen, onClose, mode, defaultCountry = 'Int
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <button type="button" onClick={onClose} className="absolute inset-0 bg-black/60" aria-label="Close auth modal" />
-      <div className="relative w-full max-w-md rounded-2xl border border-zinc-800 bg-zinc-950 text-zinc-100 shadow-2xl">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-800">
+      <button type="button" onClick={onClose} className="absolute inset-0 bg-black/40" aria-label="Close auth modal" />
+      <div className="relative w-full max-w-md rounded-2xl border border-zinc-200 bg-white text-zinc-900 shadow-2xl">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-200">
           <div className="text-sm font-semibold">{title}</div>
-          <button type="button" onClick={onClose} className="p-2 rounded hover:bg-zinc-900">
+          <button type="button" onClick={onClose} className="p-2 rounded hover:bg-zinc-100">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -120,7 +120,7 @@ export default function AuthModal({ isOpen, onClose, mode, defaultCountry = 'Int
                 key={p.id}
                 type="button"
                 onClick={() => signIn(p.id, { callbackUrl: '/' })}
-                className="w-full py-3 px-4 rounded-xl border border-zinc-800 bg-zinc-900/40 hover:bg-zinc-900 text-sm font-semibold transition-colors"
+                className="w-full py-3 px-4 rounded-xl border border-zinc-200 bg-white hover:bg-zinc-50 text-sm font-semibold transition-colors"
               >
                 {p.label}
               </button>
@@ -128,14 +128,14 @@ export default function AuthModal({ isOpen, onClose, mode, defaultCountry = 'Int
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="h-px flex-1 bg-zinc-800" />
+            <div className="h-px flex-1 bg-zinc-200" />
             <div className="text-xs text-zinc-500">or</div>
-            <div className="h-px flex-1 bg-zinc-800" />
+            <div className="h-px flex-1 bg-zinc-200" />
           </div>
 
           <form onSubmit={submit} className="space-y-3">
             {error && (
-              <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-300">
+              <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-700">
                 {error}
               </div>
             )}
@@ -147,7 +147,7 @@ export default function AuthModal({ isOpen, onClose, mode, defaultCountry = 'Int
                   <input
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded px-3 py-2 text-zinc-200 focus:outline-none focus:border-emerald-500/50 transition-colors"
+                    className="w-full bg-white border border-zinc-300 rounded px-3 py-2 text-zinc-900 focus:outline-none focus:border-emerald-500/60 transition-colors"
                     required
                   />
                 </div>
@@ -156,7 +156,7 @@ export default function AuthModal({ isOpen, onClose, mode, defaultCountry = 'Int
                   <select
                     value={country}
                     onChange={(e) => setCountry(e.target.value === 'Nigeria' ? 'Nigeria' : 'International')}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded px-3 py-2 text-zinc-200 focus:outline-none focus:border-emerald-500/50 transition-colors"
+                    className="w-full bg-white border border-zinc-300 rounded px-3 py-2 text-zinc-900 focus:outline-none focus:border-emerald-500/60 transition-colors"
                   >
                     <option value="International">International</option>
                     <option value="Nigeria">Nigeria</option>
@@ -171,7 +171,7 @@ export default function AuthModal({ isOpen, onClose, mode, defaultCountry = 'Int
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-zinc-950 border border-zinc-800 rounded px-3 py-2 text-zinc-200 focus:outline-none focus:border-emerald-500/50 transition-colors"
+                className="w-full bg-white border border-zinc-300 rounded px-3 py-2 text-zinc-900 focus:outline-none focus:border-emerald-500/60 transition-colors"
                 required
               />
             </div>
@@ -182,7 +182,7 @@ export default function AuthModal({ isOpen, onClose, mode, defaultCountry = 'Int
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-zinc-950 border border-zinc-800 rounded px-3 py-2 text-zinc-200 focus:outline-none focus:border-emerald-500/50 transition-colors"
+                className="w-full bg-white border border-zinc-300 rounded px-3 py-2 text-zinc-900 focus:outline-none focus:border-emerald-500/60 transition-colors"
                 required
               />
             </div>
@@ -190,13 +190,13 @@ export default function AuthModal({ isOpen, onClose, mode, defaultCountry = 'Int
             <button
               type="submit"
               disabled={busy}
-              className="w-full bg-emerald-500 hover:bg-emerald-600 text-zinc-950 font-bold py-2.5 px-4 rounded transition-colors disabled:opacity-50"
+              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded transition-colors disabled:opacity-50"
             >
               {busy ? 'Please wait...' : activeMode === 'register' ? 'Create account' : 'Sign in'}
             </button>
           </form>
 
-          <div className="text-center text-sm text-zinc-500">
+          <div className="text-center text-sm text-zinc-600">
             {activeMode === 'register' ? (
               <button
                 type="button"
@@ -204,7 +204,7 @@ export default function AuthModal({ isOpen, onClose, mode, defaultCountry = 'Int
                   setError(null);
                   setActiveMode('login');
                 }}
-                className="text-emerald-400 hover:underline"
+                className="text-emerald-700 hover:underline"
               >
                 Already have an account? Sign in
               </button>
@@ -215,7 +215,7 @@ export default function AuthModal({ isOpen, onClose, mode, defaultCountry = 'Int
                   setError(null);
                   setActiveMode('register');
                 }}
-                className="text-emerald-400 hover:underline"
+                className="text-emerald-700 hover:underline"
               >
                 Don&apos;t have an account? Create one
               </button>

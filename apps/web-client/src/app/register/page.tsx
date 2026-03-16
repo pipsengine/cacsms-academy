@@ -18,7 +18,7 @@ export default function RegisterPage() {
   });
 
   return (
-    <div className="min-h-screen bg-zinc-950">
+    <div className="min-h-screen bg-zinc-50">
       <AuthModal isOpen={open} onClose={() => setOpen(false)} mode="register" defaultCountry={country} />
     </div>
   );

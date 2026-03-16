@@ -22,8 +22,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable} dark`}>
-      <body className="bg-zinc-950 text-zinc-200 font-sans antialiased selection:bg-emerald-500/30" suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
+      <body className="bg-white text-zinc-900 font-sans antialiased selection:bg-emerald-500/20" suppressHydrationWarning>
         <AuthProvider>
           <NotificationProvider>
             <MarketDataProvider>
