@@ -12,9 +12,10 @@ export async function GET() {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
+    const enabled = await usageDb.getLimitsEnabled();
     return NextResponse.json({
-      limits: usageDb.limits,
-      enabled: usageDb.limitsEnabled
+      limits: usageDb.getLimits(),
+      enabled
     });
   } catch (error) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

@@ -13,8 +13,9 @@ export async function POST(request: Request) {
     }
 
     const { enabled } = await request.json();
-    usageDb.limitsEnabled = enabled;
-    return NextResponse.json({ success: true, enabled: usageDb.limitsEnabled });
+    await usageDb.setLimitsEnabled(Boolean(enabled));
+    const newState = await usageDb.getLimitsEnabled();
+    return NextResponse.json({ success: true, enabled: newState });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to toggle limits' }, { status: 500 });
   }

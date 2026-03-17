@@ -80,3 +80,20 @@ model Subscription {
   @@index([userId, status])
 }
 
+model UsageLog {
+  id          String   @id @default(cuid())
+  userId      String
+  featureName String
+  usageType   String   @default("request")
+  timestamp   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, featureName, timestamp])
+}
+
+model PlatformSetting {
+  key       String @id
+  value     String
+  updatedAt DateTime @updatedAt
+}

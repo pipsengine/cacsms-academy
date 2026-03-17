@@ -9,12 +9,13 @@ export async function POST(request: Request) {
     const session = await getServerSession(authOptions);
     const userId = (session?.user as any)?.id as string | undefined;
     if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    
+
     const { featureName, action = 'check' } = await request.json();
 
-    if (!usageDb.limitsEnabled) {
+    const limitsEnabled = await usageDb.getLimitsEnabled();
+    if (!limitsEnabled) {
       if (action === 'consume') {
-        usageDb.logUsage(userId, featureName);
+        await usageDb.logUsage(userId, featureName);
       }
       return NextResponse.json({ allowed: true });
     }
@@ -26,7 +27,7 @@ export async function POST(request: Request) {
 
     if (user.role === 'Super Admin' || user.role === 'Administrator') {
       if (action === 'consume') {
-        usageDb.logUsage(userId, featureName);
+        await usageDb.logUsage(userId, featureName);
       }
       return NextResponse.json({ allowed: true });
     }
@@ -40,10 +41,8 @@ export async function POST(request: Request) {
     const limit = usageDb.limits.find(l => l.planName === plan && l.featureName === featureName);
     
     if (!limit) {
-      // If no limit defined, assume unlimited or locked? Let's say unlimited for safety, or locked?
-      // Based on prompt, some features might not have limits. 
       if (action === 'consume') {
-        usageDb.logUsage(userId, featureName);
+        await usageDb.logUsage(userId, featureName);
       }
       return NextResponse.json({ allowed: true });
     }
@@ -52,8 +51,8 @@ export async function POST(request: Request) {
     const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
     const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
-    const hourlyUsage = usageDb.getUsageCount(userId, featureName, oneHourAgo);
-    const dailyUsage = usageDb.getUsageCount(userId, featureName, oneDayAgo);
+    const hourlyUsage = await usageDb.getUsageCount(userId, featureName, oneHourAgo);
+    const dailyUsage = await usageDb.getUsageCount(userId, featureName, oneDayAgo);
 
     let allowed = true;
     let message = '';
@@ -67,9 +66,8 @@ export async function POST(request: Request) {
       message = `You have reached your hourly usage limit for ${featureName}.`;
       
       // Calculate reset time (time until the oldest request in the last hour expires)
-      const hourlyLogs = usageDb.logs.filter(log => log.userId === userId && log.featureName === featureName && new Date(log.timestamp) >= oneHourAgo);
-      if (hourlyLogs.length > 0) {
-        const oldestLog = new Date(hourlyLogs[0].timestamp);
+      const oldestLog = await usageDb.getFirstLogAfter(userId, featureName, oneHourAgo);
+      if (oldestLog) {
         const resetAt = new Date(oldestLog.getTime() + 60 * 60 * 1000);
         const minutesLeft = Math.ceil((resetAt.getTime() - now.getTime()) / 60000);
         resetTime = `Limit resets in ${minutesLeft} minutes.`;
@@ -78,9 +76,8 @@ export async function POST(request: Request) {
       allowed = false;
       message = `You have reached your daily usage limit for ${featureName}.`;
       
-      const dailyLogs = usageDb.logs.filter(log => log.userId === userId && log.featureName === featureName && new Date(log.timestamp) >= oneDayAgo);
-      if (dailyLogs.length > 0) {
-        const oldestLog = new Date(dailyLogs[0].timestamp);
+      const oldestLog = await usageDb.getFirstLogAfter(userId, featureName, oneDayAgo);
+      if (oldestLog) {
         const resetAt = new Date(oldestLog.getTime() + 24 * 60 * 60 * 1000);
         const hoursLeft = Math.ceil((resetAt.getTime() - now.getTime()) / (60 * 60 * 1000));
         resetTime = `Limit resets in ${hoursLeft} hours.`;
@@ -88,7 +85,7 @@ export async function POST(request: Request) {
     }
 
     if (allowed && action === 'consume') {
-      usageDb.logUsage(userId, featureName);
+      await usageDb.logUsage(userId, featureName);
     }
 
     return NextResponse.json({ 

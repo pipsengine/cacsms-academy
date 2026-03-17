@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import { usageDb } from '@/lib/usage/store';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/nextAuthOptions';
+import { prisma } from '@/lib/prisma';
 
 export async function GET() {
   try {
@@ -12,32 +12,36 @@ export async function GET() {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    const logs = usageDb.logs;
-    
-    // Calculate analytics
-    const totalUsage = logs.length;
-    
+    const totalUsage = await prisma.usageLog.count();
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
-    const activeUsersToday = new Set(
-      logs.filter(log => new Date(log.timestamp) >= today).map(log => log.userId)
-    ).size;
+    const activeUsersGroup = await prisma.usageLog.groupBy({
+      by: ['userId'],
+      where: {
+        timestamp: {
+          gte: today,
+        },
+      },
+      _count: { userId: true },
+    });
 
-    const featureUsage = logs.reduce((acc: any, log) => {
-      acc[log.featureName] = (acc[log.featureName] || 0) + 1;
+    const featureUsageGroup = await prisma.usageLog.groupBy({
+      by: ['featureName'],
+      _count: { _all: true },
+    });
+
+    const featureUsage = featureUsageGroup.reduce<Record<string, number>>((acc, record) => {
+      acc[record.featureName] = record._count._all;
       return acc;
     }, {});
 
-    // For upgrades today, we'd need to track subscription changes.
-    // For now, we'll just mock it or leave it as 0.
     const upgradesToday = 0;
 
     return NextResponse.json({
       totalUsage,
-      activeUsersToday,
+      activeUsersToday: activeUsersGroup.length,
       upgradesToday,
-      featureUsage
+      featureUsage,
     });
   } catch (error) {
     console.error('Analytics error:', error);
