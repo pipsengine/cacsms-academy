@@ -16,10 +16,10 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             {/* Logo */}
-            <div className="flex items-center gap-2 text-emerald-600">
+            <Link href="/" className="flex items-center gap-2 text-emerald-600">
               <Cpu className="w-8 h-8" />
               <span className="font-mono font-bold tracking-wider text-xl text-zinc-900">INTEL TRADER</span>
-            </div>
+            </Link>
 
             {/* Desktop Nav */}
             <nav className="hidden md:flex items-center gap-8">
@@ -327,11 +327,11 @@ export default function LandingPage() {
 
           <div className="border-t border-zinc-900 pt-8 space-y-8 text-xs text-zinc-500">
             <div className="flex flex-wrap gap-4">
-              <Link href="#" className="hover:text-zinc-300">Terms and Conditions</Link>
-              <Link href="#" className="hover:text-zinc-300">Privacy Policy</Link>
-              <Link href="#" className="hover:text-zinc-300">Risk Disclosure</Link>
-              <Link href="#" className="hover:text-zinc-300">Disclaimer</Link>
-              <Link href="#" className="hover:text-zinc-300">Cookie Policy</Link>
+              <Link href="/legal/terms" className="hover:text-zinc-300">Terms and Conditions</Link>
+              <Link href="/legal/privacy" className="hover:text-zinc-300">Privacy Policy</Link>
+              <Link href="/legal/risk-disclosure" className="hover:text-zinc-300">Risk Disclosure</Link>
+              <Link href="/legal/disclaimer" className="hover:text-zinc-300">Disclaimer</Link>
+              <Link href="/legal/cookie-policy" className="hover:text-zinc-300">Cookie Policy</Link>
             </div>
 
             <div className="space-y-4">

@@ -27,7 +27,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
-  const pathname = usePathname() || '';
+  const pathname = usePathname() || '/';
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -47,18 +47,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!isLoading) {
-      const publicRoutes = ['/login', '/register', '/landing', '/pricing'];
-      if (!user && !publicRoutes.includes(pathname)) {
+      const publicRoutes = ['/login', '/register', '/landing', '/pricing', '/'];
+      const normalizedPath = pathname || '/';
+      const isLegalRoute = normalizedPath.startsWith('/legal');
+      const isPublicRoute = publicRoutes.includes(normalizedPath) || isLegalRoute;
+      const isAuthRoute = ['/login', '/register', '/landing', '/'].includes(normalizedPath);
+
+      if (!user && !isPublicRoute) {
         router.push('/landing');
-      } else if (user && publicRoutes.includes(pathname)) {
-        router.push('/');
+      } else if (user && isAuthRoute) {
+        router.push('/currency-strength');
       }
     }
   }, [user, isLoading, pathname, router]);
 
   const login = (userData: User) => {
     setUser(userData);
-    router.push('/');
+    router.push('/currency-strength');
   };
 
   const logout = async () => {

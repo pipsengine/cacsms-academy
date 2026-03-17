@@ -70,10 +70,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Sidebar */}
       <aside className="w-64 flex-shrink-0 border-r border-zinc-800/50 bg-zinc-900/30 backdrop-blur-xl flex flex-col">
         <div className="h-16 flex items-center px-6 border-b border-zinc-800/50">
-          <div className="flex items-center gap-2 text-emerald-500">
+          <Link href="/" className="flex items-center gap-2 text-emerald-500">
             <Cpu className="w-6 h-6" />
             <span className="font-mono font-bold tracking-wider text-lg">INTEL TRADER</span>
-          </div>
+          </Link>
         </div>
         
         <div className="flex-1 overflow-y-auto py-6 px-4 space-y-1">
