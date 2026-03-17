@@ -62,6 +62,7 @@ export default function LandingPage() {
                 </p>
                 <p className="text-base text-zinc-500 mb-8 leading-relaxed">
                   We consolidate multi-engine signals (currency strength, channel projections, liquidity intelligence, AI-classified probabilities) into a single workspace so you see institutional behavior without swapping tabs. Alerts are enriched with Nigerian macro context, regulatory clarity, and AI confidence levels so you can trust every cue at scale.
+                </p>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Link href="/register" className="inline-flex justify-center items-center gap-2 bg-emerald-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-emerald-700 transition-colors text-lg">
                     Create Free Account
