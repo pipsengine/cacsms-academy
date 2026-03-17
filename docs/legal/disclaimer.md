@@ -1,15 +1,26 @@
 # Disclaimer
 
-The information on Intel Trader (the “Platform”) is offered in good faith but without representation or warranty. Intel Trader Technologies Limited and its affiliates disclaim all liability for errors, omissions, interruptions, or delays in the Platform, including data feeds, AI outputs, functionality, or availability. All content, analyses, and insights are provided “as-is” and you use them at your own risk.
+Intel Trader provides analytical solutions that are designed, developed, and hosted by Intel Trader Technologies Limited under the Cacsms brand. This disclaimer clarifies the scope of our responsibilities and draws a clear boundary between intelligence and advice.
 
-### No Advice
-The Platform does not provide legal, tax, investment, financial, or accounting advice. While we reference market structure, probabilities, liquidity events, and regulatory contexts, those references do not imply endorsement or advice to take any trade, investment, or business action. Always consult with a licensed professional in Nigeria (e.g., SEC-registered adviser, tax consultant, lawyer) before acting on any information derived from Intel Trader.
+## No Financial, Legal, or Tax Advice
 
-### System Limitations
-We do not guarantee uninterrupted service. The Platform relies on third-party infrastructure (Next.js, Prisma, Stripe, Socket.IO) and external data providers. Downtime caused by updates, maintenance, network disruptions, or force majeure events might occur without prior notice. Always back up any critical decisions and maintain alternative access channels.
+All materials and recommendations are for informational purposes only. Nothing on the Platform, in emails from legal@cacsms.com, or within the mobile signals constitutes investment advice, financial advice, legal counsel, or tax planning. You should consult licensed professionals before acting on any signal or internal recommendation.
 
-### Hyperlinks
-The Platform may contain hyperlinks to third-party websites or resources. These are provided for convenience only. We make no representations about the accuracy or reliability of any third-party content, and inclusion does not imply endorsement. You agree to bear all risks associated with connecting to such resources, including compliance with their terms of service.
+## Third-Party Dependencies
 
-### Limitation of Liability
-To the maximum extent permitted under Nigerian law, Intel Trader Technologies Limited shall not be liable for any direct, indirect, incidental, consequential, or punitive damages arising from or in connection with your access to or use of the Platform. This includes losses arising from decisions based on Platform insights, data corruption, unauthorized access, or force majeure events. This disclaimer survives termination of any account or subscription.
+- Many insights rely on third-party data vendors and external infrastructure. While we select reputable partners, we cannot guarantee their uptime, accuracy, or regulatory standing.
+- We explicitly disclaim liability for consequences of third-party provider failures, including network outages or data corruption.
+
+## Security and Integrity
+
+Intel Trader implements security measures (encryption, monitoring, rate limiting) but cannot promise absolute protection against sophisticated cyberattacks or state-sponsored threats. You are responsible for securing credentials, device access, and MFA tokens; Intel Trader logs all security events in accordance with SOC 2 readiness and can provide reports upon request via legal@cacsms.com.
+
+## Operational Limits
+
+- Support responses and compliance disclosures obey the Nigerian regulatory calendars and may experience delays during national holidays or global events.
+- Platform availability is subject to infrastructure upgrades, maintenance windows, and reasoned throttling for abuse mitigation.
+- Enterprise clients may receive bespoke SLA schedules documented in separate addenda.
+
+## Acknowledgement
+
+By using the Platform, you acknowledge that you have read this Disclaimer plus the Privacy Policy, Terms and Conditions, and Risk Disclosure documents. Questions should be directed to legal@cacsms.com so we can respond with the proper compliance or legal team context.

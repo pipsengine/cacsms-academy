@@ -1,39 +1,79 @@
 # Terms and Conditions
 
-This Terms and Conditions document (the “Agreement”) governs your access to and use of Intel Trader (“the Platform”), an institutional-grade market intelligence service operated by Intel Trader Technologies Limited (or its affiliates, “we,” “us,” “our”). By visiting, browsing, registering, subscribing, or otherwise using any portion of the Platform you acknowledge that you have read, understood, and expressly agree to be bound by this Agreement, as well as any referenced policies, procedures (including this detailed documentation), and any future modifications that we notify you of in accordance with the notice provisions below.
+This document is the master agreement that governs every individual and corporate interaction with the Intel Trader institutional intelligence platform. When you land on any Intel Trader page, register an account, connect via a web socket, or otherwise interact with the software, you are accepting these terms and committing to stay within the bounds of Nigerian law, international best practices, and the operational guardrails outlined below. The definition of “you” includes any person or entity that operates under a single login, shares devices, or acts on behalf of an organization that has been granted access by Intel Trader Technologies Limited, the entity behind the cacsms.com trading intelligence network.
 
-### 1. Eligibility and Compliance with Nigerian Law
-Individuals must be at least eighteen (18) years old and possess the legal capacity to enter contracts under Nigerian law. Organizations must designate an authorized representative who is duly empowered to bind the company. You affirm that you are not located in a jurisdiction where access to the Platform would breach local statutes or where Intel Trader is otherwise restricted from providing services. You agree to comply at all times with the Nigerian Data Protection Regulation (“NDPR”), the Companies and Allied Matters Act, the Investments and Securities Act, the Consumer Protection Council Act, and any guidance issued by the Securities and Exchange Commission (SEC) or Nigerian Communications Commission (NCC).
+## 1. Eligibility and Legal Compliance
 
-### 2. Service Scope and Use Restrictions
-Intel Trader delivers multi-modal insights, including but not limited to currency strength heatmaps, channel detection reports, liquidity intelligence, AI probability scoring, alert history logging, and dashboard analytics. The Platform is not a brokerage, does not execute trades, and only provides indicative analysis; it is expressly transactional in nature and intended for educational, research, and internal analytical use. You shall not resell, redistribute, or rebrand the Platform or any portion thereof without prior written consent. You agree not to (a) reverse-engineer or otherwise attempt to derive source code or underlying data models; (b) overload or attempt to disable the Platform through automated attacks; (c) impersonate other users; or (d) circumvent any security or usage throttling mechanisms, including the usage quota system that monitors feature consumption.
+1. You must be at least eighteen (18) years old, hold full contractual capacity under the laws of the Federal Republic of Nigeria, and not be the subject of any sanctions maintained by the Nigerian Financial Intelligence Unit (NFIU) or comparable international bodies.
+2. Organizations must appoint a duly authorized representative who attests, in writing or via signed electronic consent, that they are authorized under the Companies and Allied Matters Act, the Investment and Securities Act, and NCC regulations to use analytical services that aggregate market data and alternative intelligence.
+3. Anyone accessing the platform from outside Nigeria remains responsible for meeting their local compliance obligations but must always comply with the Nigerian Data Protection Regulation (NDPR) when interacting with Nigerian-resident data or infrastructure.
 
-### 3. Account Management and Credentials
-You are responsible for safeguarding your login credentials, MFA tokens, API keys, and any security devices. Promptly notify us if your password or any authentication factor may have been compromised. Unless explicitly waived in writing, you shall not share credentials with third parties. We reserve the right to suspend or terminate any account that we reasonably believe is compromised, in breach, used for fraudulent activity, or otherwise violates applicable law, without liability for lost data or lost business.
+## 2. Platform Scope and Restrictions
 
-### 4. Pricing, Billing, and Subscriptions
-Pricing is published on the “Pricing Plans” page. By subscribing, you authorize us to charge the card or payment method you provide (including converting to Naira when the Nigerian tier is selected). All prices exclude applicable Nigerian value-added tax (VAT) or other levies, which we may collect where required under the Federal Inland Revenue Service (FIRS) regulations. Subscriptions renew automatically, and you may cancel via your account dashboard prior to the next billing cycle; cancellation does not entitle you to a refund for partial periods unless required by Nigerian law. We may suspend or alter the availability of features, plans, or pricing with at least 30 days’ notice. If we reverse, refund, or cancel a charge, we cannot guarantee the reinstatement of any usage history or rolled-over entitlements.
+Intel Trader offers an ecosystem of engines (currency strength, breakout, liquidity intelligence, probability analysis, AI assistants, dashboards, alerts) that synthesize public and licensed market data. The Platform:
 
-### 5. Data Privacy and Usage Tracking
-We collect and use telemetry, market data, and your interactions in accordance with our Privacy Policy. You consent to our collection of usage statistics, platform logs, and websocket metadata for troubleshooting, analytics, and service improvement. Usage limits are enforced via a combination of real-time checks, history logs stored under our Prisma/Redis infrastructure, and administrative controls. You should monitor your quota usage notifications, which may be sent through the dashboard or email. Continued use after limits are reached may result in temporary throttling or suspension.
+- Is not a brokerage and does not execute trades, manage funds, or custody assets.
+- Does not provide bespoke financial, legal, tax, or investment advice; always consult licensed advisors before acting.
+- May be used for research, backtesting, compliance monitoring, institutional analysis, and personal education.
 
-### 6. Intellectual Property
-All intellectual property rights in and to the Platform, documentation, dashboards, data feeds, AI templates, trademarks (including “Intel Trader”), and imagery remain the exclusive property of Intel Trader Technologies Limited or its licensors. You receive no ownership, title, or interest. Third-party components, including Next.js, Stripe, Prisma, and Socket.IO, are governed by their own licenses and are not assigned to you. Unauthorized copying, extraction, or redistribution (including scraping) is prohibited.
+You agree not to:
 
-### 7. Disclaimers; No Financial Advice
-The Platform merely furnishes observational analysis, probability estimates, and structural mapping; nothing herein constitutes a recommendation to buy, sell, or hold any instrument. You are fully responsible for any trading decisions you make and the commercial consequences thereof. The Platform is provided “as-is” without warranties of merchantability, fitness for a particular purpose, accuracy, or completeness. We make no representations regarding the ability of any analytics to predict future performance. Use of the Platform does not create any fiduciary relationship between you and Intel Trader.
+- Reproduce, redistribute, or resale any component of the platform without written authorization.
+- Reverse-engineer proprietary models or export raw feed data to unauthorized third parties.
+- Attempt to manipulate usage metrics or evade rate limits, including the automated anti-abuse controls hosted within our Prisma/Redis telemetry layer.
+- Automate access in a way that compromises service quality for other subscribers.
 
-### 8. Limitation of Liability
-To the fullest extent allowed by Nigerian law, in no event shall Intel Trader Technologies Limited, its officers, directors, employees, or affiliates be liable for special, indirect, incidental, consequential, or punitive damages arising from your use or inability to use the Platform, even if we were advised of the possibility of such damages. Our entire liability shall not exceed the total subscription fees you actually paid for the preceding twelve (12) months. This limitation is severable from any other part of the Agreement and survives termination or expiration.
+Repeated violations create grounds for immediate termination, report to relevant Nigerian regulators, and debt collection for any lost opportunity or compliance breach.
 
-### 9. Indemnification
-You agree to indemnify, defend, and hold harmless Intel Trader Technologies Limited, its affiliates, officers, directors, employees, partners, and agents from and against any losses, damages, liabilities, or costs (including legal fees) arising from your breach of this Agreement, misuse of the Platform, or violation of any applicable law or regulation, including the NDPR, SEC rules, and anti-money laundering legislation.
+## 3. Accounts, Credentials, and Security
 
-### 10. Modification and Termination
-We may amend this Agreement by posting a revised version on the Platform with the “last updated” timestamp; such acts constitute notice, and continued use of the Platform after posting constitutes acceptance. We may terminate or suspend your account, with or without cause, if you violate this Agreement, infringe others’ rights, or fail to pay fees. Upon termination, your access to dashboards, APIs, and data will cease, and we may delete your data after any retention period required by Nigerian law.
+- All accounts are individually assigned, connected to a confirmed email address in the @cacsms.com domain, and optionally tied to two-factor authentication. Shared or forwarded credentials are expressly prohibited.
+- You must notify legal@cacsms.com as soon as you suspect unauthorized access. Intel Trader reserves the right to suspend accounts before notifying users when a high-risk compromise is detected, especially during suspicious activity relating to Nigerian trading hours.
+- Password management, multi-factor authenticator devices, and recovery methods remain your responsibility. Intel Trader maintains an MFA enforcement matrix and may require periodic revalidation.
 
-### 11. Governing Law; Dispute Resolution
-This Agreement is governed by the laws of the Federal Republic of Nigeria without regard to conflict-of-law principles. All disputes shall be resolved first through amicable negotiation; if unresolved within thirty (30) days, you agree to submit to binding arbitration administered by the Lagos Court of Arbitration or another mutually agreed Nigerian arbitration body, with proceedings conducted in Lagos, Nigeria, and in English.
+## 4. Pricing, Billing, and Subscriptions
 
-### 12. Notices
-All notices shall be in writing and delivered via email to legal@cacsms.com or another address we publish. Notices become effective upon receipt or, if sent by email, upon our confirmation that it was received. Please keep your contact information current within your account settings so we can provide timely notices about maintenance, breaches, or regulatory updates.
+Subscriptions follow the Pricing Plans tab and may change with notice of no less than thirty (30) days, except when regulatory intervention demands urgent adjustment. You authorize Intel Trader to bill your selected payment method (local Nigerian debit/credit, ACH, or international card) for recurring fees. All Nigerian transactions include VAT as required by the Federal Inland Revenue Service (FIRS); failure to pay will result in automated suspension until fees and any penalties are cleared.
+
+Billing Disputes:
+
+- Submit appeals within fifteen (15) calendar days at legal@cacsms.com with invoice reference, evidence, and required supporting documentation.
+- Intel Trader retains the right to audit the underlying usage and decision-making metrics, including API call logs, gauge concurrency, and identify misuse before granting a reversal.
+
+## 5. Intellectual Property and Feedback
+
+Intel Trader retains all IP rights for:
+
+- Source code, dashboards, engine outputs, machine learning artifacts, and proprietary signals.
+- Branding, logos, and naming conventions (“Intel Trader,” “Cacsms,” etc.).
+- Documentation, knowledge base articles, and legal notices, including revisions.
+
+If you submit improvements, ideas, or feature requests via the support desk or legal@cacsms.com, you grant Intel Trader a perpetual, worldwide, royalty-free license to implement and commercialize such feedback.
+
+## 6. Warranty Disclaimers; Risk Oversight
+
+The Platform is provided “as is” without warranties of merchantability, fitness for a particular purpose, or accuracy. You understand that:
+
+- Signal accuracy depends on third-party feed quality; occasional latency and outages may occur.
+- Historical performance does not guarantee future results. Decisions rest solely with your desk or management team.
+- Intel Trader is not a fiduciary and does not assume responsibility for trading profits or losses arising from your actions.
+
+## 7. Limitation of Liability and Indemnity
+
+Under Nigerian law, Intel Trader’s aggregate liability is capped at amounts you paid in the twelve (12) months preceding the claim. Neither Intel Trader nor its directors, affiliates, or vendors are liable for indirect, punitive, or consequential damages, including regulatory fines or reputational losses caused by your trading activity.
+
+You agree to indemnify Intel Trader and its partners against claims arising from breach of this Agreement, infringement on third-party rights, or violations of NDPR, SEC, or NCC regulations caused by your actions.
+
+## 8. Modification, Termination, and Dispute Resolution
+
+Intel Trader may amend these terms by publishing a revised version with a “last updated” timestamp. Continued use after publication is acceptance. We may suspend or terminate services for breaches, non-payment, or regulatory orders. If terminated, data preservation follows data retention policies demanded by Nigerian regulators; we keep backups for at least eighteen (18) months.
+
+Disputes:
+
+- Submit disputes via email to legal@cacsms.com.
+- If unresolved within thirty (30) days, parties agree to arbitration administered by the Lagos Court of Arbitration (LCA) or another mutually agreed Nigerian arbitration forum.
+- Proceedings occur in English and take place in Lagos, Nigeria, unless otherwise agreed.
+
+## 9. Notices
+
+Deliver notices to legal@cacsms.com or our principal registered office. Notices sent by email are effective upon delivery confirmation. Keep contact details updated inside your account settings.

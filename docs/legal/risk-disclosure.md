@@ -1,25 +1,24 @@
 # Risk Disclosure
 
-### Introduction
-Trading foreign exchange, commodities, or other leveraged instruments entails substantial risk. Intel Trader is an intelligence platform, not a brokerage, and does not execute orders for you. The following risk disclosure is provided to comply with Nigerian regulatory expectations (SEC, NDPR, NCC) and to ensure that all users understand the inherent uncertainties before relying on our analysis.
+Trading foreign exchange instruments is inherently risky, especially when driven by leveraged exposure, fast-moving liquidity, and geopolitical headlines that ripple through the Lagos bourse and global markets simultaneously. Intel Trader provides intelligence, not execution, which means:
 
-### Market Volatility
-Currency markets are subject to rapid and unpredictable changes driven by macroeconomic releases, geopolitical events, monetary policy decisions, and cross-border capital flows. Price movements can be exaggerated in thinly traded pairs, while sudden liquidity withdrawals may cause slippage far beyond what appears on our probability tables. Past performance, back testing, or model derivations do not guarantee future outcomes.
+- Historical signals, probabilities, and liquidity zones are only as reliable as the data they are built on, and past performance is not a guarantee of future outcomes.
+- Every signal is tagged with a confidence score and an NDPR-compliant audit trail, but we cannot guarantee zero slippage, full order execution, or absence of counterparty failure.
+- External factors (e.g., SEC guidance, currency devaluations, force majeure events) can render even the most precise models momentarily obsolete. You must monitor regulatory updates published via legal@cacsms.com and the Lagos Court of Arbitration disclaimers when planning capital allocations.
 
-### No Predictions or Guarantees
-Intel Trader utilizes statistical models, AI probability engines, and structural analysis to highlight potential setups. However, these models are predictive in nature and may fail due to incorrect assumptions, data quality issues, or regime changes. There is no guarantee of profitability, and historical probability metrics should not be interpreted as promises of future returns. Always corroborate Intel Trader insights with your own research and risk limits.
+## Risk Principles
 
-### Complementary Role
-Our dashboards and alerts are intended to complement, not replace, professional advice. You remain solely responsible for forming opinions, managing position sizing, and executing trades. You should consult licensed Nigerian investment advisers, tax professionals, or brokers as needed; Intel Trader does not provide legal, tax, or financial advice.  
+1. **Volatility:** Foreign exchange rates can swing abruptly; our gauges only estimate probability ranges, which should be overlaid with tradable liquidity.
+2. **Leverage:** Margin magnifies both gains and losses—never risk more than you can afford to lose; our dashboards flag leverage buckets and alert you when your desk usage limits approach your predetermined thresholds.
+3. **Correlation Risk:** Multiple engines interact—currency strength, channel detection, volatility, and breakout signals may not always align; treat misaligned signals as a call to reassess risk rather than a trade trigger.
+4. **Operational Risk:** Downtime, provider outages, or latency spikes can happen. We document operational incidents and maintain a timeline accessible through compliance reporting; check the Incident page for Lagos hour updates.
 
-### Leverage and Margin
-Our platform may reference leveraged strategies or high-probability trends that inherently imply leverage. Leverage magnifies both gains and losses. You should ensure that your selected brokers and instruments conform to regulations issued by the Securities and Exchange Commission (SEC) and other relevant bodies and that you can withstand margin calls without risking personal hardship.
+## Use of Signals
 
-### Order Execution, Third-Party Data, and System Risk
-The Platform aggregates data from third-party providers (e.g., Pricing APIs, AI models). We do not control their availability or accuracy. System failures, internet outages, or browser issues may temporarily disrupt alerts or authentication. You should never rely solely on the Platform during high-impact news events; always have fail-safe processes and direct market access via a regulated broker.
+Intel Trader does not:
 
-### Legal and Regulatory Compliance
-This Risk Disclosure does not constitute an invitation, offer, or solicitation to trade. Users must ensure they are authorized to trade under Nigerian law and must comply with AML/CFT requirements, tax reporting obligations, and any exchange-specific rules. We may suspend features or user accounts when required by law.
+- Execute trades or manage custodial assets on your behalf.
+- Provide fiduciary oversight; you remain fully accountable for every order placed elsewhere, even if Intel Trader alerts you to a condition.
+- Guarantee execution quality, restrict spreads, or deliver explicit price targets.
 
-### Consent
-By using Intel Trader, you acknowledge that you understand and accept these risks, will not hold Intel Trader liable for any losses, and will trade only with funds you can afford to lose. This acknowledgment extends to derivatives, copy trading, or any automation that you configure using insights we provide.
+Rely on our signals alongside your own risk management, regulatory monitoring, and capital controls. If you require additional guidance, contact legal@cacsms.com to coordinate third-party oversight or compliance advisory services that align with NCC and SEC expectations.

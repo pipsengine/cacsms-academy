@@ -138,7 +138,7 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug } = params;
   const page = LEGAL_PAGES[slug as LegalSlug];
   if (!page) {
     return {
@@ -154,7 +154,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 }
 
 export default async function LegalPage({ params }: { params: { slug: string } }) {
-  const { slug } = await params;
+  const { slug } = params;
   const page = LEGAL_PAGES[slug as LegalSlug];
   if (!page) {
     notFound();
@@ -216,8 +216,8 @@ export default async function LegalPage({ params }: { params: { slug: string } }
             <p className="text-sm font-semibold uppercase tracking-[0.4em] text-emerald-700">Need to act?</p>
             <p className="mt-2 text-sm text-zinc-600">
               If you still have questions after reading this document, reach out via{' '}
-              <a className="text-emerald-600 underline decoration-dashed" href="mailto:legal@inteltrader.ai">
-                legal@inteltrader.ai
+              <a className="text-emerald-600 underline decoration-dashed" href="mailto:legal@cacsms.com">
+                legal@cacsms.com
               </a>{' '}
               or use the support chat in the dashboard.
             </p>
