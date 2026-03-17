@@ -41,17 +41,26 @@ export async function POST(request: Request) {
       },
     });
 
-    await prisma.subscription.create({
-      data: {
-        userId: created.id,
-        planType: 'Free',
-        price: 0,
-        currency: created.country === 'Nigeria' ? '₦' : '$',
-        expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
-        paymentProvider: 'System',
-        status: 'Active',
-      },
-    });
+    await Promise.all([
+      prisma.subscription.create({
+        data: {
+          userId: created.id,
+          planType: 'Free',
+          price: 0,
+          currency: created.country === 'Nigeria' ? '₦' : '$',
+          expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+          paymentProvider: 'System',
+          status: 'Active',
+        },
+      }),
+      prisma.usageLog.create({
+        data: {
+          userId: created.id,
+          featureName: 'register',
+          usageType: 'auth',
+        },
+      }),
+    ]);
 
     return NextResponse.json({
       success: true,
@@ -61,10 +70,11 @@ export async function POST(request: Request) {
         email: created.email,
         role: created.role,
         country: created.country,
-        plan: 'Free'
-      }
+        plan: 'Free',
+      },
     });
   } catch (error) {
+    console.error('Registration failed', error);
     const code = (error as any)?.code;
     if (typeof code === 'string' && code.startsWith('P')) {
       return NextResponse.json({ error: 'Database error' }, { status: 503 });

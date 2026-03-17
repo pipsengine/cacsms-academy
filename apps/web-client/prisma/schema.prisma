@@ -24,6 +24,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   subscriptions Subscription[]
+  usageLogs     UsageLog[]
 }
 
 model Account {

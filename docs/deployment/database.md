@@ -6,8 +6,8 @@ This repository uses **Prisma** as the ORM on top of a PostgreSQL database. The 
 
 1. PostgreSQL instance (local, cloud, or cPanel-built) with connectivity from the deployment host.
 2. Environment variables:
-   * `DATABASE_URL` – full Postgres connection string (`postgresql://user:pass@host:5432/dbname`).
-   * `NEXTAUTH_URL` and `NEXTAUTH_SECRET` (already documented in `.env.example`).
+   - `DATABASE_URL` – full Postgres connection string (`DATABASE_URL=postgresql://cacsms:@dm1n.c0m@localhost:5433/inteltrader_db?schema=public`).
+   - `NEXTAUTH_URL` and `NEXTAUTH_SECRET` (already documented in `.env.example`).
 3. Node.js 20+ and npm (or the package manager of choice) available inside the hosting environment.
 
 ## Local development workflow
@@ -44,3 +44,17 @@ If cPanel/Plesk does not expose a terminal, you can also create a deployment hoo
 - To rerun a migration that failed: `npx prisma migrate resolve --applied 0001_init`.
 
 Because migration files are version controlled, hosting platforms always see the same SQL, which keeps deployments repeatable and auditable.
+
+## Verifying your local PostgreSQL connection
+
+Before running `db:migrate` or `db:migrate:deploy`, ensure the local PostgreSQL server is up and listening on port `5433` using the shared credentials:
+
+1. Install the PostgreSQL CLI (`psql`) or start a GUI like pgAdmin/TablePlus, and then connect with:
+
+   ```bash
+   psql postgresql://cacsms:@dm1n.c0m@localhost:5433/inteltrader_db -c '\dt'
+   ```
+
+2. If the command lists zero tables, the server is reachable and ready for Prisma; proceed with the migration and seed steps below. If you still see a `P1001` error, either start PostgreSQL on port `5433` or update `DATABASE_URL` to match the exposed port.
+
+3. If you prefer to keep Postgres on `5432`, change the connection string in `.env.local`/`.env.example` to `localhost:5432` and rerun `db:migrate:deploy`.
