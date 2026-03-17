@@ -73,9 +73,9 @@ app.prepare().then(() => {
     }, 5000);
 
     // Send initial data immediately
-    socket.emit('currency_update', generateCurrencyData());
-    socket.emit('channel_update', generateChannelData());
-    socket.emit('breakout_update', generateBreakoutData());
+    socket.emit('currency_update', createMarketPayload(generateCurrencyData()));
+    socket.emit('channel_update', createMarketPayload(generateChannelData()));
+    socket.emit('breakout_update', createMarketPayload(generateBreakoutData()));
 
     socket.on('disconnect', () => {
       console.log('Client disconnected:', socket.id);
@@ -108,6 +108,13 @@ function generateCurrencyData() {
     return { ...c, score: Math.max(0, Math.min(100, c.score + change)) };
   }).sort((a, b) => b.score - a.score);
   return lastCurrencies;
+}
+
+function createMarketPayload<T>(data: T) {
+  return {
+    data,
+    timestamp: new Date().toISOString(),
+  };
 }
 
 let lastChannels = [

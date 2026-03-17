@@ -13,8 +13,9 @@ export async function GET() {
     }
 
     const enabled = await usageDb.getLimitsEnabled();
+    const limits = await usageDb.getLimits();
     return NextResponse.json({
-      limits: usageDb.getLimits(),
+      limits,
       enabled
     });
   } catch (error) {

@@ -1,9 +1,46 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 import { getClientIp, rateLimit } from '@/lib/security/rateLimit';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth/nextAuthOptions';
+
+type CacheEntry = {
+  response: string;
+  timestamp: number;
+  plan: string;
+};
+
+const CACHE_TTL_MS = 5 * 60 * 1000;
+const chatResponseCache = new Map<string, CacheEntry>();
+
+function buildCacheKey(userId: string | undefined, plan: string, message: string) {
+  return `${userId ?? 'anon'}:${plan}:${message.trim().toLowerCase()}`;
+}
+
+function chunkText(text: string): string[] {
+  if (!text) return [];
+  const chunkSize = 120;
+  const regex = new RegExp(`.{1,${chunkSize}}`, 'g');
+  return text.match(regex) || [];
+}
 
 export async function POST(req: Request) {
   try {
+    const session = await getServerSession(authOptions);
+    const userId = (session?.user as any)?.id;
+    const plan = ((session?.user as any)?.plan as string) || 'Free';
+    const payload = await req.json();
+    const message = payload?.message;
+
+    const cacheKey = buildCacheKey(userId, plan, message || '');
+    const cached = chatResponseCache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+      return NextResponse.json({
+        response: cached.response,
+        chunks: chunkText(cached.response),
+      });
+    }
+
     const ip = getClientIp(req);
     const limitResult = rateLimit({ key: `chat:${ip}`, limit: 30, windowMs: 60_000 });
     if (!limitResult.allowed) {
@@ -13,20 +50,20 @@ export async function POST(req: Request) {
       );
     }
 
-    const { message } = await req.json();
-
     if (!message) {
       return NextResponse.json({ error: 'Message is required' }, { status: 400 });
     }
 
     const apiKey = process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY;
     if (!apiKey) {
-      return NextResponse.json({ error: 'AI service not configured' }, { status: 500 });
+      const fallback = 'Intel Trader AI is temporarily unavailable. Please check back shortly.';
+      return NextResponse.json({ response: fallback, chunks: chunkText(fallback) });
     }
 
     const ai = new GoogleGenAI({ apiKey });
 
     const prompt = `You are the Intel Trader AI, an advanced institutional-grade financial intelligence assistant. 
+    The user is on the ${plan} plan (userId: ${userId ?? 'guest'}).
     You help forex traders analyze market structures, probabilities, and navigate the Intel Trader platform.
     Keep your responses concise, professional, and focused on trading concepts like channels, breakouts, and liquidity.
     
@@ -38,9 +75,12 @@ export async function POST(req: Request) {
       contents: prompt,
     });
 
-    return NextResponse.json({ response: response.text });
+    const answer = response.text || 'I am unable to generate a response right now.';
+    chatResponseCache.set(cacheKey, { response: answer, timestamp: Date.now(), plan });
+    return NextResponse.json({ response: answer, chunks: chunkText(answer) });
   } catch (error) {
     console.error('Gemini API Error:', error);
-    return NextResponse.json({ error: 'Failed to generate response' }, { status: 500 });
+    const fallback = 'I am experiencing connectivity issues. Please try again in a few seconds.';
+    return NextResponse.json({ response: fallback, chunks: chunkText(fallback) });
   }
 }

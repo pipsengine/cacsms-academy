@@ -1,17 +1,20 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { Activity, Clock, Cpu, Globe, LayoutDashboard, Settings, ShieldAlert, Zap, Target, LogOut, User as UserIcon, Shield } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
 import AIAssistant from '@/components/AIAssistant';
+import { useMarketData } from '@/components/MarketDataProvider';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [time, setTime] = useState<string>('');
   const pathname = usePathname() || '';
   const [isMounted, setIsMounted] = useState(false);
   const { user, logout } = useAuth();
+  const { health } = useMarketData();
+  const [tick, setTick] = useState(() => Date.now());
 
   useEffect(() => {
     const id = setTimeout(() => setIsMounted(true), 0);
@@ -50,6 +53,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     const interval = setInterval(updateTime, 1000);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => setTick(Date.now()), 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const secondsAgo = useMemo(() => {
+    if (!health.lastUpdate) return null;
+    const last = new Date(health.lastUpdate).getTime();
+    return Math.max(0, Math.round((tick - last) / 1000));
+  }, [health.lastUpdate, tick]);
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-zinc-950">
@@ -122,9 +136,24 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <header className="h-16 flex-shrink-0 border-b border-zinc-800/50 bg-zinc-950/50 backdrop-blur-md flex items-center justify-between px-6">
           <div className="flex items-center gap-4">
             <h1 className="text-lg font-medium text-zinc-100">{getPageTitle()}</h1>
+          <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+            <span className="text-xs font-mono text-zinc-400">Monitoring 28 Pairs</span>
+          </div>
             <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-              <span className="text-xs font-mono text-zinc-400">Monitoring 28 Pairs</span>
+              <span
+                className={`w-1.5 h-1.5 rounded-full ${
+                  health.status === 'healthy' ? 'bg-emerald-500 animate-pulse' :
+                  health.status === 'stale' ? 'bg-amber-500' :
+                  'bg-red-500'
+                }`}
+              />
+              <span className="text-xs font-mono text-zinc-400">
+                {health.status === 'healthy' && 'Live Feed'}
+                {health.status === 'stale' && 'Feed Lagging'}
+                {health.status === 'offline' && 'Feed Offline'}
+                {secondsAgo !== null ? ` · ${secondsAgo}s ago` : ''}
+              </span>
             </div>
           </div>
           <div className="flex items-center gap-4">

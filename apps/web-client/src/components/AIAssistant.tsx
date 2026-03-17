@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageSquare, X, Send, Bot, User, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useAuth } from '@/components/AuthProvider';
 
 interface Message {
   id: string;
@@ -22,6 +23,8 @@ export default function AIAssistant() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { user } = useAuth();
+  const planLabel = user?.plan ? `${user.plan} Plan` : 'Guest';
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -39,8 +42,9 @@ export default function AIAssistant() {
       role: 'user',
       content: input.trim()
     };
+    const assistantId = (Date.now() + 1).toString();
 
-    setMessages(prev => [...prev, userMessage]);
+    setMessages(prev => [...prev, userMessage, { id: assistantId, role: 'assistant', content: '' }]);
     setInput('');
     setIsLoading(true);
 
@@ -54,20 +58,22 @@ export default function AIAssistant() {
       if (!response.ok) throw new Error('Failed to fetch response');
 
       const data = await response.json();
-      
-      setMessages(prev => [...prev, {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: data.response
-      }]);
+      const chunks = Array.isArray(data.chunks) && data.chunks.length
+        ? data.chunks
+        : [data.response || 'I am sorry, I could not reach the servers.'];
+      let delay = 0;
+      chunks.forEach((chunk, index) => {
+        setTimeout(() => {
+          setMessages(prev => prev.map(msg => msg.id === assistantId ? { ...msg, content: msg.content + chunk } : msg));
+          if (index === chunks.length - 1) {
+            setIsLoading(false);
+          }
+        }, delay);
+        delay += 150;
+      });
     } catch (error) {
       console.error('Chat error:', error);
-      setMessages(prev => [...prev, {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: 'I apologize, but I am currently experiencing connectivity issues. Please try again later.'
-      }]);
-    } finally {
+      setMessages(prev => prev.map(msg => msg.id === assistantId ? { ...msg, content: 'I apologize, but I am currently experiencing connectivity issues. Please try again later.' } : msg));
       setIsLoading(false);
     }
   };
@@ -100,7 +106,9 @@ export default function AIAssistant() {
                   <h3 className="text-sm font-bold text-zinc-100">Intel Trader AI</h3>
                   <div className="flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    <span className="text-[10px] font-mono text-zinc-500 uppercase">System Online</span>
+                    <span className="text-[10px] font-mono text-zinc-500 uppercase">
+                      System Online · {planLabel}
+                    </span>
                   </div>
                 </div>
               </div>

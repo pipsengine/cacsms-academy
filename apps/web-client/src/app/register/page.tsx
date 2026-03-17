@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import LandingPage from '@/app/landing/page';
 import AuthModal from '@/components/AuthModal';
 
 export default function RegisterPage() {
@@ -18,7 +19,8 @@ export default function RegisterPage() {
   });
 
   return (
-    <div className="min-h-screen bg-zinc-50">
+    <div className="relative min-h-screen">
+      <LandingPage />
       <AuthModal isOpen={open} onClose={() => setOpen(false)} mode="register" defaultCountry={country} />
     </div>
   );

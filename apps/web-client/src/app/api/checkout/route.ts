@@ -4,6 +4,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/nextAuthOptions';
 import { prisma } from '@/lib/prisma';
 import { getClientIp, rateLimit } from '@/lib/security/rateLimit';
+import { getPricingDetail, planOrder, PlanType, resolveRegion } from '@/lib/pricing/catalog';
 
 export async function POST(req: Request) {
   try {
@@ -28,15 +29,16 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const plan = body?.plan;
-    const region = body?.region;
-    if (plan !== 'Free' && plan !== 'Professional' && plan !== 'Premium') {
+    const plan = body?.plan as PlanType | undefined;
+    const regionInput = body?.region;
+    if (!plan || !planOrder.includes(plan)) {
       return NextResponse.json({ error: 'Invalid plan' }, { status: 400 });
     }
 
-    const isNigeria = region === 'nigeria' ? true : region === 'international' ? false : user.country === 'Nigeria';
-    const currency = isNigeria ? 'ngn' : 'usd';
-    const displayCurrency = isNigeria ? '₦' : '$';
+    const resolvedRegion = resolveRegion(regionInput, user.country);
+    const pricing = getPricingDetail(plan, resolvedRegion);
+    const currency = pricing.currencyCode;
+    const displayCurrency = pricing.currencySymbol;
 
     if (plan === 'Free') {
       await prisma.subscription.updateMany({
@@ -48,7 +50,7 @@ export async function POST(req: Request) {
         data: {
           userId: user.id,
           planType: 'Free',
-          price: 0,
+          price: pricing.priceValue,
           currency: displayCurrency,
           expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
           paymentProvider: 'System',
@@ -58,13 +60,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ url: '/' });
     }
 
-    const unitAmount =
-      plan === 'Professional'
-        ? (isNigeria ? 4999_00 : 399)
-        : (isNigeria ? 9999_00 : 899);
+    const unitAmount = pricing.unitAmountCents;
 
     if (!process.env.STRIPE_SECRET_KEY) {
-      return NextResponse.json({ url: `/payment-success?plan=${encodeURIComponent(plan)}&region=${encodeURIComponent(region || '')}` });
+      return NextResponse.json({
+        url: `/payment-success?plan=${encodeURIComponent(plan)}&region=${encodeURIComponent(resolvedRegion)}`
+      });
     }
 
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
@@ -76,7 +77,7 @@ export async function POST(req: Request) {
       metadata: {
         userId: user.id,
         plan,
-        region: region || '',
+        region: resolvedRegion,
       },
       payment_method_types: ['card'],
       line_items: [
@@ -93,7 +94,7 @@ export async function POST(req: Request) {
         },
       ],
       mode: 'payment',
-      success_url: `${process.env.APP_URL || 'http://localhost:3000'}/payment-success?session_id={CHECKOUT_SESSION_ID}&plan=${encodeURIComponent(plan)}&region=${encodeURIComponent(region || '')}`,
+      success_url: `${process.env.APP_URL || 'http://localhost:3000'}/payment-success?session_id={CHECKOUT_SESSION_ID}&plan=${encodeURIComponent(plan)}&region=${encodeURIComponent(resolvedRegion)}`,
       cancel_url: `${process.env.APP_URL || 'http://localhost:3000'}/pricing`,
     });
 

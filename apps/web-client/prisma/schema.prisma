@@ -97,3 +97,13 @@ model PlatformSetting {
   value     String
   updatedAt DateTime @updatedAt
 }
+
+model UsageLimit {
+  id          String  @id @default(cuid())
+  planName    String
+  featureName String
+  hourlyLimit String
+  dailyLimit  String
+
+  @@unique([planName, featureName])
+}

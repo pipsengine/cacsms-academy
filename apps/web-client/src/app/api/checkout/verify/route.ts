@@ -3,27 +3,13 @@ import Stripe from 'stripe';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/nextAuthOptions';
 import { prisma } from '@/lib/prisma';
+import { getPricingDetail, PlanType, resolveRegion } from '@/lib/pricing/catalog';
 
-type Region = 'international' | 'nigeria';
-type PaidPlan = 'Professional' | 'Premium';
-
-function getRegion(input: unknown): Region | null {
-  if (input === 'international' || input === 'nigeria') return input;
-  return null;
-}
+type PaidPlan = Exclude<PlanType, 'Free'>;
 
 function getPaidPlan(input: unknown): PaidPlan | null {
   if (input === 'Professional' || input === 'Premium') return input;
   return null;
-}
-
-function pricing(plan: PaidPlan, region: Region | null, userCountry: string) {
-  const isNigeria = region === 'nigeria' ? true : region === 'international' ? false : userCountry === 'Nigeria';
-  return {
-    currencyCode: isNigeria ? 'ngn' : 'usd',
-    currencySymbol: isNigeria ? '₦' : '$',
-    price: plan === 'Professional' ? (isNigeria ? 4999 : 3.99) : (isNigeria ? 9999 : 8.99),
-  };
 }
 
 export async function POST(req: Request) {
@@ -37,12 +23,12 @@ export async function POST(req: Request) {
 
     const body = await req.json().catch(() => ({}));
     const sessionId = typeof body?.sessionId === 'string' ? body.sessionId : null;
-    const region = getRegion(body?.region);
     const plan = getPaidPlan(body?.plan);
+    const resolvedRegion = resolveRegion(body?.region, user.country);
 
     if (!process.env.STRIPE_SECRET_KEY) {
       if (!plan) return NextResponse.json({ error: 'Invalid plan' }, { status: 400 });
-      const p = pricing(plan, region, user.country);
+      const pricing = getPricingDetail(plan, resolvedRegion);
 
       await prisma.subscription.updateMany({
         where: { userId: user.id, status: 'Active' },
@@ -53,8 +39,8 @@ export async function POST(req: Request) {
         data: {
           userId: user.id,
           planType: plan,
-          price: p.price,
-          currency: p.currencySymbol,
+          price: pricing.priceValue,
+          currency: pricing.currencySymbol,
           expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
           paymentProvider: 'System',
           status: 'Active',
@@ -78,13 +64,13 @@ export async function POST(req: Request) {
     }
 
     const metaPlan = getPaidPlan(session.metadata?.plan);
-    const metaRegion = getRegion(session.metadata?.region);
+    const metaRegion = resolveRegion(session.metadata?.region, user.country);
     const finalPlan = metaPlan || plan;
-    const finalRegion = metaRegion || region;
+    const finalRegion = metaRegion || resolvedRegion;
 
     if (!finalPlan) return NextResponse.json({ error: 'Invalid plan' }, { status: 400 });
 
-    const p = pricing(finalPlan, finalRegion, user.country);
+    const pricing = getPricingDetail(finalPlan, finalRegion);
 
     await prisma.subscription.updateMany({
       where: { userId: user.id, status: 'Active' },
@@ -95,8 +81,8 @@ export async function POST(req: Request) {
       data: {
         userId: user.id,
         planType: finalPlan,
-        price: p.price,
-        currency: p.currencySymbol,
+        price: pricing.priceValue,
+        currency: pricing.currencySymbol,
         expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         paymentProvider: 'Stripe',
         status: 'Active',

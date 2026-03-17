@@ -38,7 +38,7 @@ export async function POST(request: Request) {
     });
     const plan = (sub?.planType === 'Professional' || sub?.planType === 'Premium') ? sub.planType : 'Free';
 
-    const limit = usageDb.limits.find(l => l.planName === plan && l.featureName === featureName);
+    const limit = await usageDb.findLimit(plan, featureName);
     
     if (!limit) {
       if (action === 'consume') {

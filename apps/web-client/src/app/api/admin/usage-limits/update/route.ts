@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { usageDb } from '@/lib/usage/store';
+import { usageDb, LimitValue } from '@/lib/usage/store';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/nextAuthOptions';
 
@@ -18,12 +18,19 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid payload' }, { status: 400 });
     }
 
-    // Update limits in the store
     for (const limit of limits) {
-      usageDb.updateLimit(limit.planName, limit.featureName, limit.hourlyLimit, limit.dailyLimit);
+      const toValue = (value: unknown): LimitValue => {
+        if (value === 'Unlimited') return 'Unlimited';
+        if (typeof value === 'string' && value.trim().toLowerCase() === 'unlimited') return 'Unlimited';
+        const num = Number(value);
+        return Number.isNaN(num) ? 0 : num;
+      };
+
+      await usageDb.updateLimit(limit.planName, limit.featureName, toValue(limit.hourlyLimit), toValue(limit.dailyLimit));
     }
 
-    return NextResponse.json({ success: true, limits: usageDb.getLimits() });
+    const refreshedLimits = await usageDb.getLimits();
+    return NextResponse.json({ success: true, limits: refreshedLimits });
   } catch (error) {
     console.error('Update limits error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

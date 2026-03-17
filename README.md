@@ -39,6 +39,13 @@ Authentication is implemented with NextAuth:
 - OAuth: GitHub and Google (only shown when env vars are configured)
 - Credentials: Email/Password (stored hashed in the database)
 
+## Development notes
+
+- Usage and analytics now rely on the Prisma-backed `UsageLog`/`PlatformSetting` tables, so the admin UI and `/api/usage/check` route enforce limits consistently and persist quota history.
+- Market-data health is surfaced in the dashboard header, and the AI assistant streams cached responses while remembering the user’s plan.
+- Pricing is catalog-driven (`<code>@/lib/pricing/catalog</code>`) and the checkout flow supports Stripe webhooks so subscriptions stay synchronized.
+- Run `npm --workspace apps/web-client run lint` then `npm --workspace apps/web-client run test` to vet the core workspace before deploying.
+
 Set these in `.env.local`:
 - `NEXTAUTH_URL` (example: `http://localhost:3000`)
 - `NEXTAUTH_SECRET`
