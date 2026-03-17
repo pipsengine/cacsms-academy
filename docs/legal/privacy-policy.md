@@ -38,10 +38,10 @@ Under the NDPR, you have the right to:
 - Withdraw consent (where processing is consent‑based);  
 - Lodge a complaint with the Nigeria Data Protection Commission (NDPC) if you believe your rights were breached.
 
-To exercise these rights, contact privacy@inteltrader.ai or use the dashboard. We respond within 30 days unless expedited by law.
+To exercise these rights, contact privacy@cacsms.com or use the dashboard. We respond within 30 days unless expedited by law.
 
 ### 7. Children and Minors
-Our services are not directed to children under 18. We do not knowingly collect personal data from minors. If you believe we have inadvertently collected such data, contact us at privacy@inteltrader.ai; we will delete it promptly.
+Our services are not directed to children under 18. We do not knowingly collect personal data from minors. If you believe we have inadvertently collected such data, contact us at privacy@cacsms.com; we will delete it promptly.
 
 ### 8. Changes to Policy
 We may update this Privacy Policy to reflect changes in law, practice, or Platform features. We will post the updated version on the Platform with the “last updated” date. Continued use constitutes acceptance.
