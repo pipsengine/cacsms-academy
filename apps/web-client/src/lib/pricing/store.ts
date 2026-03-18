@@ -27,8 +27,14 @@ function formatLabel(value: number) {
   return new Intl.NumberFormat('en-US').format(value);
 }
 
-function deriveAnnualMonthlyEquivalent(annualPriceValue: number) {
-  return (annualPriceValue / 12).toFixed(2).replace(/\.00$/, '');
+function deriveAnnualMonthlyEquivalent(currencyCode: PricingDetail['currencyCode'], annualPriceValue: number) {
+  const monthlyEquivalent = annualPriceValue / 12;
+
+  if (currencyCode === 'ngn') {
+    return formatLabel(Math.round(monthlyEquivalent));
+  }
+
+  return monthlyEquivalent.toFixed(2).replace(/\.00$/, '');
 }
 
 function withDerivedFields(detail: Partial<PricingDetail>, fallback: PricingDetail): PricingDetail {
@@ -49,7 +55,7 @@ function withDerivedFields(detail: Partial<PricingDetail>, fallback: PricingDeta
     annualUnitAmountCents,
     annualPriceValue,
     annualPriceLabel: formatLabel(annualPriceValue),
-    annualMonthlyEquivalent: deriveAnnualMonthlyEquivalent(annualPriceValue),
+    annualMonthlyEquivalent: deriveAnnualMonthlyEquivalent(currencyCode, annualPriceValue),
   };
 }
 
@@ -90,7 +96,7 @@ function convertUsdDetailToNgn(detail: PricingDetail, usdToNgn: number): Pricing
     annualUnitAmountCents: annualPriceValue * 100,
     annualPriceValue,
     annualPriceLabel: formatLabel(annualPriceValue),
-    annualMonthlyEquivalent: deriveAnnualMonthlyEquivalent(annualPriceValue),
+    annualMonthlyEquivalent: deriveAnnualMonthlyEquivalent('ngn', annualPriceValue),
   };
 }
 

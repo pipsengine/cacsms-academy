@@ -6,6 +6,7 @@ import { prisma } from '@/lib/prisma';
 import { getClientIp, rateLimit } from '@/lib/security/rateLimit';
 import { getPricingDetailFromMatrix, planOrder, PlanType, resolveRegion } from '@/lib/pricing/catalog';
 import { getBillingPrice, getPricingMatrix } from '@/lib/pricing/store';
+import { calculateUpgradeCharge, getSubscriptionExpiryDate } from '@/lib/pricing/upgrade';
 
 export async function POST(req: Request) {
   try {
@@ -38,6 +39,10 @@ export async function POST(req: Request) {
     }
 
     const resolvedRegion = resolveRegion(regionInput, user.country);
+    const currentSubscription = await prisma.subscription.findFirst({
+      where: { userId: user.id, status: 'Active' },
+      orderBy: { createdAt: 'desc' },
+    }) as any;
     const { pricingMatrix } = await getPricingMatrix();
     const pricing = getPricingDetailFromMatrix(pricingMatrix, plan, resolvedRegion);
     const currency = pricing.currencyCode;
@@ -57,7 +62,7 @@ export async function POST(req: Request) {
           billingCycle: 'monthly',
           price: billingPrice.priceValue,
           currency: displayCurrency,
-          expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+          expiryDate: getSubscriptionExpiryDate('monthly', currentSubscription),
           paymentProvider: 'System',
           status: 'Active',
         } as any,
@@ -65,11 +70,30 @@ export async function POST(req: Request) {
       return NextResponse.json({ url: '/' });
     }
 
-    const unitAmount = billingPrice.unitAmountCents;
+    let charge;
+    try {
+      charge = calculateUpgradeCharge({
+        pricingMatrix,
+        region: resolvedRegion,
+        targetPlan: plan,
+        billingCycle,
+        currentSubscription,
+      });
+    } catch (error) {
+      return NextResponse.json(
+        { error: error instanceof Error ? error.message : 'Unable to process subscription change' },
+        { status: 400 }
+      );
+    }
+
+    const unitAmount = charge.chargeAmountCents;
+    if (unitAmount <= 0) {
+      return NextResponse.json({ error: 'No additional payment is required for this change.' }, { status: 400 });
+    }
 
     if (!process.env.STRIPE_SECRET_KEY) {
       return NextResponse.json({
-        url: `/payment-success?plan=${encodeURIComponent(plan)}&region=${encodeURIComponent(resolvedRegion)}`
+        url: `/payment-success?plan=${encodeURIComponent(plan)}&region=${encodeURIComponent(resolvedRegion)}&billingCycle=${encodeURIComponent(billingCycle)}`
       });
     }
 
@@ -84,6 +108,9 @@ export async function POST(req: Request) {
         plan,
         region: resolvedRegion,
         billingCycle,
+        chargeAmount: String(charge.chargeAmount),
+        chargeAmountCents: String(charge.chargeAmountCents),
+        upgradeFromPlan: charge.currentPlan ?? '',
       },
       payment_method_types: ['card'],
       line_items: [
@@ -91,8 +118,10 @@ export async function POST(req: Request) {
           price_data: {
             currency,
             product_data: {
-              name: `Intel Trader ${plan} Plan`,
-              description: `Subscription to Intel Trader ${plan} tier.`,
+              name: charge.isUpgrade ? `Intel Trader ${charge.currentPlan} to ${plan} Upgrade` : `Intel Trader ${plan} Plan`,
+              description: charge.isUpgrade
+                ? `Upgrade charge from ${charge.currentPlan} to ${plan} (${billingCycle}).`
+                : `Subscription to Intel Trader ${plan} tier.`,
             },
             unit_amount: unitAmount,
           },
@@ -100,7 +129,7 @@ export async function POST(req: Request) {
         },
       ],
       mode: 'payment',
-      success_url: `${process.env.APP_URL || 'http://localhost:3000'}/payment-success?session_id={CHECKOUT_SESSION_ID}&plan=${encodeURIComponent(plan)}&region=${encodeURIComponent(resolvedRegion)}`,
+      success_url: `${process.env.APP_URL || 'http://localhost:3000'}/payment-success?session_id={CHECKOUT_SESSION_ID}&plan=${encodeURIComponent(plan)}&region=${encodeURIComponent(resolvedRegion)}&billingCycle=${encodeURIComponent(billingCycle)}`,
       cancel_url: `${process.env.APP_URL || 'http://localhost:3000'}/pricing`,
     });
 

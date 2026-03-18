@@ -16,6 +16,7 @@ import {
   BillingCycle,
   PricingMatrix,
 } from '@/lib/pricing/catalog';
+import { getPlanRank } from '@/lib/pricing/upgrade';
 
 type PricingPlansProps = {
   mode?: 'section' | 'page';
@@ -112,6 +113,8 @@ export default function PricingPlans({ mode = 'section' }: PricingPlansProps) {
     };
   }), [region, billing, pricingMatrix]);
 
+  const currentPlanRank = user?.plan ? getPlanRank(user.plan as PlanType) : -1;
+
   const onSelectPlan = async (plan: PlanType) => {
     if (!user) { setAuthOpen(true); return; }
     setLoading(plan);
@@ -183,9 +186,10 @@ export default function PricingPlans({ mode = 'section' }: PricingPlansProps) {
         {plans.map((plan) => {
           const colors = colorMap[plan.color] ?? colorMap.zinc;
           const isCurrentPlan = user?.plan === plan.planType;
+          const isLowerThanCurrent = currentPlanRank >= 0 && getPlanRank(plan.planType) < currentPlanRank;
           const isBusy = loading === plan.planType;
           const isFree = plan.priceValue === 0;
-          const buttonDisabled = isBusy || isCurrentPlan;
+          const buttonDisabled = isBusy || isCurrentPlan || isLowerThanCurrent;
 
           return (
             <div
@@ -245,8 +249,26 @@ export default function PricingPlans({ mode = 'section' }: PricingPlansProps) {
                     : colors.buttonOutline
                 }`}
               >
-                {isCurrentPlan ? 'Current Plan' : isBusy ? 'Processing...' : isFree ? 'Get Started Free' : billing === 'annual' ? 'Subscribe Annually' : 'Subscribe Monthly'}
+                {isCurrentPlan
+                  ? 'Current Plan'
+                  : isLowerThanCurrent
+                  ? 'Downgrade Unavailable'
+                  : isBusy
+                  ? 'Processing...'
+                  : isFree
+                  ? 'Get Started Free'
+                  : currentPlanRank >= 0
+                  ? 'Upgrade Plan'
+                  : billing === 'annual'
+                  ? 'Subscribe Annually'
+                  : 'Subscribe Monthly'}
               </button>
+
+              {user && !isCurrentPlan && !isLowerThanCurrent && currentPlanRank >= 0 && (
+                <p className="mb-4 text-center text-xs text-emerald-700">
+                  You will only be charged the difference from your current plan.
+                </p>
+              )}
 
               {/* Features */}
               <div className="space-y-2.5 flex-1">

@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { prisma } from '@/lib/prisma';
 import { getPricingDetailFromMatrix, PlanType, resolveRegion } from '@/lib/pricing/catalog';
-import { getBillingPrice, getPricingMatrix } from '@/lib/pricing/store';
+import { getPricingMatrix } from '@/lib/pricing/store';
+import { calculateUpgradeCharge, getSubscriptionExpiryDate } from '@/lib/pricing/upgrade';
 
 type PaidPlan = Exclude<PlanType, 'Scout'>;
 
@@ -53,11 +54,29 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: 'User not found' }, { status: 404 });
       }
 
+      const currentSubscription = await prisma.subscription.findFirst({
+        where: { userId: user.id, status: 'Active' },
+        orderBy: { createdAt: 'desc' },
+      }) as any;
       const resolvedRegion = resolveRegion(metadata.region, user.country);
       const { pricingMatrix } = await getPricingMatrix();
       const pricing = getPricingDetailFromMatrix(pricingMatrix, plan, resolvedRegion);
       const billingCycle = metadata.billingCycle === 'annual' ? 'annual' : 'monthly';
-      const billingPrice = getBillingPrice(pricing, billingCycle);
+      let charge;
+      try {
+        charge = calculateUpgradeCharge({
+          pricingMatrix,
+          region: resolvedRegion,
+          targetPlan: plan,
+          billingCycle,
+          currentSubscription,
+        });
+      } catch (error) {
+        return NextResponse.json(
+          { error: error instanceof Error ? error.message : 'Unable to process subscription change' },
+          { status: 400 }
+        );
+      }
 
       await prisma.subscription.updateMany({
         where: { userId: user.id, status: 'Active' },
@@ -69,9 +88,9 @@ export async function POST(req: Request) {
           userId: user.id,
           planType: plan,
           billingCycle,
-          price: billingPrice.priceValue,
+          price: charge.chargeAmount,
           currency: pricing.currencySymbol,
-          expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+          expiryDate: getSubscriptionExpiryDate(billingCycle, currentSubscription),
           paymentProvider: 'Stripe',
           status: 'Active',
         } as any,
