@@ -2,7 +2,10 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { usePathname } from 'next/navigation';
 import { AlertTriangle, CheckCircle2, Info, X } from 'lucide-react';
+import { useAuth } from '@/components/AuthProvider';
+import { isPublicRoute } from '@/lib/auth/redirects';
 
 export type NotificationType = 'success' | 'warning' | 'info' | 'error';
 
@@ -25,6 +28,8 @@ const NotificationContext = createContext<NotificationContextType | undefined>(u
 export function NotificationProvider({ children }: { children: React.ReactNode }) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [seenIds, setSeenIds] = useState<string[]>([]);
+  const { user, isLoading } = useAuth();
+  const pathname = usePathname() || '/';
 
   const removeNotification = useCallback((id: string) => {
     setNotifications((prev) => prev.filter((n) => n.id !== id));
@@ -42,10 +47,16 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
   }, [removeNotification]);
 
   useEffect(() => {
+    if (isLoading || !user || isPublicRoute(pathname)) {
+      return;
+    }
+
     let active = true;
 
     const load = async () => {
       const res = await fetch('/api/alerts/history?limit=5', { cache: 'no-store' });
+      if (!active || res.status === 401) return;
+
       const data = await res.json().catch(() => null);
       if (!active || !res.ok || !data?.alerts) return;
 
@@ -75,7 +86,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
       active = false;
       clearInterval(interval);
     };
-  }, [addNotification]);
+  }, [addNotification, isLoading, pathname, user]);
 
   return (
     <NotificationContext.Provider value={{ notifications, addNotification, removeNotification }}>

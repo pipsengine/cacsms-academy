@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import LandingPage from '@/app/landing/page';
+import LandingPage from '@/components/LandingPage';
 import AuthModal from '@/components/AuthModal';
 
 export default function LoginPage() {

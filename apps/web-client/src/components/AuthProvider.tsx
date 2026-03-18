@@ -27,13 +27,30 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const router = useRouter();
   const pathname = usePathname() || '/';
 
   useEffect(() => {
     let isMounted = true;
 
+    const hasLogoutIntent = () => {
+      if (typeof window === 'undefined') return false;
+      const raw = window.sessionStorage.getItem('intel-logging-out');
+      if (!raw) return false;
+      const timestamp = Number(raw);
+      if (!Number.isFinite(timestamp)) return true;
+      return Date.now() - timestamp < 15000;
+    };
+
     const checkAuth = async () => {
+      if (hasLogoutIntent()) {
+        setUser(null);
+        setIsLoggingOut(true);
+        setIsLoading(false);
+        return;
+      }
+
       try {
         const res = await fetch('/api/auth/me', {
           cache: 'no-store',
@@ -84,9 +101,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const isPublic = isPublicRoute(normalizedPath) || isLegal;
       const isAuth = isAuthRoute(normalizedPath);
 
-      // Redirect unauthenticated users to /landing
+      // Redirect unauthenticated users to /
       if (!user && !isPublic) {
-        router.push('/landing');
+        router.push('/');
       }
       // Redirect authenticated users to correct dashboard based on their plan
       else if (user && isAuth) {
@@ -103,8 +120,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = async () => {
+    if (typeof window !== 'undefined') {
+      window.sessionStorage.setItem('intel-logging-out', String(Date.now()));
+    }
+    setIsLoggingOut(true);
     setUser(null);
-    await signOut({ redirect: true, callbackUrl: '/login' });
+    router.replace('/');
+    void signOut({ redirect: false, callbackUrl: '/' }).finally(() => {
+      if (typeof window !== 'undefined') {
+        window.sessionStorage.removeItem('intel-logging-out');
+      }
+      setIsLoggingOut(false);
+    });
   };
 
   const updatePlan = (plan: 'Scout' | 'Analyst' | 'Trader' | 'ProTrader' | 'Institutional') => {
@@ -115,9 +142,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const shouldHideProtectedRoute = !isPublicRoute(pathname) && (isLoading || isLoggingOut || !user);
+
   return (
     <AuthContext.Provider value={{ user, isLoading, login, logout, updatePlan }}>
-      {children}
+      {shouldHideProtectedRoute ? null : children}
     </AuthContext.Provider>
   );
 }

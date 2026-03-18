@@ -39,7 +39,6 @@ export const DASHBOARD_ROUTES = [
 export const PUBLIC_ROUTES = [
   '/login',
   '/register',
-  '/landing',
   '/pricing',
   '/',
 ] as const;
@@ -69,5 +68,5 @@ export function isDashboardRoute(path: string): boolean {
  * Check if a route is an auth route (login/register)
  */
 export function isAuthRoute(path: string): boolean {
-  return ['/login', '/register', '/landing', '/'].includes(path);
+  return ['/login', '/register', '/'].includes(path);
 }
