@@ -6,7 +6,7 @@ This repository uses **Prisma** as the ORM on top of a PostgreSQL database. The 
 
 1. PostgreSQL instance (local, cloud, or cPanel-built) with connectivity from the deployment host.
 2. Environment variables:
-   - `DATABASE_URL` – full Postgres connection string (`DATABASE_URL=postgresql://cacsms:ASdm1n.c0m@localhost:5433/inteltrader_db?schema=public`).
+   - `DATABASE_URL` - full Postgres connection string (`DATABASE_URL=postgresql://cacsms:Adm1n.c0m@localhost:5432/inteltrader_db?schema=public`).
    - `NEXTAUTH_URL` and `NEXTAUTH_SECRET` (already documented in `.env.example`).
 3. Node.js 20+ and npm (or the package manager of choice) available inside the hosting environment.
 
@@ -47,14 +47,14 @@ Because migration files are version controlled, hosting platforms always see the
 
 ## Verifying your local PostgreSQL connection
 
-Before running `db:migrate` or `db:migrate:deploy`, ensure the local PostgreSQL server is up and listening on port `5433` using the shared credentials:
+Before running `db:migrate` or `db:migrate:deploy`, ensure the local PostgreSQL server is up and listening on the same port your environment file uses. The local Windows PostgreSQL service listens on `5432`. The optional Docker setup in `infrastructure/docker-compose.postgres.yml` maps the container to host port `5433`.
 
 1. Install the PostgreSQL CLI (`psql`) or start a GUI like pgAdmin/TablePlus, and then connect with:
 
    ```bash
-   psql postgresql://cacsms:@dm1n.c0m@localhost:5433/inteltrader_db -c '\dt'
+   psql postgresql://cacsms:Adm1n.c0m@localhost:5432/inteltrader_db -c '\dt'
    ```
 
-2. If the command lists zero tables, the server is reachable and ready for Prisma; proceed with the migration and seed steps below. If you still see a `P1001` error, either start PostgreSQL on port `5433` or update `DATABASE_URL` to match the exposed port.
+2. If the command lists zero tables, the server is reachable and ready for Prisma; proceed with the migration and seed steps below. If you still see a `P1001` error, either start PostgreSQL on the configured port or update `DATABASE_URL` to match the exposed port.
 
-3. If you prefer to keep Postgres on `5432`, change the connection string in `.env.local`/`.env.example` to `localhost:5432` and rerun `db:migrate:deploy`.
+3. If you use the Docker compose setup instead of the local Windows service, change the connection string in `.env.local`/`.env.example` to `localhost:5433` and rerun `db:migrate:deploy`.
