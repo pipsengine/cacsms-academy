@@ -6,7 +6,7 @@ export default function CurrencyStrengthPage() {
   return (
     <DashboardLayout>
       <div className="h-full min-h-[600px]">
-        <AccessControl requiredPlan="Professional" moduleName="Currency Strength Analytics">
+        <AccessControl requiredPlan="Scout" moduleName="Currency Strength Analytics">
           <CurrencyStrengthHeatmap />
         </AccessControl>
       </div>

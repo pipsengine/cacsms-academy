@@ -10,7 +10,7 @@ declare module 'next-auth' {
       image?: string | null;
       role: 'Super Admin' | 'Administrator' | 'User';
       country: string;
-      plan: 'Free' | 'Professional' | 'Premium';
+      plan: 'Scout' | 'Analyst' | 'Trader' | 'ProTrader' | 'Institutional';
     };
   }
 }

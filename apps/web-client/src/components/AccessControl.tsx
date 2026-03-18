@@ -6,7 +6,7 @@ import { Lock } from 'lucide-react';
 
 interface AccessControlProps {
   children: React.ReactNode;
-  requiredPlan: 'Free' | 'Professional' | 'Premium';
+  requiredPlan: 'Scout' | 'Analyst' | 'Trader' | 'ProTrader' | 'Institutional';
   moduleName: string;
 }
 
@@ -15,14 +15,16 @@ export default function AccessControl({ children, requiredPlan, moduleName }: Ac
 
   if (isLoading) return null;
 
-  const planLevels = {
-    'Free': 0,
-    'Professional': 1,
-    'Premium': 2
+  const planLevels: Record<string, number> = {
+    'Scout': 0,
+    'Analyst': 1,
+    'Trader': 2,
+    'ProTrader': 3,
+    'Institutional': 4,
   };
 
-  const userLevel = user ? planLevels[user.plan] : -1;
-  const requiredLevel = planLevels[requiredPlan];
+  const userLevel = user ? (planLevels[user.plan] ?? -1) : -1;
+  const requiredLevel = planLevels[requiredPlan] ?? 0;
 
   if (user?.role === 'Super Admin' || user?.role === 'Administrator' || userLevel >= requiredLevel) {
     return <>{children}</>;

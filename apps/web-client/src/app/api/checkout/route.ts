@@ -30,6 +30,7 @@ export async function POST(req: Request) {
 
     const body = await req.json();
     const plan = body?.plan as PlanType | undefined;
+    const billingCycle: 'monthly' | 'annual' = body?.billingCycle === 'annual' ? 'annual' : 'monthly';
     const regionInput = body?.region;
     if (!plan || !planOrder.includes(plan)) {
       return NextResponse.json({ error: 'Invalid plan' }, { status: 400 });
@@ -40,7 +41,7 @@ export async function POST(req: Request) {
     const currency = pricing.currencyCode;
     const displayCurrency = pricing.currencySymbol;
 
-    if (plan === 'Free') {
+    if (plan === 'Scout') {
       await prisma.subscription.updateMany({
         where: { userId: user.id, status: 'Active' },
         data: { status: 'Expired' },
@@ -49,7 +50,8 @@ export async function POST(req: Request) {
       await prisma.subscription.create({
         data: {
           userId: user.id,
-          planType: 'Free',
+          planType: 'Scout',
+          billingCycle: 'monthly',
           price: pricing.priceValue,
           currency: displayCurrency,
           expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),

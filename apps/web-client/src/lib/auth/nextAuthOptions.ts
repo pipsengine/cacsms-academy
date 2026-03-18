@@ -12,14 +12,19 @@ if (!process.env.NEXTAUTH_URL) {
   (process.env as any).NEXTAUTH_URL = process.env.APP_URL || 'http://localhost:3000';
 }
 
-async function getPlanForUser(userId: string): Promise<'Free' | 'Professional' | 'Premium'> {
+async function getPlanForUser(userId: string): Promise<'Scout' | 'Analyst' | 'Trader' | 'ProTrader' | 'Institutional'> {
   const sub = await prisma.subscription.findFirst({
     where: { userId, status: 'Active' },
     orderBy: { startDate: 'desc' },
   });
-  if (!sub) return 'Free';
-  if (sub.planType === 'Professional' || sub.planType === 'Premium') return sub.planType;
-  return 'Free';
+  if (!sub) return 'Scout';
+  const validPlans = ['Scout', 'Analyst', 'Trader', 'ProTrader', 'Institutional'] as const;
+  if (validPlans.includes(sub.planType as any)) return sub.planType as typeof validPlans[number];
+  // Legacy plan migration
+  if (sub.planType === 'Free') return 'Scout';
+  if (sub.planType === 'Professional') return 'Trader';
+  if (sub.planType === 'Premium') return 'ProTrader';
+  return 'Scout';
 }
 
 export const authOptions: NextAuthOptions = {
@@ -81,7 +86,7 @@ export const authOptions: NextAuthOptions = {
         } else {
           token.role = 'User';
           token.country = 'International';
-          token.plan = 'Free';
+          token.plan = 'Scout';
         }
       }
       return token;
@@ -91,7 +96,7 @@ export const authOptions: NextAuthOptions = {
         (session.user as any).id = token.id ?? token.sub;
         (session.user as any).role = token.role ?? 'User';
         (session.user as any).country = token.country ?? 'International';
-        (session.user as any).plan = token.plan ?? 'Free';
+        (session.user as any).plan = token.plan ?? 'Scout';
       }
       return session;
     },

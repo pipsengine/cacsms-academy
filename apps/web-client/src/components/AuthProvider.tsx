@@ -11,7 +11,7 @@ export type User = {
   email: string;
   role: 'Super Admin' | 'Administrator' | 'User';
   country: string;
-  plan: 'Free' | 'Professional' | 'Premium';
+  plan: 'Scout' | 'Analyst' | 'Trader' | 'ProTrader' | 'Institutional';
 };
 
 interface AuthContextType {
@@ -19,7 +19,7 @@ interface AuthContextType {
   isLoading: boolean;
   login: (user: User) => void;
   logout: () => void;
-  updatePlan: (plan: 'Free' | 'Professional' | 'Premium') => void;
+  updatePlan: (plan: 'Scout' | 'Analyst' | 'Trader' | 'ProTrader' | 'Institutional') => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -67,8 +67,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = (userData: User) => {
     setUser(userData);
-    // Redirect to the appropriate dashboard based on subscription plan
-    const correctDashboard = getDashboardForPlan(userData.plan);
+    const correctDashboard = getDashboardForPlan(userData.plan as any);
     router.push(correctDashboard);
   };
 
@@ -77,11 +76,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await signOut({ redirect: true, callbackUrl: '/login' });
   };
 
-  const updatePlan = (plan: 'Free' | 'Professional' | 'Premium') => {
+  const updatePlan = (plan: 'Scout' | 'Analyst' | 'Trader' | 'ProTrader' | 'Institutional') => {
     if (user) {
       setUser({ ...user, plan });
-      // Redirect to correct dashboard if plan changes
-      const correctDashboard = getDashboardForPlan(plan);
+      const correctDashboard = getDashboardForPlan(plan as any);
       router.push(correctDashboard);
     }
   };

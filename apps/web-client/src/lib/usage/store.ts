@@ -10,21 +10,41 @@ export interface UsageLimit {
 }
 
 const DEFAULT_LIMITS: UsageLimit[] = [
-  { planName: 'Free', featureName: 'Channel Scanner', hourlyLimit: 5, dailyLimit: 20 },
-  { planName: 'Free', featureName: 'Breakout Engine', hourlyLimit: 5, dailyLimit: 20 },
-  { planName: 'Free', featureName: 'Alert System', hourlyLimit: 'Unlimited', dailyLimit: 10 },
-  { planName: 'Free', featureName: 'AI Probability Engine', hourlyLimit: 0, dailyLimit: 0 },
-  { planName: 'Free', featureName: 'Liquidity Intelligence', hourlyLimit: 0, dailyLimit: 0 },
-  { planName: 'Professional', featureName: 'Channel Scanner', hourlyLimit: 50, dailyLimit: 200 },
-  { planName: 'Professional', featureName: 'Breakout Engine', hourlyLimit: 50, dailyLimit: 200 },
-  { planName: 'Professional', featureName: 'Alert System', hourlyLimit: 'Unlimited', dailyLimit: 100 },
-  { planName: 'Professional', featureName: 'AI Probability Engine', hourlyLimit: 'Unlimited', dailyLimit: 'Unlimited' },
-  { planName: 'Professional', featureName: 'Liquidity Intelligence', hourlyLimit: 0, dailyLimit: 0 },
-  { planName: 'Premium', featureName: 'Channel Scanner', hourlyLimit: 'Unlimited', dailyLimit: 'Unlimited' },
-  { planName: 'Premium', featureName: 'Breakout Engine', hourlyLimit: 'Unlimited', dailyLimit: 'Unlimited' },
-  { planName: 'Premium', featureName: 'Alert System', hourlyLimit: 'Unlimited', dailyLimit: 'Unlimited' },
-  { planName: 'Premium', featureName: 'AI Probability Engine', hourlyLimit: 'Unlimited', dailyLimit: 'Unlimited' },
-  { planName: 'Premium', featureName: 'Liquidity Intelligence', hourlyLimit: 'Unlimited', dailyLimit: 'Unlimited' },
+  // Scout (Free)
+  { planName: 'Scout', featureName: 'Channel Scanner', hourlyLimit: 2, dailyLimit: 5 },
+  { planName: 'Scout', featureName: 'Breakout Engine', hourlyLimit: 0, dailyLimit: 0 },
+  { planName: 'Scout', featureName: 'Alert System', hourlyLimit: 'Unlimited', dailyLimit: 10 },
+  { planName: 'Scout', featureName: 'AI Probability Engine', hourlyLimit: 0, dailyLimit: 0 },
+  { planName: 'Scout', featureName: 'Liquidity Intelligence', hourlyLimit: 0, dailyLimit: 0 },
+  { planName: 'Scout', featureName: 'Opportunity Radar', hourlyLimit: 0, dailyLimit: 0 },
+  // Analyst
+  { planName: 'Analyst', featureName: 'Channel Scanner', hourlyLimit: 10, dailyLimit: 30 },
+  { planName: 'Analyst', featureName: 'Breakout Engine', hourlyLimit: 5, dailyLimit: 30 },
+  { planName: 'Analyst', featureName: 'Alert System', hourlyLimit: 'Unlimited', dailyLimit: 10 },
+  { planName: 'Analyst', featureName: 'AI Probability Engine', hourlyLimit: 0, dailyLimit: 0 },
+  { planName: 'Analyst', featureName: 'Liquidity Intelligence', hourlyLimit: 0, dailyLimit: 0 },
+  { planName: 'Analyst', featureName: 'Opportunity Radar', hourlyLimit: 0, dailyLimit: 0 },
+  // Trader
+  { planName: 'Trader', featureName: 'Channel Scanner', hourlyLimit: 'Unlimited', dailyLimit: 'Unlimited' },
+  { planName: 'Trader', featureName: 'Breakout Engine', hourlyLimit: 'Unlimited', dailyLimit: 'Unlimited' },
+  { planName: 'Trader', featureName: 'Alert System', hourlyLimit: 'Unlimited', dailyLimit: 100 },
+  { planName: 'Trader', featureName: 'AI Probability Engine', hourlyLimit: 20, dailyLimit: 100 },
+  { planName: 'Trader', featureName: 'Liquidity Intelligence', hourlyLimit: 10, dailyLimit: 50 },
+  { planName: 'Trader', featureName: 'Opportunity Radar', hourlyLimit: 'Unlimited', dailyLimit: 5 },
+  // ProTrader
+  { planName: 'ProTrader', featureName: 'Channel Scanner', hourlyLimit: 'Unlimited', dailyLimit: 'Unlimited' },
+  { planName: 'ProTrader', featureName: 'Breakout Engine', hourlyLimit: 'Unlimited', dailyLimit: 'Unlimited' },
+  { planName: 'ProTrader', featureName: 'Alert System', hourlyLimit: 'Unlimited', dailyLimit: 'Unlimited' },
+  { planName: 'ProTrader', featureName: 'AI Probability Engine', hourlyLimit: 'Unlimited', dailyLimit: 'Unlimited' },
+  { planName: 'ProTrader', featureName: 'Liquidity Intelligence', hourlyLimit: 'Unlimited', dailyLimit: 'Unlimited' },
+  { planName: 'ProTrader', featureName: 'Opportunity Radar', hourlyLimit: 'Unlimited', dailyLimit: 'Unlimited' },
+  // Institutional
+  { planName: 'Institutional', featureName: 'Channel Scanner', hourlyLimit: 'Unlimited', dailyLimit: 'Unlimited' },
+  { planName: 'Institutional', featureName: 'Breakout Engine', hourlyLimit: 'Unlimited', dailyLimit: 'Unlimited' },
+  { planName: 'Institutional', featureName: 'Alert System', hourlyLimit: 'Unlimited', dailyLimit: 'Unlimited' },
+  { planName: 'Institutional', featureName: 'AI Probability Engine', hourlyLimit: 'Unlimited', dailyLimit: 'Unlimited' },
+  { planName: 'Institutional', featureName: 'Liquidity Intelligence', hourlyLimit: 'Unlimited', dailyLimit: 'Unlimited' },
+  { planName: 'Institutional', featureName: 'Opportunity Radar', hourlyLimit: 'Unlimited', dailyLimit: 'Unlimited' },
 ];
 
 type UsageLogEntry = {

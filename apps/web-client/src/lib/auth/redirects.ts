@@ -1,19 +1,17 @@
 /**
  * Determines the correct dashboard route based on user's subscription plan
  */
-export function getDashboardForPlan(plan: 'Free' | 'Professional' | 'Premium' | undefined): string {
-  if (!plan) return '/currency-strength'; // Default dashboard
-
+export function getDashboardForPlan(plan: 'Scout' | 'Analyst' | 'Trader' | 'ProTrader' | 'Institutional' | undefined): string {
   switch (plan) {
-    case 'Free':
-      // Free plan can only access currency strength
+    case 'Scout':
       return '/currency-strength';
-    case 'Professional':
-      // Professional plan has access to channel scanner + currency strength
-      // Start with channel scanner for professional experience
+    case 'Analyst':
       return '/channel-scanner';
-    case 'Premium':
-      // Premium plan has full access - start with opportunities/radar
+    case 'Trader':
+      return '/channel-scanner';
+    case 'ProTrader':
+      return '/opportunities';
+    case 'Institutional':
       return '/opportunities';
     default:
       return '/currency-strength';
