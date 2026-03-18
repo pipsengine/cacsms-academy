@@ -58,7 +58,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const getPageTitle = () => {
     switch (effectivePathname) {
-      case '/': return 'Command Center';
+      case '/command-center': return 'Command Center';
       case '/currency-strength': return 'Currency Strength';
       case '/channel-scanner': return 'Channel Scanner';
       case '/breakout-engine': return 'Breakout Engine';
@@ -112,7 +112,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="flex-1 overflow-y-auto py-6 px-4 space-y-1">
           <div className="text-xs font-mono text-zinc-500 mb-4 px-2 uppercase tracking-widest">Core Engines</div>
           
-          <NavItem href="/" icon={<LayoutDashboard />} label="Command Center" active={effectivePathname === '/'} />
+          <NavItem href="/command-center" icon={<LayoutDashboard />} label="Command Center" active={effectivePathname === '/command-center'} />
           <NavItem href="/currency-strength" icon={<Globe />} label="Currency Strength" active={effectivePathname === '/currency-strength'} />
           <NavItem href="/channel-scanner" icon={<Activity />} label="Channel Scanner" active={effectivePathname === '/channel-scanner'} />
           <NavItem href="/breakout-engine" icon={<Zap />} label="Breakout Engine" active={effectivePathname === '/breakout-engine'} />

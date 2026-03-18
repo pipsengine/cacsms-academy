@@ -35,7 +35,19 @@ export async function GET() {
       return acc;
     }, {});
 
-    const upgradesToday = 0;
+    const upgradesToday = await prisma.subscription.count({
+      where: {
+        createdAt: {
+          gte: today,
+        },
+        status: 'Active',
+        NOT: {
+          planType: {
+            in: ['Free', 'Scout'],
+          },
+        },
+      },
+    });
 
     return NextResponse.json({
       totalUsage,

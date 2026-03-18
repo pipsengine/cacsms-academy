@@ -4,7 +4,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/nextAuthOptions';
 import { prisma } from '@/lib/prisma';
 import { getClientIp, rateLimit } from '@/lib/security/rateLimit';
-import { getPricingDetail, planOrder, PlanType, resolveRegion } from '@/lib/pricing/catalog';
+import { getPricingDetailFromMatrix, planOrder, PlanType, resolveRegion } from '@/lib/pricing/catalog';
+import { getBillingPrice, getPricingMatrix } from '@/lib/pricing/store';
 
 export async function POST(req: Request) {
   try {
@@ -37,9 +38,11 @@ export async function POST(req: Request) {
     }
 
     const resolvedRegion = resolveRegion(regionInput, user.country);
-    const pricing = getPricingDetail(plan, resolvedRegion);
+    const { pricingMatrix } = await getPricingMatrix();
+    const pricing = getPricingDetailFromMatrix(pricingMatrix, plan, resolvedRegion);
     const currency = pricing.currencyCode;
     const displayCurrency = pricing.currencySymbol;
+    const billingPrice = getBillingPrice(pricing, billingCycle);
 
     if (plan === 'Scout') {
       await prisma.subscription.updateMany({
@@ -52,17 +55,17 @@ export async function POST(req: Request) {
           userId: user.id,
           planType: 'Scout',
           billingCycle: 'monthly',
-          price: pricing.priceValue,
+          price: billingPrice.priceValue,
           currency: displayCurrency,
           expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
           paymentProvider: 'System',
           status: 'Active',
-        },
+        } as any,
       });
       return NextResponse.json({ url: '/' });
     }
 
-    const unitAmount = pricing.unitAmountCents;
+    const unitAmount = billingPrice.unitAmountCents;
 
     if (!process.env.STRIPE_SECRET_KEY) {
       return NextResponse.json({
@@ -80,6 +83,7 @@ export async function POST(req: Request) {
         userId: user.id,
         plan,
         region: resolvedRegion,
+        billingCycle,
       },
       payment_method_types: ['card'],
       line_items: [

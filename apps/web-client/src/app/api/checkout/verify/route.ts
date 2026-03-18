@@ -3,7 +3,8 @@ import Stripe from 'stripe';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/nextAuthOptions';
 import { prisma } from '@/lib/prisma';
-import { getPricingDetail, PlanType, resolveRegion } from '@/lib/pricing/catalog';
+import { getPricingDetailFromMatrix, PlanType, resolveRegion } from '@/lib/pricing/catalog';
+import { getBillingPrice, getPricingMatrix } from '@/lib/pricing/store';
 
 type PaidPlan = Exclude<PlanType, 'Scout'>;
 
@@ -34,7 +35,10 @@ export async function POST(req: Request) {
 
     if (!process.env.STRIPE_SECRET_KEY) {
       if (!plan) return NextResponse.json({ error: 'Invalid plan' }, { status: 400 });
-      const pricing = getPricingDetail(plan, resolvedRegion);
+      const { pricingMatrix } = await getPricingMatrix();
+      const pricing = getPricingDetailFromMatrix(pricingMatrix, plan, resolvedRegion);
+      const billingCycle: 'monthly' | 'annual' = body?.billingCycle === 'annual' ? 'annual' : 'monthly';
+      const billingPrice = getBillingPrice(pricing, billingCycle);
 
       await prisma.subscription.updateMany({
         where: { userId: user.id, status: 'Active' },
@@ -45,12 +49,13 @@ export async function POST(req: Request) {
         data: {
           userId: user.id,
           planType: plan,
-          price: pricing.priceValue,
+          billingCycle,
+          price: billingPrice.priceValue,
           currency: pricing.currencySymbol,
           expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
           paymentProvider: 'System',
           status: 'Active',
-        },
+        } as any,
       });
 
       return NextResponse.json({ success: true, plan });
@@ -76,7 +81,10 @@ export async function POST(req: Request) {
 
     if (!finalPlan) return NextResponse.json({ error: 'Invalid plan' }, { status: 400 });
 
-    const pricing = getPricingDetail(finalPlan, finalRegion);
+    const { pricingMatrix } = await getPricingMatrix();
+    const pricing = getPricingDetailFromMatrix(pricingMatrix, finalPlan, finalRegion);
+    const billingCycle = session.metadata?.billingCycle === 'annual' ? 'annual' : 'monthly';
+    const billingPrice = getBillingPrice(pricing, billingCycle);
 
     await prisma.subscription.updateMany({
       where: { userId: user.id, status: 'Active' },
@@ -87,12 +95,13 @@ export async function POST(req: Request) {
       data: {
         userId: user.id,
         planType: finalPlan,
-        price: pricing.priceValue,
+        billingCycle,
+        price: billingPrice.priceValue,
         currency: pricing.currencySymbol,
         expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         paymentProvider: 'Stripe',
         status: 'Active',
-      },
+      } as any,
     });
 
     return NextResponse.json({ success: true, plan: finalPlan });

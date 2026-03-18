@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { prisma } from '@/lib/prisma';
-import { getPricingDetail, PlanType, resolveRegion } from '@/lib/pricing/catalog';
+import { getPricingDetailFromMatrix, PlanType, resolveRegion } from '@/lib/pricing/catalog';
+import { getBillingPrice, getPricingMatrix } from '@/lib/pricing/store';
 
 type PaidPlan = Exclude<PlanType, 'Scout'>;
 
@@ -53,7 +54,10 @@ export async function POST(req: Request) {
       }
 
       const resolvedRegion = resolveRegion(metadata.region, user.country);
-      const pricing = getPricingDetail(plan, resolvedRegion);
+      const { pricingMatrix } = await getPricingMatrix();
+      const pricing = getPricingDetailFromMatrix(pricingMatrix, plan, resolvedRegion);
+      const billingCycle = metadata.billingCycle === 'annual' ? 'annual' : 'monthly';
+      const billingPrice = getBillingPrice(pricing, billingCycle);
 
       await prisma.subscription.updateMany({
         where: { userId: user.id, status: 'Active' },
@@ -64,12 +68,13 @@ export async function POST(req: Request) {
         data: {
           userId: user.id,
           planType: plan,
-          price: pricing.priceValue,
+          billingCycle,
+          price: billingPrice.priceValue,
           currency: pricing.currencySymbol,
           expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
           paymentProvider: 'Stripe',
           status: 'Active',
-        },
+        } as any,
       });
     }
 

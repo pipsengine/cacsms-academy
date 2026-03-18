@@ -12,66 +12,41 @@ interface ChartModalProps {
   type: string;
 }
 
-function generateInitialData(pair: string, type: string) {
-  let currentPrice = pair.includes('JPY') ? 150.0 : 1.1;
-  const volatility = pair.includes('JPY') ? 0.5 : 0.002;
-  const initialData: Array<{ time: string; price: number }> = [];
-
-  for (let i = 60; i >= 0; i--) {
-    if (type.includes('Ascending') || type.includes('LONG')) {
-      currentPrice += Math.random() * volatility - volatility * 0.3;
-    } else if (type.includes('Descending') || type.includes('SHORT')) {
-      currentPrice -= Math.random() * volatility - volatility * 0.3;
-    } else {
-      currentPrice += Math.random() * volatility - volatility * 0.5;
-    }
-
-    initialData.push({
-      time: new Date(Date.now() - i * 1000).toLocaleTimeString([], { minute: '2-digit', second: '2-digit' }),
-      price: Number(currentPrice.toFixed(4)),
-    });
-  }
-
-  return initialData;
-}
+type ChartPoint = { time: string; price: number };
 
 export default function ChartModal({ isOpen, onClose, pair, timeframe, type }: ChartModalProps) {
-  const [data, setData] = useState(() => generateInitialData(pair, type));
+  const [data, setData] = useState<ChartPoint[]>([]);
+  const [provider, setProvider] = useState('market');
 
   useEffect(() => {
     if (!isOpen) return;
 
-    const volatility = pair.includes('JPY') ? 0.5 : 0.002;
-
-    const interval = setInterval(() => {
-      setData(prevData => {
-        if (prevData.length === 0) {
-          return generateInitialData(pair, type);
-        }
-
-        const lastPrice = prevData[prevData.length - 1].price;
-        let nextPrice = lastPrice;
-        
-        if (type.includes('Ascending') || type.includes('LONG')) {
-          nextPrice += (Math.random() * volatility) - (volatility * 0.3);
-        } else if (type.includes('Descending') || type.includes('SHORT')) {
-          nextPrice -= (Math.random() * volatility) - (volatility * 0.3);
-        } else {
-          nextPrice += (Math.random() * volatility) - (volatility * 0.5);
-        }
-
-        const newData = [...prevData.slice(1), {
-          time: new Date().toLocaleTimeString([], { minute: '2-digit', second: '2-digit' }),
-          price: Number(nextPrice.toFixed(4)),
-        }];
-        return newData;
+    const loadChart = async () => {
+      const res = await fetch(`/api/market/chart?pair=${encodeURIComponent(pair)}&timeframe=${encodeURIComponent(timeframe)}`, {
+        cache: 'no-store',
       });
-    }, 1000);
+      const payload = await res.json().catch(() => null);
+      if (!res.ok || !payload?.candles?.length) return;
+
+      setProvider(payload.provider || 'market');
+      setData(
+        payload.candles.map((candle: { datetime: string; close: number }) => ({
+          time: new Date(candle.datetime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          price: Number(candle.close),
+        }))
+      );
+    };
+
+    void loadChart();
+    const interval = setInterval(() => {
+      void loadChart();
+    }, 60_000);
 
     return () => clearInterval(interval);
-  }, [isOpen, pair, type]);
+  }, [isOpen, pair, timeframe]);
 
   if (!isOpen) return null;
+  if (data.length === 0) return null;
 
   const minPrice = Math.min(...data.map(d => d.price));
   const maxPrice = Math.max(...data.map(d => d.price));
@@ -151,7 +126,7 @@ export default function ChartModal({ isOpen, onClose, pair, timeframe, type }: C
           </div>
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-zinc-400 font-mono text-xs">LIVE FEED</span>
+            <span className="text-zinc-400 font-mono text-xs">{provider.toUpperCase()} FEED</span>
           </div>
         </div>
       </div>

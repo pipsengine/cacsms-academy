@@ -2,10 +2,12 @@ import { createServer } from 'http';
 import { parse } from 'url';
 import next from 'next';
 import { Server } from 'socket.io';
+import type { Socket } from 'socket.io';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
 import { fileURLToPath } from 'node:url';
+import { getMarketDataService } from './src/lib/market/service';
 
 if (!process.env.NODE_ENV) {
   (process.env as any).NODE_ENV = process.env.npm_lifecycle_event === 'start' ? 'production' : 'development';
@@ -56,32 +58,34 @@ app.prepare().then(() => {
     }
   });
 
+  const marketService = getMarketDataService();
+
+  async function emitSnapshot(target: Server | Socket) {
+    const snapshot = await marketService.getSnapshot();
+    const payload = createMarketPayload(snapshot.generatedAt);
+    target.emit('currency_update', { ...payload, data: snapshot.currencies });
+    target.emit('channel_update', { ...payload, data: snapshot.channels });
+    target.emit('breakout_update', { ...payload, data: snapshot.breakouts });
+  }
+
+  void marketService.refresh().then(() => emitSnapshot(io)).catch((error) => {
+    console.error('Initial market snapshot failed', error);
+  });
+
+  setInterval(() => {
+    void marketService.refresh().then(() => emitSnapshot(io)).catch((error) => {
+      console.error('Market refresh failed', error);
+    });
+  }, Number(process.env.FOREX_REFRESH_SECONDS ?? 60) * 1000);
+
   io.on('connection', (socket) => {
     console.log('Client connected:', socket.id);
-
-    // Start emitting live data
-    const currencyInterval = setInterval(() => {
-      socket.emit('currency_update', generateCurrencyData());
-    }, 3000);
-
-    const channelInterval = setInterval(() => {
-      socket.emit('channel_update', generateChannelData());
-    }, 4000);
-
-    const breakoutInterval = setInterval(() => {
-      socket.emit('breakout_update', generateBreakoutData());
-    }, 5000);
-
-    // Send initial data immediately
-    socket.emit('currency_update', createMarketPayload(generateCurrencyData()));
-    socket.emit('channel_update', createMarketPayload(generateChannelData()));
-    socket.emit('breakout_update', createMarketPayload(generateBreakoutData()));
+    void emitSnapshot(socket).catch((error) => {
+      console.error('Socket snapshot emit failed', error);
+    });
 
     socket.on('disconnect', () => {
       console.log('Client disconnected:', socket.id);
-      clearInterval(currencyInterval);
-      clearInterval(channelInterval);
-      clearInterval(breakoutInterval);
     });
   });
 
@@ -90,68 +94,8 @@ app.prepare().then(() => {
   });
 });
 
-// Helper functions for mock data
-let lastCurrencies = [
-  { name: 'EUR', score: 94 },
-  { name: 'GBP', score: 82 },
-  { name: 'USD', score: 59 },
-  { name: 'AUD', score: 44 },
-  { name: 'CAD', score: 32 },
-  { name: 'CHF', score: 25 },
-  { name: 'NZD', score: 18 },
-  { name: 'JPY', score: 9 },
-];
-
-function generateCurrencyData() {
-  lastCurrencies = lastCurrencies.map(c => {
-    const change = Math.floor(Math.random() * 5) - 2;
-    return { ...c, score: Math.max(0, Math.min(100, c.score + change)) };
-  }).sort((a, b) => b.score - a.score);
-  return lastCurrencies;
-}
-
-function createMarketPayload<T>(data: T) {
+function createMarketPayload(timestamp = new Date().toISOString()) {
   return {
-    data,
-    timestamp: new Date().toISOString(),
+    timestamp,
   };
-}
-
-let lastChannels = [
-  { pair: 'GBPJPY', tf: 'H1', type: 'Ascending', touches: 'R4 | S3', score: 88, bias: 'LONG', prob: 74 },
-  { pair: 'EURAUD', tf: 'M30', type: 'Descending', touches: 'R3 | S3', score: 81, bias: 'SHORT', prob: 82 },
-  { pair: 'USDCHF', tf: 'H4', type: 'Horizontal', touches: 'R5 | S4', score: 92, bias: 'NEUTRAL', prob: 45 },
-  { pair: 'AUDNZD', tf: 'D1', type: 'Ascending', touches: 'R2 | S2', score: 65, bias: 'LONG', prob: 58 },
-  { pair: 'EURUSD', tf: 'H1', type: 'Sym Triangle', touches: 'R3 | S4', score: 78, bias: 'NEUTRAL', prob: 60 },
-];
-
-function generateChannelData() {
-  lastChannels = lastChannels.map(c => {
-    const probChange = Math.floor(Math.random() * 3) - 1;
-    const scoreChange = Math.floor(Math.random() * 3) - 1;
-    return { 
-      ...c, 
-      prob: Math.max(0, Math.min(100, c.prob + probChange)),
-      score: Math.max(0, Math.min(100, c.score + scoreChange))
-    };
-  }).sort((a, b) => b.score - a.score);
-  return lastChannels;
-}
-
-let lastBreakouts = [
-  { pair: 'EURAUD', tf: 'M30', dir: 'SHORT', conf: 81, time: '2m ago', status: 'ACTIVE' },
-  { pair: 'GBPUSD', tf: 'H1', dir: 'LONG', conf: 94, time: '15m ago', status: 'TRIGGERED' },
-  { pair: 'USDCAD', tf: 'H4', dir: 'LONG', conf: 68, time: '1h ago', status: 'MONITORING' },
-  { pair: 'AUDJPY', tf: 'M30', dir: 'SHORT', conf: 88, time: 'Just now', status: 'ACTIVE' },
-];
-
-function generateBreakoutData() {
-  lastBreakouts = lastBreakouts.map(b => {
-    const confChange = Math.floor(Math.random() * 3) - 1;
-    return { 
-      ...b, 
-      conf: Math.max(0, Math.min(100, b.conf + confChange))
-    };
-  });
-  return lastBreakouts;
 }

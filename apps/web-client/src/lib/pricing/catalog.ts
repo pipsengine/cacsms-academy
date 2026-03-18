@@ -28,6 +28,8 @@ export interface PricingDetail {
   annualMonthlyEquivalent: string;
 }
 
+export type PricingMatrix = Record<Region, Record<PlanType, PricingDetail>>;
+
 export const planOrder: PlanType[] = ['Scout', 'Analyst', 'Trader', 'ProTrader', 'Institutional'];
 
 export const planDefinitions: Record<PlanType, PlanDefinition> = {
@@ -136,9 +138,7 @@ export const planDefinitions: Record<PlanType, PlanDefinition> = {
   },
 };
 
-type PricingMatrix = Record<Region, Record<PlanType, PricingDetail>>;
-
-const pricingMatrix: PricingMatrix = {
+export const defaultPricingMatrix: PricingMatrix = {
   international: {
     Scout: {
       currencyCode: 'usd', currencySymbol: '$',
@@ -202,5 +202,9 @@ export function resolveRegion(input: unknown, userCountry: string): Region {
 }
 
 export function getPricingDetail(plan: PlanType, region: Region): PricingDetail {
-  return pricingMatrix[region][plan];
+  return defaultPricingMatrix[region][plan];
+}
+
+export function getPricingDetailFromMatrix(matrix: PricingMatrix, plan: PlanType, region: Region): PricingDetail {
+  return matrix[region][plan];
 }

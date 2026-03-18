@@ -31,19 +31,50 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname() || '/';
 
   useEffect(() => {
+    let isMounted = true;
+
     const checkAuth = async () => {
       try {
-        const res = await fetch('/api/auth/me');
+        const res = await fetch('/api/auth/me', {
+          cache: 'no-store',
+          headers: {
+            'cache-control': 'no-store',
+          },
+        });
         const data = await res.json().catch(() => null);
+        if (!isMounted) return;
         setUser((data && 'user' in data ? (data as any).user : null) ?? null);
       } catch (error) {
-        setUser(null);
+        if (isMounted) {
+          setUser(null);
+        }
       } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
 
     checkAuth();
+
+    const refreshOnFocus = () => {
+      void checkAuth();
+    };
+
+    const refreshOnVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        void checkAuth();
+      }
+    };
+
+    window.addEventListener('focus', refreshOnFocus);
+    document.addEventListener('visibilitychange', refreshOnVisibility);
+
+    return () => {
+      isMounted = false;
+      window.removeEventListener('focus', refreshOnFocus);
+      document.removeEventListener('visibilitychange', refreshOnVisibility);
+    };
   }, []);
 
   useEffect(() => {

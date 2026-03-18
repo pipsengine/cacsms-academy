@@ -7,12 +7,14 @@ import { useAuth } from '@/components/AuthProvider';
 import AuthModal from '@/components/AuthModal';
 import {
   getPricingDetail,
+  getPricingDetailFromMatrix,
   planDefinitions,
   planOrder,
   PlanType,
   Region,
   resolveRegion,
   BillingCycle,
+  PricingMatrix,
 } from '@/lib/pricing/catalog';
 
 type PricingPlansProps = {
@@ -69,8 +71,18 @@ export default function PricingPlans({ mode = 'section' }: PricingPlansProps) {
   const [loading, setLoading] = useState<PlanType | null>(null);
   const [authOpen, setAuthOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+  const [pricingMatrix, setPricingMatrix] = useState<PricingMatrix | null>(null);
 
   useEffect(() => { setHydrated(true); }, []);
+
+  useEffect(() => {
+    const loadPricing = async () => {
+      const res = await fetch('/api/pricing', { cache: 'no-store' });
+      const data = await res.json().catch(() => null);
+      setPricingMatrix(data?.pricingMatrix ?? null);
+    };
+    void loadPricing();
+  }, []);
 
   useEffect(() => {
     if (!hydrated) return;
@@ -86,7 +98,9 @@ export default function PricingPlans({ mode = 'section' }: PricingPlansProps) {
 
   const plans = useMemo(() => planOrder.map((planType) => {
     const definition = planDefinitions[planType];
-    const pricing = getPricingDetail(planType, region);
+    const pricing = pricingMatrix
+      ? getPricingDetailFromMatrix(pricingMatrix, planType, region)
+      : getPricingDetail(planType, region);
     const isAnnual = billing === 'annual';
     return {
       ...definition,
@@ -96,7 +110,7 @@ export default function PricingPlans({ mode = 'section' }: PricingPlansProps) {
       unitAmountCents: isAnnual ? pricing.annualUnitAmountCents : pricing.unitAmountCents,
       priceValue: isAnnual ? pricing.annualPriceValue : pricing.priceValue,
     };
-  }), [region, billing]);
+  }), [region, billing, pricingMatrix]);
 
   const onSelectPlan = async (plan: PlanType) => {
     if (!user) { setAuthOpen(true); return; }

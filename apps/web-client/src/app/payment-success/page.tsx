@@ -65,7 +65,7 @@ function PaymentSuccessContent() {
             Welcome to the next level of trading intelligence. Your account has been upgraded.
           </p>
           <Link 
-            href="/"
+            href="/command-center"
             className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold transition-colors block"
           >
             Enter Command Center

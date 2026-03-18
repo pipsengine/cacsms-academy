@@ -22,6 +22,7 @@ export function getDashboardForPlan(plan: 'Scout' | 'Analyst' | 'Trader' | 'ProT
  * All protected dashboard routes that require authentication
  */
 export const DASHBOARD_ROUTES = [
+  '/command-center',
   '/currency-strength',
   '/channel-scanner',
   '/breakout-engine',

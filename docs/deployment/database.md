@@ -7,6 +7,11 @@ This repository uses **Prisma** as the ORM on top of a PostgreSQL database. The 
 1. PostgreSQL instance (local, cloud, or cPanel-built) with connectivity from the deployment host.
 2. Environment variables:
    - `DATABASE_URL` - full Postgres connection string (`DATABASE_URL=postgresql://cacsms:Adm1n.c0m@localhost:5432/inteltrader_db?schema=public`).
+   - `OPEN_EXCHANGE_RATES_APP_ID` - optional but recommended for live USD/NGN pricing conversion in the admin pricing module and checkout flow.
+   - `FOREX_DATA_PROVIDER` - forex market data source selector. The current implementation supports `twelvedata` and falls back to synthetic data if no live credentials are configured.
+   - `TWELVE_DATA_API_KEY` - required for live forex quotes/candles from Twelve Data.
+   - `FOREX_SYMBOLS` - comma-separated list of forex pairs to scan, for example `EURUSD,GBPUSD,USDJPY`.
+   - `FOREX_REFRESH_SECONDS` - polling interval for refreshing upstream market data snapshots. `60` is a sensible starting point for development and conservative API usage.
    - `NEXTAUTH_URL` and `NEXTAUTH_SECRET` (already documented in `.env.example`).
 3. Node.js 20+ and npm (or the package manager of choice) available inside the hosting environment.
 

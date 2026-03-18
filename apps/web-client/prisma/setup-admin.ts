@@ -81,7 +81,7 @@ async function setupSuperAdmin() {
           expiryDate,
           paymentProvider: 'Internal',
           status: 'Active',
-        },
+        } as any,
       });
       console.log(`✅ Subscription created (ID: ${subscription.id})`);
       console.log(`   Plan: Institutional (Annual)`);
