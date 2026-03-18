@@ -16,11 +16,24 @@ declare global {
   var prisma: PrismaClient | undefined;
 }
 
-export const prisma =
-  global.prisma ||
-  new PrismaClient({
+function createPrismaClient() {
+  return new PrismaClient({
     log: process.env.NODE_ENV === 'development' ? ['error'] : ['error'],
   });
+}
+
+function hasDashboardModels(client: PrismaClient | undefined) {
+  const candidate = client as PrismaClient & {
+    alertEvent?: unknown;
+    userPreference?: unknown;
+  } | undefined;
+
+  return Boolean(candidate?.alertEvent) && Boolean(candidate?.userPreference);
+}
+
+export const prisma = hasDashboardModels(global.prisma)
+  ? global.prisma!
+  : createPrismaClient();
 
 if (process.env.NODE_ENV !== 'production') {
   global.prisma = prisma;

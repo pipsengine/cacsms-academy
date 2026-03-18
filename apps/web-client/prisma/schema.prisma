@@ -25,6 +25,8 @@ model User {
   sessions      Session[]
   subscriptions Subscription[]
   usageLogs     UsageLog[]
+  alertEvents   AlertEvent[]
+  preferences   UserPreference?
 }
 
 model Account {
@@ -92,6 +94,50 @@ model UsageLog {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, featureName, timestamp])
+}
+
+model AlertEvent {
+  id         String   @id @default(cuid())
+  userId     String?
+  fingerprint String  @unique
+  alertType  String
+  severity   String   @default("info")
+  pair       String?
+  timeframe  String?
+  title      String
+  message    String
+  status     String   @default("active")
+  source     String
+  metadata   Json?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt])
+  @@index([userId, createdAt])
+  @@index([alertType, createdAt])
+}
+
+model UserPreference {
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  emailAlerts      Boolean  @default(true)
+  pushAlerts       Boolean  @default(false)
+  telegramAlerts   Boolean  @default(true)
+  soundAlerts      Boolean  @default(true)
+  riskPerTrade     Float    @default(1.0)
+  defaultTimeframe String   @default("H1")
+  minProbability   Int      @default(75)
+  autoScan         Boolean  @default(true)
+  pairMajors       Boolean  @default(true)
+  pairCrosses      Boolean  @default(true)
+  pairExotics      Boolean  @default(false)
+  pairCrypto       Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model PlatformSetting {

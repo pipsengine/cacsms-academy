@@ -183,9 +183,28 @@ export class MarketDataService {
   private readonly trackedPairs = getTrackedPairs().map(normalizePair);
   private cache: SnapshotCache | null = null;
   private inflight: Promise<SnapshotCache> | null = null;
+  private lastRefreshMode: 'live' | 'fallback-cache' | 'fallback-mock' = 'live';
+  private lastErrorMessage: string | null = null;
 
   get providerName() {
     return this.provider.name;
+  }
+
+  getStatus() {
+    const generatedAt = this.cache?.snapshot.generatedAt ?? null;
+    const ageMs = generatedAt ? Date.now() - Date.parse(generatedAt) : null;
+    const stale = ageMs !== null ? ageMs > this.refreshMs * 2 : true;
+
+    return {
+      provider: this.provider.name,
+      snapshotProvider: this.cache?.snapshot.provider ?? null,
+      generatedAt,
+      refreshMs: this.refreshMs,
+      trackedPairs: this.trackedPairs.length,
+      stale,
+      mode: this.lastRefreshMode,
+      lastErrorMessage: this.lastErrorMessage,
+    };
   }
 
   async getSnapshot(options?: { forceRefresh?: boolean }) {
@@ -231,10 +250,16 @@ export class MarketDataService {
           breakouts: buildBreakoutSignals(series, 'M1'),
         };
 
+        this.lastRefreshMode = 'live';
+        this.lastErrorMessage = null;
         this.cache = { snapshot, chartSeries: series };
         return this.cache;
       } catch (error) {
-        if (this.cache) return this.cache;
+        this.lastErrorMessage = error instanceof Error ? error.message : 'Unknown market provider error';
+        if (this.cache) {
+          this.lastRefreshMode = 'fallback-cache';
+          return this.cache;
+        }
 
         const fallbackProvider = new MockForexMarketProvider();
         const fallbackSeries = await fetchSeries(fallbackProvider, this.trackedPairs, '1min', 30);
@@ -245,6 +270,7 @@ export class MarketDataService {
           channels: buildChannelSignals(fallbackSeries, 'M1'),
           breakouts: buildBreakoutSignals(fallbackSeries, 'M1'),
         };
+        this.lastRefreshMode = 'fallback-mock';
         this.cache = { snapshot, chartSeries: fallbackSeries };
         return this.cache;
       } finally {
@@ -261,7 +287,10 @@ declare global {
 }
 
 export function getMarketDataService() {
-  if (!globalThis.__intelTraderMarketService) {
+  if (
+    !globalThis.__intelTraderMarketService
+    || typeof globalThis.__intelTraderMarketService.getStatus !== 'function'
+  ) {
     globalThis.__intelTraderMarketService = new MarketDataService();
   }
 

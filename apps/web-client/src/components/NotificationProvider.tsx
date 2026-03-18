@@ -24,6 +24,7 @@ const NotificationContext = createContext<NotificationContextType | undefined>(u
 
 export function NotificationProvider({ children }: { children: React.ReactNode }) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [seenIds, setSeenIds] = useState<string[]>([]);
 
   const removeNotification = useCallback((id: string) => {
     setNotifications((prev) => prev.filter((n) => n.id !== id));
@@ -40,23 +41,40 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
     }, 5000);
   }, [removeNotification]);
 
-  // Simulate random market events
   useEffect(() => {
-    const events = [
-      { title: 'Breakout Detected', message: 'GBPJPY H1 breaking R4 resistance', type: 'success' as const },
-      { title: 'Liquidity Sweep', message: 'EURUSD M15 swept previous daily low', type: 'warning' as const },
-      { title: 'Volatility Spike', message: 'USDJPY D1 volatility expanding', type: 'info' as const },
-      { title: 'AI Probability Update', message: 'AUDNZD LONG probability increased to 82%', type: 'success' as const },
-    ];
+    let active = true;
 
-    const interval = setInterval(() => {
-      if (Math.random() > 0.7) { // 30% chance every 15 seconds
-        const randomEvent = events[Math.floor(Math.random() * events.length)];
-        addNotification(randomEvent);
-      }
-    }, 15000);
+    const load = async () => {
+      const res = await fetch('/api/alerts/history?limit=5', { cache: 'no-store' });
+      const data = await res.json().catch(() => null);
+      if (!active || !res.ok || !data?.alerts) return;
 
-    return () => clearInterval(interval);
+      setSeenIds((prevSeen) => {
+        const nextSeen = [...prevSeen];
+        for (const alert of data.alerts) {
+          if (nextSeen.includes(alert.id)) continue;
+
+          addNotification({
+            title: alert.title,
+            message: alert.message,
+            type: alert.severity === 'success' || alert.severity === 'warning' || alert.severity === 'error'
+              ? alert.severity
+              : 'info',
+          });
+          nextSeen.push(alert.id);
+        }
+
+        return nextSeen.slice(-50);
+      });
+    };
+
+    void load();
+    const interval = setInterval(() => void load(), 20_000);
+
+    return () => {
+      active = false;
+      clearInterval(interval);
+    };
   }, [addNotification]);
 
   return (

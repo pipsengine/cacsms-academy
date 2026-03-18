@@ -8,6 +8,17 @@ import { useNotification } from '@/components/NotificationProvider';
 export default function ConfigurationPage() {
   const { addNotification } = useNotification();
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [marketStatus, setMarketStatus] = useState({
+    provider: 'market',
+    snapshotProvider: null as string | null,
+    generatedAt: null as string | null,
+    refreshMs: 60000,
+    trackedPairs: 0,
+    stale: true,
+    mode: 'live' as 'live' | 'fallback-cache' | 'fallback-mock',
+    lastErrorMessage: null as string | null,
+  });
   
   const [config, setConfig] = useState({
     alerts: {
@@ -30,13 +41,66 @@ export default function ConfigurationPage() {
     }
   });
 
-  const handleSave = () => {
+  React.useEffect(() => {
+    let active = true;
+
+    const loadPreferences = async () => {
+      const res = await fetch('/api/user/preferences', { cache: 'no-store' });
+      const data = await res.json().catch(() => null);
+      if (!active || !res.ok || !data?.preferences) {
+        setIsLoading(false);
+        return;
+      }
+
+      setConfig(data.preferences);
+      setIsLoading(false);
+    };
+
+    void loadPreferences();
+
+    const loadMarketStatus = async () => {
+      const res = await fetch('/api/market/status', { cache: 'no-store' });
+      const data = await res.json().catch(() => null);
+      if (!active || !res.ok || !data) return;
+      setMarketStatus(data);
+    };
+
+    void loadMarketStatus();
+    const interval = setInterval(() => void loadMarketStatus(), 30_000);
+
+    return () => {
+      active = false;
+      clearInterval(interval);
+    };
+  }, []);
+
+  const handleSave = async () => {
     setIsSaving(true);
-    setTimeout(() => {
-      setIsSaving(false);
+    try {
+      const res = await fetch('/api/user/preferences', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(config),
+      });
+
+      if (!res.ok) {
+        addNotification({ type: 'error', title: 'Save Failed', message: 'We could not save your configuration.' });
+        return;
+      }
+
       addNotification({ type: 'success', title: 'Configuration Saved', message: 'Your system preferences have been updated successfully.' });
-    }, 800);
+    } finally {
+      setIsSaving(false);
+    }
   };
+
+  if (isLoading) {
+    return (
+      <DashboardLayout>
+        <div className="max-w-5xl mx-auto text-zinc-500">Loading configuration...</div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
@@ -92,6 +156,13 @@ export default function ConfigurationPage() {
                   checked={config.alerts.telegram}
                   onChange={(v) => setConfig(c => ({...c, alerts: {...c.alerts, telegram: v}}))}
                 />
+                <ToggleRow 
+                  icon={<Bell className="w-4 h-4" />}
+                  title="Audio Alerts" 
+                  description="Play an audible notification when a priority alert is triggered."
+                  checked={config.alerts.sound}
+                  onChange={(v) => setConfig(c => ({...c, alerts: {...c.alerts, sound: v}}))}
+                />
               </div>
             </div>
 
@@ -139,6 +210,13 @@ export default function ConfigurationPage() {
                     <option value="D1">D1</option>
                   </select>
                 </div>
+                <ToggleRow 
+                  icon={<Cpu className="w-4 h-4" />}
+                  title="Automatic Market Scan" 
+                  description="Keep ranking, breakout, and liquidity scans running continuously in the background."
+                  checked={config.trading.autoScan}
+                  onChange={(v) => setConfig(c => ({...c, trading: {...c.trading, autoScan: v}}))}
+                />
               </div>
             </div>
           </div>
@@ -186,17 +264,34 @@ export default function ConfigurationPage() {
               </div>
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between text-zinc-400">
-                  <span>Engine Version</span>
-                  <span className="font-mono text-zinc-200">v2.4.1-stable</span>
+                  <span>Provider</span>
+                  <span className="font-mono text-zinc-200">{marketStatus.provider}</span>
                 </div>
                 <div className="flex justify-between text-zinc-400">
                   <span>Data Feed</span>
-                  <span className="font-mono text-emerald-400">Connected</span>
+                  <span className={`font-mono ${marketStatus.mode === 'live' && !marketStatus.stale ? 'text-emerald-400' : 'text-amber-400'}`}>
+                    {marketStatus.mode === 'live' && !marketStatus.stale ? 'Live' : marketStatus.mode === 'fallback-mock' ? 'Fallback Mock' : 'Cached'}
+                  </span>
                 </div>
                 <div className="flex justify-between text-zinc-400">
                   <span>Last Sync</span>
-                  <span className="font-mono text-zinc-200">Just now</span>
+                  <span className="font-mono text-zinc-200">
+                    {marketStatus.generatedAt ? new Date(marketStatus.generatedAt).toLocaleTimeString() : 'Unavailable'}
+                  </span>
                 </div>
+                <div className="flex justify-between text-zinc-400">
+                  <span>Tracked Pairs</span>
+                  <span className="font-mono text-zinc-200">{marketStatus.trackedPairs}</span>
+                </div>
+                <div className="flex justify-between text-zinc-400">
+                  <span>Snapshot Source</span>
+                  <span className="font-mono text-zinc-200">{marketStatus.snapshotProvider ?? 'Unavailable'}</span>
+                </div>
+                {marketStatus.lastErrorMessage && (
+                  <div className="text-xs text-amber-300 border border-amber-500/20 bg-amber-500/10 rounded-lg px-3 py-2">
+                    Provider notice: {marketStatus.lastErrorMessage}
+                  </div>
+                )}
               </div>
             </div>
           </div>
