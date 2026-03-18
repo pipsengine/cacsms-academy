@@ -446,27 +446,27 @@ export default function LandingPage() {
             <div>
               <h4 className="text-white font-bold mb-4">Company</h4>
               <ul className="space-y-2 text-sm">
-                <li><Link href="#" className="hover:text-emerald-400 transition-colors">About</Link></li>
-                <li><Link href="#" className="hover:text-emerald-400 transition-colors">Contact</Link></li>
-                <li><Link href="#" className="hover:text-emerald-400 transition-colors">Careers</Link></li>
+                <li><Link href="/about" className="hover:text-emerald-400 transition-colors">About</Link></li>
+                <li><Link href="/contact" className="hover:text-emerald-400 transition-colors">Contact</Link></li>
+                <li><Link href="/careers" className="hover:text-emerald-400 transition-colors">Careers</Link></li>
               </ul>
             </div>
 
             <div>
               <h4 className="text-white font-bold mb-4">Platform</h4>
               <ul className="space-y-2 text-sm">
-                <li><Link href="#platform" className="hover:text-emerald-400 transition-colors">Features</Link></li>
-                <li><Link href="#technology" className="hover:text-emerald-400 transition-colors">Technology</Link></li>
-                <li><Link href="#pricing" className="hover:text-emerald-400 transition-colors">Pricing</Link></li>
+                <li><Link href="/features" className="hover:text-emerald-400 transition-colors">Features</Link></li>
+                <li><Link href="/technology" className="hover:text-emerald-400 transition-colors">Technology</Link></li>
+                <li><Link href="/pricing" className="hover:text-emerald-400 transition-colors">Pricing</Link></li>
               </ul>
             </div>
 
             <div>
               <h4 className="text-white font-bold mb-4">Support</h4>
               <ul className="space-y-2 text-sm">
-                <li><Link href="#" className="hover:text-emerald-400 transition-colors">Help Center</Link></li>
-                <li><Link href="#" className="hover:text-emerald-400 transition-colors">Account Support</Link></li>
-                <li><Link href="#faq" className="hover:text-emerald-400 transition-colors">FAQ</Link></li>
+                <li><Link href="/help-center" className="hover:text-emerald-400 transition-colors">Help Center</Link></li>
+                <li><Link href="/account-support" className="hover:text-emerald-400 transition-colors">Account Support</Link></li>
+                <li><Link href="/faq" className="hover:text-emerald-400 transition-colors">FAQ</Link></li>
               </ul>
             </div>
           </div>
