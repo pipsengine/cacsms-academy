@@ -6,7 +6,7 @@ This repository uses **Prisma** as the ORM on top of a PostgreSQL database. The 
 
 1. PostgreSQL instance (local, cloud, or cPanel-built) with connectivity from the deployment host.
 2. Environment variables:
-   - `DATABASE_URL` – full Postgres connection string (`DATABASE_URL=postgresql://cacsms:@dm1n.c0m@localhost:5433/inteltrader_db?schema=public`).
+   - `DATABASE_URL` – full Postgres connection string (`DATABASE_URL=postgresql://cacsms:ASdm1n.c0m@localhost:5433/inteltrader_db?schema=public`).
    - `NEXTAUTH_URL` and `NEXTAUTH_SECRET` (already documented in `.env.example`).
 3. Node.js 20+ and npm (or the package manager of choice) available inside the hosting environment.
 
