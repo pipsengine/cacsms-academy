@@ -40,6 +40,15 @@ export const PUBLIC_ROUTES = [
   '/login',
   '/register',
   '/pricing',
+  '/about',
+  '/contact',
+  '/careers',
+  '/platform',
+  '/features',
+  '/technology',
+  '/help-center',
+  '/account-support',
+  '/faq',
   '/',
 ] as const;
 

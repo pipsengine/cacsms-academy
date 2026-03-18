@@ -48,7 +48,13 @@ export function buildPublicMetadata(content: PublicPageContent): Metadata {
   };
 }
 
-export default function PublicPageTemplate({ content }: { content: PublicPageContent }) {
+export default function PublicPageTemplate({
+  content,
+  children,
+}: {
+  content: PublicPageContent;
+  children?: React.ReactNode;
+}) {
   return (
     <div className="min-h-screen bg-white text-zinc-900">
       <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white/90 backdrop-blur-md">
@@ -117,6 +123,8 @@ export default function PublicPageTemplate({ content }: { content: PublicPageCon
             </div>
           </section>
         ))}
+
+        {children}
 
         <section className="border-t border-zinc-200 bg-zinc-950 py-20 text-white">
           <div className="mx-auto max-w-5xl px-4 text-center sm:px-6 lg:px-8">

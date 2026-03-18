@@ -1,7 +1,21 @@
 import { withAuth } from 'next-auth/middleware';
 import { NextRequest, NextResponse } from 'next/server';
 
-const PUBLIC_ROUTES = ['/login', '/register', '/pricing', '/'] as const;
+const PUBLIC_ROUTES = [
+  '/login',
+  '/register',
+  '/pricing',
+  '/about',
+  '/contact',
+  '/careers',
+  '/platform',
+  '/features',
+  '/technology',
+  '/help-center',
+  '/account-support',
+  '/faq',
+  '/',
+] as const;
 
 function isPublicPath(pathname: string) {
   return (

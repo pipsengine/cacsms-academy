@@ -1,5 +1,5 @@
-import { providerSymbol } from '../config';
-import type { ForexCandle, ForexMarketProvider } from '../types';
+import { providerSymbol } from '../config.ts';
+import type { ForexCandle, ForexMarketProvider } from '../types.ts';
 
 type TwelveDataResponse = {
   status?: string;

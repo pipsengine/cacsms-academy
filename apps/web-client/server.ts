@@ -7,7 +7,7 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
 import { fileURLToPath } from 'node:url';
-import { getMarketDataService } from './src/lib/market/service';
+import { getMarketDataService } from './src/lib/market/service.ts';
 
 if (!process.env.NODE_ENV) {
   (process.env as any).NODE_ENV = process.env.npm_lifecycle_event === 'start' ? 'production' : 'development';

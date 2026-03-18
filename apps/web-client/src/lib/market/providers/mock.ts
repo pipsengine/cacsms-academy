@@ -1,5 +1,5 @@
-import { normalizePair } from '../config';
-import type { ForexCandle, ForexMarketProvider } from '../types';
+import { normalizePair } from '../config.ts';
+import type { ForexCandle, ForexMarketProvider } from '../types.ts';
 
 function basePriceForPair(pair: string) {
   if (pair.endsWith('JPY')) return 150;

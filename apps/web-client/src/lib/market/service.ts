@@ -1,7 +1,7 @@
-import { getForexProviderName, getForexRefreshMs, getTrackedPairs, normalizePair, timeframeToInterval } from './config';
-import { MockForexMarketProvider } from './providers/mock';
-import { TwelveDataForexMarketProvider } from './providers/twelveData';
-import type { BreakoutSignal, ChannelSignal, CurrencyStrength, ForexCandle, ForexMarketProvider, MarketSnapshot } from './types';
+import { getForexProviderName, getForexRefreshMs, getTrackedPairs, normalizePair, timeframeToInterval } from './config.ts';
+import { MockForexMarketProvider } from './providers/mock.ts';
+import { TwelveDataForexMarketProvider } from './providers/twelveData.ts';
+import type { BreakoutSignal, ChannelSignal, CurrencyStrength, ForexCandle, ForexMarketProvider, MarketSnapshot } from './types.ts';
 
 type SnapshotCache = {
   snapshot: MarketSnapshot;

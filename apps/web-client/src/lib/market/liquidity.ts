@@ -1,6 +1,6 @@
-import { getTrackedPairs } from './config';
-import { getMarketDataService } from './service';
-import type { ForexCandle } from './types';
+import { getTrackedPairs } from './config.ts';
+import { getMarketDataService } from './service.ts';
+import type { ForexCandle } from './types.ts';
 
 export type LiquiditySignal = {
   pair: string;
