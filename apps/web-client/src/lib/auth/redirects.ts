@@ -4,17 +4,17 @@
 export function getDashboardForPlan(plan: 'Scout' | 'Analyst' | 'Trader' | 'ProTrader' | 'Institutional' | undefined): string {
   switch (plan) {
     case 'Scout':
-      return '/currency-strength';
+      return '/command-center';
     case 'Analyst':
-      return '/channel-scanner';
+      return '/command-center';
     case 'Trader':
-      return '/channel-scanner';
+      return '/command-center';
     case 'ProTrader':
-      return '/opportunities';
+      return '/command-center';
     case 'Institutional':
-      return '/opportunities';
+      return '/command-center';
     default:
-      return '/currency-strength';
+      return '/command-center';
   }
 }
 

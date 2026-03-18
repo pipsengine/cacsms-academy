@@ -1,6 +1,7 @@
 import DashboardLayout from '@/components/DashboardLayout';
 import OpportunityRanking from '@/components/OpportunityRanking';
 import UsageLimiter from '@/components/UsageLimiter';
+import AccessControl from '@/components/AccessControl';
 
 export default function OpportunitiesPage() {
   return (
@@ -14,9 +15,11 @@ export default function OpportunitiesPage() {
         </div>
         
         <div className="flex-1 min-h-0">
-          <UsageLimiter featureName="AI Probability Engine">
-            <OpportunityRanking />
-          </UsageLimiter>
+          <AccessControl requiredPlan="Trader" moduleName="AI Probability Engine">
+            <UsageLimiter featureName="AI Probability Engine">
+              <OpportunityRanking />
+            </UsageLimiter>
+          </AccessControl>
         </div>
       </div>
     </DashboardLayout>

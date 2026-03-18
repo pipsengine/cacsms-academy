@@ -1,27 +1,157 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { 
-  Cpu, Globe, Activity, Zap, ShieldAlert, Target, 
-  Clock, Layers, Eye, Network, BrainCircuit, Database, 
-  CheckCircle2, ChevronRight, Menu
+import {
+  Cpu,
+  Globe,
+  Activity,
+  Zap,
+  ShieldAlert,
+  Target,
+  Clock,
+  Layers,
+  Eye,
+  Network,
+  BrainCircuit,
+  Database,
+  CheckCircle2,
+  ChevronRight,
+  Menu,
 } from 'lucide-react';
 import PricingPlans from '@/components/PricingPlans';
 
+const problemCards = [
+  {
+    icon: <Eye />,
+    title: 'Manual Monitoring',
+    desc: 'Most traders still depend on manually watching pairs, timeframes, and watchlists, which creates fatigue and causes strong setups to appear only after the best timing has passed.',
+    detail:
+      'Intel Trader reduces that burden by continuously watching multiple market conditions at once and surfacing the setups that already meet meaningful structural filters.',
+  },
+  {
+    icon: <Clock />,
+    title: 'Lagging Indicators',
+    desc: 'Traditional indicators usually confirm what has already happened, leaving traders to react late rather than prepare early for structural movement.',
+    detail:
+      'Intel Trader combines live market movement, breakout pressure, and ranked probability so users can see higher-quality context before the majority of traders recognize it.',
+  },
+  {
+    icon: <Layers />,
+    title: 'Fragmented Signals',
+    desc: 'Important decision inputs are often split across separate tools, tabs, and alert systems, forcing traders to combine conflicting information under time pressure.',
+    detail:
+      'Intel Trader unifies those inputs into one intelligence workflow so currency strength, structure, alerts, and opportunity ranking can be read together without guesswork.',
+  },
+  {
+    icon: <ShieldAlert />,
+    title: 'Hidden Institutional Behavior',
+    desc: 'Retail tools rarely explain where liquidity is concentrated, where sweeps are likely, or how institutional participants may be positioning around obvious zones.',
+    detail:
+      'Intel Trader adds liquidity awareness and structural interpretation so users can understand where the market is likely to hunt, reject, or accelerate.',
+  },
+  {
+    icon: <Target />,
+    title: 'No Opportunity Ranking',
+    desc: 'Without prioritization, traders spend too much time on average setups while stronger opportunities elsewhere receive less attention than they deserve.',
+    detail:
+      'Intel Trader ranks opportunities so capital, focus, and execution energy can be directed toward the setups with stronger structural backing.',
+  },
+  {
+    icon: <Network />,
+    title: 'Isolated Analysis',
+    desc: 'A single pair rarely tells the full story because broader currency relationships and cross-market pressure often drive the most important shifts.',
+    detail:
+      'Intel Trader connects those relationships so users can trade the broader narrative rather than isolated candles with limited context.',
+  },
+];
+
+const engineCards = [
+  {
+    icon: <Globe />,
+    title: 'Currency Strength Engine',
+    desc: 'Tracks relative currency pressure so traders can see where broad strength is building, where weakness is spreading, and which pairs are most structurally aligned with that imbalance.',
+  },
+  {
+    icon: <Activity />,
+    title: 'Multi-Timeframe Channel Engine',
+    desc: 'Measures price structure across multiple timeframes to reveal directional channels, developing compression, and the zones where structure may transition.',
+  },
+  {
+    icon: <Zap />,
+    title: 'Breakout Detection Engine',
+    desc: 'Monitors breakout pressure around meaningful structural boundaries so traders can distinguish between random movement and expansion that deserves real attention.',
+  },
+  {
+    icon: <Database />,
+    title: 'Liquidity Intelligence Engine',
+    desc: 'Highlights probable liquidity pools, sweep locations, and reaction zones so users can interpret market intent with greater precision.',
+  },
+  {
+    icon: <BrainCircuit />,
+    title: 'AI Probability Engine',
+    desc: 'Adds machine-supported signal qualification to help traders compare setup quality, confidence level, and expected structural behavior more effectively.',
+  },
+];
+
+const whyChooseCards = [
+  'Automated market scanning reduces the need to monitor charts manually and helps traders spend more time acting on qualified information instead of hunting for it.',
+  'AI-backed probability analysis adds another decision layer so each setup is not judged only by intuition, but also by ranked structural quality.',
+  'Structural analysis helps traders see breakout zones, compression, reversal potential, and directional imbalance earlier than ordinary visual review.',
+  'Opportunity ranking turns a wide forex universe into a practical decision list, making it easier to allocate attention where it matters most.',
+  'Real-time alerting helps traders respond to meaningful market changes without staying glued to charts during every session.',
+  'Multi-engine alignment keeps strength, liquidity, and breakout analysis working together so the market story is clearer and easier to trust.',
+  'The professional dashboard format presents dense market information in a way that feels deliberate, readable, and operationally useful.',
+];
+
+const faqItems = [
+  {
+    question: 'What does Intel Trader do for forex traders?',
+    answer:
+      'Intel Trader gives forex traders a market-intelligence workspace that combines currency strength, structural scanning, breakout pressure, liquidity awareness, and AI-backed ranking into one environment. Instead of relying on disconnected chart tools, traders can read a more complete market picture before acting.',
+  },
+  {
+    question: 'Who should use Intel Trader?',
+    answer:
+      'Intel Trader is suitable for retail beginners, serious independent traders, professional operators, and institutional teams. The platform is designed to scale from simple exploration into deeper operational use as the trader or firm grows.',
+  },
+  {
+    question: 'How is Intel Trader different from an ordinary charting platform?',
+    answer:
+      'A normal charting platform mainly shows price. Intel Trader adds structured interpretation around that price by ranking opportunities, identifying channel behavior, highlighting liquidity context, and surfacing higher-quality alerts that help users make more disciplined decisions.',
+  },
+  {
+    question: 'Does Intel Trader support traders in Nigeria?',
+    answer:
+      'Yes. Intel Trader supports NGN pricing, Nigerian trading context, Lagos-friendly workflows, and a product experience designed for traders and teams operating in Nigeria as well as global FX markets.',
+  },
+];
+
 export default function LandingPage() {
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqItems.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
+  };
+
   return (
     <div className="min-h-screen bg-white text-zinc-900 font-sans selection:bg-emerald-500/30">
-      {/* Navigation Header */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-zinc-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
-            {/* Logo */}
             <Link href="/" className="flex items-center gap-2 text-emerald-600">
               <Cpu className="w-8 h-8" />
               <span className="font-mono font-bold tracking-wider text-xl text-zinc-900">INTEL TRADER</span>
             </Link>
 
-            {/* Desktop Nav */}
             <nav className="hidden md:flex items-center gap-8">
               <Link href="#platform" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors">Platform</Link>
               <Link href="#technology" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors">Technology</Link>
@@ -30,14 +160,12 @@ export default function LandingPage() {
               <Link href="#faq" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors">FAQ</Link>
             </nav>
 
-            {/* Auth Buttons */}
             <div className="hidden md:flex items-center gap-4">
               <Link href="/login" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors">Login</Link>
               <Link href="/register" className="text-sm font-bold bg-zinc-900 text-white px-5 py-2.5 rounded-lg hover:bg-zinc-800 transition-colors">Sign Up</Link>
             </div>
 
-            {/* Mobile Menu Button */}
-            <button className="md:hidden p-2 text-zinc-600">
+            <button className="md:hidden p-2 text-zinc-600" aria-label="Open menu">
               <Menu className="w-6 h-6" />
             </button>
           </div>
@@ -45,7 +173,6 @@ export default function LandingPage() {
       </header>
 
       <main className="pt-20">
-        {/* Hero Section */}
         <section className="relative pt-24 pb-32 overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -55,13 +182,13 @@ export default function LandingPage() {
                   The Future of Forex Market Intelligence
                 </div>
                 <h1 className="text-5xl lg:text-6xl font-bold tracking-tight text-zinc-900 mb-6 leading-tight">
-                  The Institutional Forex Intelligence Platform
+                  Institutional Forex Intelligence for Modern Traders
                 </h1>
                 <p className="text-lg text-zinc-600 mb-8 leading-relaxed">
-                  Intel Trader is not simply another trading tool. It represents a complete institutional-grade Forex intelligence platform engineered to transform how traders analyze, interpret, and respond to global currency markets. Every component is built to replace guesswork with actionable, data-driven clarity while ensuring Nigerian traders stay aligned with SEC and NDPR guardrails.
+                  Intel Trader is a forex market intelligence platform built to help traders interpret live market behavior with more structure, more confidence, and far less operational friction. Instead of forcing users to piece together signals from scattered charts and disconnected tools, Intel Trader brings the important layers of market context into one coordinated workspace.
                 </p>
                 <p className="text-base text-zinc-500 mb-8 leading-relaxed">
-                  We consolidate multi-engine signals (currency strength, channel projections, liquidity intelligence, AI-classified probabilities) into a single workspace so you see institutional behavior without swapping tabs. Alerts are enriched with Nigerian macro context, regulatory clarity, and AI confidence levels so you can trust every cue at scale.
+                  The platform combines currency strength analysis, structural channel detection, breakout monitoring, liquidity context, AI-assisted probability scoring, and ranked opportunity discovery so traders can spend less time searching and more time acting with intention. It is designed for ambitious retail traders, serious professionals, and institutional teams that want a cleaner operating picture of the forex market.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Link href="/register" className="inline-flex justify-center items-center gap-2 bg-emerald-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-emerald-700 transition-colors text-lg">
@@ -74,28 +201,26 @@ export default function LandingPage() {
                 </div>
                 <div className="mt-8 grid gap-3 sm:grid-cols-3">
                   <div className="rounded-2xl border border-zinc-200 bg-white/70 px-4 py-3 text-center shadow-sm">
-                    <p className="text-xs uppercase tracking-[0.5em] text-zinc-500">Live Feed</p>
+                    <p className="text-xs uppercase tracking-[0.5em] text-zinc-500">Coverage</p>
                     <p className="text-2xl font-bold text-zinc-900">28</p>
-                    <p className="text-sm text-zinc-500">pairs scanned every 3 sec</p>
+                    <p className="text-sm text-zinc-500">forex pairs monitored across the workflow</p>
                   </div>
                   <div className="rounded-2xl border border-zinc-200 bg-white/70 px-4 py-3 text-center shadow-sm">
-                    <p className="text-xs uppercase tracking-[0.5em] text-zinc-500">Accuracy</p>
-                    <p className="text-2xl font-bold text-zinc-900">92%</p>
-                    <p className="text-sm text-zinc-500">confirmed probability signal hits</p>
+                    <p className="text-xs uppercase tracking-[0.5em] text-zinc-500">Intelligence</p>
+                    <p className="text-2xl font-bold text-zinc-900">5+</p>
+                    <p className="text-sm text-zinc-500">core engines working in one workspace</p>
                   </div>
                   <div className="rounded-2xl border border-zinc-200 bg-white/70 px-4 py-3 text-center shadow-sm">
-                    <p className="text-xs uppercase tracking-[0.5em] text-zinc-500">Latency</p>
-                    <p className="text-2xl font-bold text-zinc-900">12ms</p>
-                    <p className="text-sm text-zinc-500">Nigerian time-synced feeds</p>
+                    <p className="text-xs uppercase tracking-[0.5em] text-zinc-500">Focus</p>
+                    <p className="text-2xl font-bold text-zinc-900">1</p>
+                    <p className="text-sm text-zinc-500">command center for ranked decisions</p>
                   </div>
                 </div>
               </div>
-              
-              {/* Hero Visual */}
+
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-tr from-emerald-100 to-blue-50 rounded-3xl transform rotate-3 scale-105" />
                 <div className="relative bg-zinc-950 rounded-2xl shadow-2xl border border-zinc-800 overflow-hidden transform -rotate-1">
-                  {/* Dashboard Mockup */}
                   <div className="h-8 bg-zinc-900 border-b border-zinc-800 flex items-center px-4 gap-2">
                     <div className="w-3 h-3 rounded-full bg-red-500" />
                     <div className="w-3 h-3 rounded-full bg-amber-500" />
@@ -126,62 +251,18 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* The Problem Section */}
         <section id="platform" className="py-24 bg-zinc-50 border-y border-zinc-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-3xl mx-auto mb-16">
-              <h2 className="text-3xl font-bold text-zinc-900 mb-6">The Problem with Traditional Trading Platforms</h2>
+              <h2 className="text-3xl font-bold text-zinc-900 mb-6">Why Traditional Trading Workflows Break Down</h2>
               <p className="text-lg text-zinc-600">
-                For decades, retail trading platforms have been built around a relatively simple philosophy: provide price charts and allow traders to interpret the market manually. While charts remain an essential analytical tool, they represent only a small portion of the full intelligence framework required.
+                The average trader is still expected to gather information manually, compare conflicting chart signals, and make fast decisions with limited structural clarity. Intel Trader was built to solve that by turning fragmented information into one coherent market-intelligence process.
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[
-                {
-                  icon: <Eye />,
-                  title: "Manual Monitoring",
-                  desc: "Traders must manually monitor dozens of currency pairs across multiple timeframes, leading to missed opportunities.",
-                  detail:
-                    "Intel Trader automates that monitoring loop, surfacing only setups with confirmed liquidity confluence so you never miss statistically significant events.",
-                },
-                {
-                  icon: <Clock />,
-                  title: "Lagging Indicators",
-                  desc: "Heavy reliance on lagging indicators that react only after price movements have already occurred.",
-                  detail:
-                    "Our multi-engine architecture layers order flow, AI-scored probabilities, and institutional liquidity zones to trigger before the crowd chases price.",
-                },
-                {
-                  icon: <Layers />,
-                  title: "Fragmented Signals",
-                  desc: "Analytical signals are scattered across multiple tools, requiring interpretation of conflicting information.",
-                  detail:
-                    "Every signal is normalized into a single intelligence grid, so you compare currency strength, channel structure, and probability at a glance.",
-                },
-                {
-                  icon: <ShieldAlert />,
-                  title: "Hidden Institutional Behavior",
-                  desc: "Little visibility into institutional market behavior such as liquidity sweeps and stop-hunt zones.",
-                  detail:
-                    "Intel Trader reverse engineers the footprints major FX desks leave behind, overlaying them with Nigerian macro context so you read the same maps they follow.",
-                },
-                {
-                  icon: <Target />,
-                  title: "No Opportunity Ranking",
-                  desc: "Traders spend significant time analyzing low-quality setups while stronger opportunities emerge elsewhere.",
-                  detail:
-                    "Opportunity ranking collapses every engine into a single probability score, letting you allocate capital to the highest expected-value trades first.",
-                },
-                {
-                  icon: <Network />,
-                  title: "Isolated Analysis",
-                  desc: "Cross-currency relationships are rarely analyzed holistically, missing broader strength or weakness dynamics.",
-                  detail:
-                    "Our strength, liquidity, and breakout engines talk to each other so you trade the structural narrative—not disconnected candles.",
-                },
-              ].map((item, i) => (
-                <div key={i} className="bg-white p-8 rounded-2xl border border-zinc-200 shadow-sm hover:shadow-md transition-shadow">
+              {problemCards.map((item) => (
+                <div key={item.title} className="bg-white p-8 rounded-2xl border border-zinc-200 shadow-sm hover:shadow-md transition-shadow">
                   <div className="w-12 h-12 bg-red-50 text-red-600 rounded-xl flex items-center justify-center mb-6">
                     {item.icon}
                   </div>
@@ -194,47 +275,20 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* The Architecture Section */}
         <section id="technology" className="py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               <div>
-                <h2 className="text-3xl font-bold text-zinc-900 mb-6">The Intel Trader Intelligence Architecture</h2>
+                <h2 className="text-3xl font-bold text-zinc-900 mb-6">A Multi-Engine Intelligence Architecture for Forex Analysis</h2>
                 <p className="text-lg text-zinc-600 mb-4 leading-relaxed">
-                  At the heart of Intel Trader sits a stack of engines that translate raw FX data into institutional-grade insights. Each engine specializes in a different frame—currency strength, channel structure, liquidity, probability, and AI-powered anomaly detection—yet they publish their findings into the same data fabric.
+                  Intel Trader is built around a layered intelligence architecture that converts live forex market data into structured insights traders can actually use. Rather than asking users to interpret every signal from scratch, the platform organizes information into engines that measure strength, structure, volatility behavior, liquidity context, and ranked opportunity quality.
                 </p>
                 <p className="text-lg text-zinc-600 mb-8 leading-relaxed">
-                  This is why Nigerian risk teams, compliance officers, and desk traders can all read the same dashboard: the orthogonal views are already aligned, tagged with regulatory context, and summarized inside alerts before you ever step into the charts.
+                  This makes the platform useful not only for solo traders, but also for professional teams that need a shared market picture, clearer decision support, and a more repeatable way to evaluate what deserves attention in the forex market.
                 </p>
                 <div className="space-y-6">
-                  {[
-                    {
-                      icon: <Globe />,
-                      title: "Currency Strength Engine",
-                      desc: "Evaluates relative strength and weakness of major currencies, factoring in central bank statements and cross-border cap flows.",
-                    },
-                    {
-                      icon: <Activity />,
-                      title: "Multi-Timeframe Channel Engine",
-                      desc: "Detects emerging trend channels and shifts, tagging each curve with breakout probability and liquidity sweep likelihood.",
-                    },
-                    {
-                      icon: <Zap />,
-                      title: "Breakout Detection Engine",
-                      desc: "Monitors key structural boundaries and watches for sudden liquidity drops that often precede major moves.",
-                    },
-                    {
-                      icon: <Database />,
-                      title: "Liquidity Intelligence Engine",
-                      desc: "Finds areas where institutional liquidity is concentrated, maps them to the wider market, and ranks them by expected impact.",
-                    },
-                    {
-                      icon: <BrainCircuit />,
-                      title: "AI Probability Engine",
-                      desc: "Evaluates the entire market structure through machine learning models trained on years of FX behavior, delivering predictive probabilities.",
-                    },
-                  ].map((engine, i) => (
-                    <div key={i} className="flex gap-4">
+                  {engineCards.map((engine) => (
+                    <div key={engine.title} className="flex gap-4">
                       <div className="w-10 h-10 bg-emerald-100 text-emerald-700 rounded-lg flex items-center justify-center flex-shrink-0">
                         {engine.icon}
                       </div>
@@ -268,28 +322,27 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Real-Time Scanner Section */}
         <section id="how-it-works" className="py-24 bg-zinc-900 text-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-3xl mx-auto mb-16">
-              <h2 className="text-3xl font-bold mb-6">Real-Time Market Scanner</h2>
-            <p className="text-lg text-zinc-400">
-              Intel Trader continuously scans the entire Forex market in real time, combining live pricing inputs, alternative data, and regulatory alerts so you never miss a structural shift. The scanner is optimized for Nigerian market hours, translating into audible notifications that match Lagos time and SEC/NCC working sessions.
-            </p>
+              <h2 className="text-3xl font-bold mb-6">Live Forex Scanning and Ranked Market Awareness</h2>
+              <p className="text-lg text-zinc-400">
+                Intel Trader continuously watches the forex market and converts that raw activity into structured signals traders can evaluate quickly. Instead of simply forwarding price changes, the platform organizes live monitoring into a decision-ready workflow that highlights structure, direction, signal quality, and relative opportunity strength.
+              </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
-                "Continuous monitoring of 28 pairs",
-                "Detection of emerging channels",
-                "Automated breakout probability",
-                "Dynamic currency strength updates",
-                "Volatility compression detection",
-                "Institutional liquidity zones",
-                "Continuous AI probability scoring",
-                "Real-time opportunity ranking"
-              ].map((feature, i) => (
-                <div key={i} className="bg-zinc-800/50 border border-zinc-700 p-6 rounded-2xl flex items-start gap-4">
+                'Continuous monitoring of key forex pairs inside one coordinated workflow',
+                'Early identification of developing channels and structural directional bias',
+                'Automated breakout-pressure detection around important market boundaries',
+                'Dynamic currency strength updates to expose broad relative movement',
+                'Volatility compression recognition before potential market expansion',
+                'Liquidity context that helps traders interpret likely reaction areas',
+                'Continuous AI-assisted setup qualification for signal comparison',
+                'Opportunity ranking that makes the strongest setups easier to identify quickly',
+              ].map((feature) => (
+                <div key={feature} className="bg-zinc-800/50 border border-zinc-700 p-6 rounded-2xl flex items-start gap-4">
                   <CheckCircle2 className="w-6 h-6 text-emerald-500 flex-shrink-0" />
                   <span className="text-zinc-300 font-medium">{feature}</span>
                 </div>
@@ -298,22 +351,21 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Command Center Section */}
         <section className="py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-3xl font-bold text-zinc-900 mb-6">Designed Like a Professional Trading Command Center</h2>
+            <h2 className="text-3xl font-bold text-zinc-900 mb-6">A Command Center Built for Serious Market Work</h2>
             <p className="text-lg text-zinc-600 max-w-3xl mx-auto mb-5">
-              Intel Trader mirrors the analytical spaces used by institutional desks: concise, data-rich, and centered around decisive actions. Every panel—from liquidity heatmaps to opportunity rankings—is purpose-built to reduce the cognitive load of trading and align with the risk management practices you must follow in Nigeria.
+              Intel Trader is designed to feel like an operational command center rather than a simple watchlist. Each panel is built to reduce distraction, improve decision sequencing, and keep the most relevant market context visible without forcing the trader to reconstruct the story alone.
             </p>
             <p className="text-base text-zinc-500 max-w-3xl mx-auto mb-12">
-              Real clients report a 40% reduction in analysis time and the ability to coordinate with compliance teams faster because everything is logged, auditable, and paired with the SEC/NCC-friendly disclosures that keep audits smooth.
+              That makes the platform useful for individual traders who want cleaner execution discipline and for teams that need a shared intelligence surface for review, communication, and coordinated market interpretation.
             </p>
-            
+
             <div className="relative mx-auto max-w-5xl">
               <div className="absolute inset-0 bg-gradient-to-b from-emerald-100/50 to-transparent rounded-3xl transform -translate-y-4 scale-105" />
-              <Image 
-                src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&q=80&w=2000" 
-                alt="Trading Dashboard" 
+              <Image
+                src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&q=80&w=2000"
+                alt="Intel Trader forex intelligence dashboard"
                 width={2000}
                 height={500}
                 className="relative rounded-2xl shadow-2xl border border-zinc-200 object-cover h-[500px] w-full"
@@ -325,51 +377,46 @@ export default function LandingPage() {
 
         <PricingPlans />
 
-        {/* Why Choose Section */}
         <section className="py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-3xl font-bold text-zinc-900 mb-12 text-center">Why Traders Choose Intel Trader</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[
-                {
-                  text: "Automated market scanning eliminates manual chart monitoring and surfaces only the setups that meet liquidity, strength, and probability filters.",
-                },
-                {
-                  text: "AI probability models provide statistical insight into trade setups so you know how each signal performed historically and where it sits in the probability distribution.",
-                },
-                {
-                  text: "Structural analysis reveals market opportunities earlier by scanning breakout zones, channel squeezes, and reversal patterns across every account-linked pair.",
-                },
-                {
-                  text: "Opportunity ranking focuses trader attention on high-quality setups instead of noise, giving you a prioritized list with confidence scores and trade journals.",
-                },
-                {
-                  text: "Real-time alerts ensure traders never miss critical developments, with Lagos-hour push notifications and compliance-friendly export logs.",
-                },
-                {
-                  text: "Multi-engine analysis evaluates markets from multiple perspectives, keeping currency strength, liquidity, and probability in sync.",
-                },
-                {
-                  text: "Professional dashboard interface simplifies complex data, presenting clear narratives instead of raw numbers so you can act decisively.",
-                },
-              ].map((reason, i) => (
-                <div key={i} className="flex items-start gap-4 bg-zinc-50 p-6 rounded-2xl border border-zinc-100">
+              {whyChooseCards.map((text, index) => (
+                <div key={text} className="flex items-start gap-4 bg-zinc-50 p-6 rounded-2xl border border-zinc-100">
                   <div className="w-8 h-8 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center flex-shrink-0 font-bold">
-                    {i + 1}
+                    {index + 1}
                   </div>
-                  <p className="text-zinc-700 font-medium pt-1">{reason.text}</p>
+                  <p className="text-zinc-700 font-medium pt-1">{text}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Final CTA */}
+        <section id="faq" className="py-24 bg-zinc-50 border-y border-zinc-200">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center max-w-3xl mx-auto mb-14">
+              <h2 className="text-3xl font-bold text-zinc-900 mb-5">Frequently Asked Questions</h2>
+              <p className="text-lg text-zinc-600">
+                These are the questions most traders and evaluation teams ask when comparing Intel Trader with more traditional forex analysis tools.
+              </p>
+            </div>
+            <div className="space-y-5">
+              {faqItems.map((item) => (
+                <div key={item.question} className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+                  <h3 className="text-lg font-semibold text-zinc-900 mb-3">{item.question}</h3>
+                  <p className="text-zinc-600 leading-relaxed">{item.answer}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <section className="py-24 bg-zinc-900 text-center">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-4xl font-bold text-white mb-4">Start Using Institutional-Grade Market Intelligence Today</h2>
+            <h2 className="text-4xl font-bold text-white mb-4">Start Using Institutional-Grade Forex Intelligence Today</h2>
             <p className="text-zinc-300 max-w-3xl mx-auto mb-8">
-              Join the Nigerian teams who have already adopted Intel Trader: they deploy live channel data, AI-categorized probability, and regulatory-ready documentation that keeps compliance comfortable and trading desks confident.
+              Whether you are evaluating the market as a solo trader, building a more disciplined daily workflow, or scaling intelligence across a team, Intel Trader gives you a more deliberate way to monitor, interpret, and rank the forex market.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Link href="/register" className="inline-flex justify-center items-center gap-2 bg-emerald-500 text-zinc-900 px-8 py-4 rounded-xl font-bold hover:bg-emerald-400 transition-colors text-lg">
@@ -383,7 +430,6 @@ export default function LandingPage() {
         </section>
       </main>
 
-      {/* Footer */}
       <footer className="bg-zinc-950 text-zinc-400 py-16 border-t border-zinc-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-16">
@@ -393,10 +439,10 @@ export default function LandingPage() {
                 <span className="font-mono font-bold tracking-wider text-lg text-white">INTEL TRADER</span>
               </div>
               <p className="text-sm text-zinc-500 max-w-sm">
-                The Institutional Forex Intelligence Platform Built for the Next Generation of Traders.
+                A forex market intelligence platform built to help traders move from fragmented chart watching to clearer, more disciplined market interpretation.
               </p>
             </div>
-            
+
             <div>
               <h4 className="text-white font-bold mb-4">Company</h4>
               <ul className="space-y-2 text-sm">
@@ -405,16 +451,16 @@ export default function LandingPage() {
                 <li><Link href="#" className="hover:text-emerald-400 transition-colors">Careers</Link></li>
               </ul>
             </div>
-            
+
             <div>
               <h4 className="text-white font-bold mb-4">Platform</h4>
               <ul className="space-y-2 text-sm">
-                <li><Link href="#" className="hover:text-emerald-400 transition-colors">Features</Link></li>
-                <li><Link href="#" className="hover:text-emerald-400 transition-colors">Technology</Link></li>
+                <li><Link href="#platform" className="hover:text-emerald-400 transition-colors">Features</Link></li>
+                <li><Link href="#technology" className="hover:text-emerald-400 transition-colors">Technology</Link></li>
                 <li><Link href="#pricing" className="hover:text-emerald-400 transition-colors">Pricing</Link></li>
               </ul>
             </div>
-            
+
             <div>
               <h4 className="text-white font-bold mb-4">Support</h4>
               <ul className="space-y-2 text-sm">

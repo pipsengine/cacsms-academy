@@ -7,6 +7,8 @@ import { usePathname } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
 import AIAssistant from '@/components/AIAssistant';
 import { useMarketData } from '@/components/MarketDataProvider';
+import { getAccessibleFeatures } from '@/lib/auth/permissions';
+import { getPlanDisplayName } from '@/lib/pricing/catalog';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [time, setTime] = useState<string>('');
@@ -38,6 +40,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       .join('')
       .toUpperCase();
   }, [user]);
+
+  const accessibleFeatures = useMemo(() => getAccessibleFeatures(user), [user]);
 
   const planColor = useMemo(() => {
     switch (user?.plan) {
@@ -113,11 +117,21 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="text-xs font-mono text-zinc-500 mb-4 px-2 uppercase tracking-widest">Core Engines</div>
           
           <NavItem href="/command-center" icon={<LayoutDashboard />} label="Command Center" active={effectivePathname === '/command-center'} />
-          <NavItem href="/currency-strength" icon={<Globe />} label="Currency Strength" active={effectivePathname === '/currency-strength'} />
-          <NavItem href="/channel-scanner" icon={<Activity />} label="Channel Scanner" active={effectivePathname === '/channel-scanner'} />
-          <NavItem href="/breakout-engine" icon={<Zap />} label="Breakout Engine" active={effectivePathname === '/breakout-engine'} />
-          <NavItem href="/liquidity-intel" icon={<ShieldAlert />} label="Liquidity Intel" active={effectivePathname === '/liquidity-intel'} />
-          <NavItem href="/opportunities" icon={<Target />} label="Opportunity Ranking" active={effectivePathname === '/opportunities'} />
+          {accessibleFeatures.currencyStrength && (
+            <NavItem href="/currency-strength" icon={<Globe />} label="Currency Strength" active={effectivePathname === '/currency-strength'} />
+          )}
+          {accessibleFeatures.channelScanner && (
+            <NavItem href="/channel-scanner" icon={<Activity />} label="Channel Scanner" active={effectivePathname === '/channel-scanner'} />
+          )}
+          {accessibleFeatures.breakoutEngine && (
+            <NavItem href="/breakout-engine" icon={<Zap />} label="Breakout Engine" active={effectivePathname === '/breakout-engine'} />
+          )}
+          {accessibleFeatures.liquidityIntel && (
+            <NavItem href="/liquidity-intel" icon={<ShieldAlert />} label="Liquidity Intel" active={effectivePathname === '/liquidity-intel'} />
+          )}
+          {accessibleFeatures.opportunityRadar && (
+            <NavItem href="/opportunities" icon={<Target />} label="Opportunity Ranking" active={effectivePathname === '/opportunities'} />
+          )}
           
           <div className="mt-8 mb-4 px-2 text-xs font-mono text-zinc-500 uppercase tracking-widest">System</div>
           <NavItem href="/alert-history" icon={<Clock />} label="Alert History" active={effectivePathname === '/alert-history'} />
@@ -137,7 +151,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <div className="flex-1 min-w-0">
                 <div className="text-xs font-semibold text-zinc-200 truncate">{user.name || user.email}</div>
                 <span className={`inline-block text-[10px] font-mono px-1.5 py-0.5 rounded border mt-0.5 ${planColor}`}>
-                  {user.plan}
+                  {getPlanDisplayName(user.plan)}
                 </span>
               </div>
             </div>
@@ -208,7 +222,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     <div className="text-xs font-semibold text-zinc-200 leading-tight truncate max-w-[120px]">
                       {user.name || user.email}
                     </div>
-                    <div className={`text-[10px] font-mono ${planColor.split(' ')[0]}`}>{user.plan} Plan</div>
+                    <div className={`text-[10px] font-mono ${planColor.split(' ')[0]}`}>{getPlanDisplayName(user.plan)}</div>
                   </div>
                   <ChevronDown className={`w-3.5 h-3.5 text-zinc-500 transition-transform hidden md:block ${profileOpen ? 'rotate-180' : ''}`} />
                 </button>
@@ -228,7 +242,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                       </div>
                       <div className="mt-3 flex items-center justify-between">
                         <span className={`text-xs font-mono px-2 py-0.5 rounded border ${planColor}`}>
-                          {user.plan} Plan
+                          {getPlanDisplayName(user.plan)}
                         </span>
                         <span className="text-[10px] font-mono text-zinc-500 uppercase">{user.role}</span>
                       </div>

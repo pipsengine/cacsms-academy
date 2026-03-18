@@ -1,17 +1,18 @@
 'use client';
 
 import { useEffect, useState, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { CheckCircle, Loader2 } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
+import { AlertTriangle, CheckCircle, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/components/AuthProvider';
+import { getDashboardForPlan } from '@/lib/auth/redirects';
 
 function PaymentSuccessContent() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const sessionId = searchParams?.get('session_id') ?? null;
   const plan = searchParams?.get('plan') ?? null;
   const region = searchParams?.get('region') ?? null;
+  const billingCycle = searchParams?.get('billingCycle') ?? null;
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const { user, updatePlan } = useAuth();
 
@@ -25,6 +26,7 @@ function PaymentSuccessContent() {
             sessionId,
             plan,
             region,
+            billingCycle,
           }),
         });
 
@@ -42,8 +44,8 @@ function PaymentSuccessContent() {
       }
     };
 
-    verifyPayment();
-  }, [sessionId, plan, region, updatePlan]);
+    void verifyPayment();
+  }, [sessionId, plan, region, billingCycle, updatePlan]);
 
   return (
     <div className="max-w-md w-full bg-zinc-900 border border-zinc-800 rounded-2xl p-8 text-center">
@@ -62,13 +64,13 @@ function PaymentSuccessContent() {
           </div>
           <h1 className="text-3xl font-bold text-zinc-100 mb-2">Payment Successful!</h1>
           <p className="text-zinc-400 mb-8">
-            Welcome to the next level of trading intelligence. Your account has been upgraded.
+            Your subscription has been updated and your dashboard will now reflect the modules included in your package.
           </p>
-          <Link 
-            href="/command-center"
+          <Link
+            href={getDashboardForPlan((plan as any) || user?.plan)}
             className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold transition-colors block"
           >
-            Enter Command Center
+            Open My Dashboard
           </Link>
         </div>
       )}
@@ -76,13 +78,13 @@ function PaymentSuccessContent() {
       {status === 'error' && (
         <div className="flex flex-col items-center">
           <div className="w-20 h-20 bg-red-500/10 rounded-full flex items-center justify-center mb-6">
-            <span className="text-4xl">⚠️</span>
+            <AlertTriangle className="w-10 h-10 text-red-400" />
           </div>
           <h1 className="text-2xl font-bold text-zinc-100 mb-2">Verification Failed</h1>
           <p className="text-zinc-400 mb-8">
             We couldn&apos;t verify your payment. Please contact support if you were charged.
           </p>
-          <Link 
+          <Link
             href="/pricing"
             className="w-full py-3 bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl font-bold transition-colors block"
           >
