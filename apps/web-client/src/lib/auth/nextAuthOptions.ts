@@ -69,19 +69,29 @@ export const authOptions: NextAuthOptions = {
       : null,
   ].filter(Boolean) as NextAuthOptions['providers'],
   callbacks: {
-    async session({ session, user }) {
-      if (session.user) {
-        (session.user as any).id = user.id;
+    async jwt({ token, user }) {
+      // On initial sign-in the `user` object is available; embed it into the token for future requests.
+      if (user) {
+        token.id = user.id;
         if (hasDatabase) {
           const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
-          (session.user as any).role = dbUser?.role || 'User';
-          (session.user as any).country = dbUser?.country || 'International';
-          (session.user as any).plan = await getPlanForUser(user.id);
+          token.role = dbUser?.role ?? 'User';
+          token.country = dbUser?.country ?? 'International';
+          token.plan = await getPlanForUser(user.id);
         } else {
-          (session.user as any).role = 'User';
-          (session.user as any).country = 'International';
-          (session.user as any).plan = 'Free';
+          token.role = 'User';
+          token.country = 'International';
+          token.plan = 'Free';
         }
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        (session.user as any).id = token.id ?? token.sub;
+        (session.user as any).role = token.role ?? 'User';
+        (session.user as any).country = token.country ?? 'International';
+        (session.user as any).plan = token.plan ?? 'Free';
       }
       return session;
     },

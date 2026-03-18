@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useMemo, useState, useEffect } from 'react';
-import { Activity, Clock, Cpu, Globe, LayoutDashboard, Settings, ShieldAlert, Zap, Target, LogOut, User as UserIcon, Shield } from 'lucide-react';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
+import { Activity, Clock, Cpu, Globe, LayoutDashboard, Settings, ShieldAlert, Zap, Target, LogOut, User as UserIcon, Shield, ChevronDown, CreditCard } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
@@ -15,6 +15,37 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const { user, logout } = useAuth();
   const { health } = useMarketData();
   const [tick, setTick] = useState(() => Date.now());
+  const [profileOpen, setProfileOpen] = useState(false);
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+        setProfileOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const userInitials = useMemo(() => {
+    if (!user?.name) return user?.email?.[0]?.toUpperCase() ?? 'U';
+    return user.name
+      .split(' ')
+      .slice(0, 2)
+      .map((n) => n[0])
+      .join('')
+      .toUpperCase();
+  }, [user]);
+
+  const planColor = useMemo(() => {
+    switch (user?.plan) {
+      case 'Premium': return 'text-amber-400 bg-amber-400/10 border-amber-400/20';
+      case 'Professional': return 'text-blue-400 bg-blue-400/10 border-blue-400/20';
+      default: return 'text-zinc-400 bg-zinc-700/30 border-zinc-700/50';
+    }
+  }, [user?.plan]);
 
   useEffect(() => {
     const id = setTimeout(() => setIsMounted(true), 0);
@@ -97,19 +128,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         
         <div className="p-4 border-t border-zinc-800/50 space-y-3">
           {user && (
-            <div className="rounded-lg bg-zinc-900/50 border border-zinc-800 p-3 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center">
-                  <UserIcon className="w-4 h-4 text-zinc-400" />
-                </div>
-                <div>
-                  <div className="text-xs font-medium text-zinc-200 truncate max-w-[100px]">{user.name}</div>
-                  <div className="text-[10px] font-mono text-emerald-500">{user.plan} Plan</div>
-                </div>
+            <div className="rounded-lg bg-zinc-900/50 border border-zinc-800 p-3 flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
+                <span className="text-xs font-bold text-emerald-400 font-mono">{userInitials}</span>
               </div>
-              <button onClick={logout} className="p-1.5 text-zinc-500 hover:text-red-400 hover:bg-red-400/10 rounded transition-colors">
-                <LogOut className="w-4 h-4" />
-              </button>
+              <div className="flex-1 min-w-0">
+                <div className="text-xs font-semibold text-zinc-200 truncate">{user.name || user.email}</div>
+                <span className={`inline-block text-[10px] font-mono px-1.5 py-0.5 rounded border mt-0.5 ${planColor}`}>
+                  {user.plan}
+                </span>
+              </div>
             </div>
           )}
           
@@ -156,13 +184,97 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </span>
             </div>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <div className="text-right hidden sm:block">
               <div className="text-xs font-mono text-zinc-400">NIGERIA TIME</div>
               <div className="text-sm font-mono text-zinc-200">
                 {time || '00:00:00'}
               </div>
             </div>
+
+            {/* User Profile Dropdown */}
+            {user && (
+              <div className="relative" ref={profileRef}>
+                <button
+                  onClick={() => setProfileOpen((v) => !v)}
+                  className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-zinc-800/70 border border-transparent hover:border-zinc-700/50 transition-all"
+                >
+                  <div className="w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center">
+                    <span className="text-xs font-bold text-emerald-400 font-mono">{userInitials}</span>
+                  </div>
+                  <div className="hidden md:block text-left">
+                    <div className="text-xs font-semibold text-zinc-200 leading-tight truncate max-w-[120px]">
+                      {user.name || user.email}
+                    </div>
+                    <div className={`text-[10px] font-mono ${planColor.split(' ')[0]}`}>{user.plan} Plan</div>
+                  </div>
+                  <ChevronDown className={`w-3.5 h-3.5 text-zinc-500 transition-transform hidden md:block ${profileOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {profileOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-64 rounded-xl border border-zinc-700/60 bg-zinc-900 shadow-2xl shadow-black/40 z-50 overflow-hidden">
+                    {/* Profile Header */}
+                    <div className="px-4 py-4 border-b border-zinc-800">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
+                          <span className="text-sm font-bold text-emerald-400 font-mono">{userInitials}</span>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-semibold text-zinc-100 truncate">{user.name || 'User'}</div>
+                          <div className="text-xs text-zinc-400 truncate">{user.email}</div>
+                        </div>
+                      </div>
+                      <div className="mt-3 flex items-center justify-between">
+                        <span className={`text-xs font-mono px-2 py-0.5 rounded border ${planColor}`}>
+                          {user.plan} Plan
+                        </span>
+                        <span className="text-[10px] font-mono text-zinc-500 uppercase">{user.role}</span>
+                      </div>
+                    </div>
+
+                    {/* Menu Items */}
+                    <div className="py-1.5">
+                      <Link
+                        href="/configuration"
+                        onClick={() => setProfileOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:text-zinc-100 hover:bg-zinc-800/60 transition-colors"
+                      >
+                        <Settings className="w-4 h-4 text-zinc-500" />
+                        Settings
+                      </Link>
+                      <Link
+                        href="/pricing"
+                        onClick={() => setProfileOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:text-zinc-100 hover:bg-zinc-800/60 transition-colors"
+                      >
+                        <CreditCard className="w-4 h-4 text-zinc-500" />
+                        Manage Subscription
+                      </Link>
+                      {(user.role === 'Super Admin' || user.role === 'Administrator') && (
+                        <Link
+                          href="/admin"
+                          onClick={() => setProfileOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:text-zinc-100 hover:bg-zinc-800/60 transition-colors"
+                        >
+                          <Shield className="w-4 h-4 text-zinc-500" />
+                          Administration
+                        </Link>
+                      )}
+                    </div>
+
+                    <div className="border-t border-zinc-800 py-1.5">
+                      <button
+                        onClick={() => { setProfileOpen(false); logout(); }}
+                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        Sign Out
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </header>
 

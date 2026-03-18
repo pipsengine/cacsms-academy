@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { signOut } from 'next-auth/react';
+import { getDashboardForPlan, isPublicRoute, isAuthRoute } from '@/lib/auth/redirects';
 
 export type User = {
   id: string;
@@ -47,23 +48,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!isLoading) {
-      const publicRoutes = ['/login', '/register', '/landing', '/pricing', '/'];
       const normalizedPath = pathname || '/';
-      const isLegalRoute = normalizedPath.startsWith('/legal');
-      const isPublicRoute = publicRoutes.includes(normalizedPath) || isLegalRoute;
-      const isAuthRoute = ['/login', '/register', '/landing', '/'].includes(normalizedPath);
+      const isLegal = normalizedPath.startsWith('/legal');
+      const isPublic = isPublicRoute(normalizedPath) || isLegal;
+      const isAuth = isAuthRoute(normalizedPath);
 
-      if (!user && !isPublicRoute) {
+      // Redirect unauthenticated users to /landing
+      if (!user && !isPublic) {
         router.push('/landing');
-      } else if (user && isAuthRoute) {
-        router.push('/currency-strength');
+      }
+      // Redirect authenticated users to correct dashboard based on their plan
+      else if (user && isAuth) {
+        const correctDashboard = getDashboardForPlan(user.plan);
+        router.push(correctDashboard);
       }
     }
   }, [user, isLoading, pathname, router]);
 
   const login = (userData: User) => {
     setUser(userData);
-    router.push('/currency-strength');
+    // Redirect to the appropriate dashboard based on subscription plan
+    const correctDashboard = getDashboardForPlan(userData.plan);
+    router.push(correctDashboard);
   };
 
   const logout = async () => {
@@ -74,6 +80,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const updatePlan = (plan: 'Free' | 'Professional' | 'Premium') => {
     if (user) {
       setUser({ ...user, plan });
+      // Redirect to correct dashboard if plan changes
+      const correctDashboard = getDashboardForPlan(plan);
+      router.push(correctDashboard);
     }
   };
 

@@ -89,7 +89,7 @@ export default function AuthModal({ isOpen, onClose, mode, defaultCountry = 'Int
         email: normalizedEmail,
         password,
         redirect: true,
-        callbackUrl: '/',
+        callbackUrl: '/currency-strength',
       });
 
       if (result && (result as any).error) {
@@ -119,7 +119,7 @@ export default function AuthModal({ isOpen, onClose, mode, defaultCountry = 'Int
               <button
                 key={p.id}
                 type="button"
-                onClick={() => signIn(p.id, { callbackUrl: '/' })}
+                onClick={() => signIn(p.id, { callbackUrl: '/currency-strength' })}
                 className="w-full py-3 px-4 rounded-xl border border-zinc-200 bg-white hover:bg-zinc-50 text-sm font-semibold transition-colors"
               >
                 {p.label}
