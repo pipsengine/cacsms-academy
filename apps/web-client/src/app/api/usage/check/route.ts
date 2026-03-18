@@ -36,9 +36,13 @@ export async function POST(request: Request) {
       where: { userId: user.id, status: 'Active' },
       orderBy: { startDate: 'desc' },
     });
-    const plan = (sub?.planType === 'Professional' || sub?.planType === 'Premium') ? sub.planType : 'Free';
+    // Map old plan names to new ones for backward compatibility
+    let planName: string = 'Scout';
+    if (sub?.planType === 'Professional') planName = 'Trader';
+    else if (sub?.planType === 'Premium') planName = 'ProTrader';
+    else if (sub?.planType) planName = sub.planType;
 
-    const limit = await usageDb.findLimit(plan, featureName);
+    const limit = await usageDb.findLimit(planName, featureName);
     
     if (!limit) {
       if (action === 'consume') {
@@ -92,7 +96,7 @@ export async function POST(request: Request) {
       allowed, 
       message: allowed ? undefined : message,
       resetTime: allowed ? undefined : resetTime,
-      upgradeSuggestion: allowed ? undefined : (plan === 'Free' ? 'Upgrade to Professional' : 'Upgrade to Premium')
+      upgradeSuggestion: allowed ? undefined : (planName === 'Scout' ? 'Upgrade to Analyst' : 'Upgrade to ProTrader')
     });
 
   } catch (error) {

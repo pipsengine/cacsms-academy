@@ -3,6 +3,7 @@
 import { useAuth } from '@/components/AuthProvider';
 import Link from 'next/link';
 import { Lock } from 'lucide-react';
+import { isSuperAdmin } from '@/lib/auth/permissions';
 
 interface AccessControlProps {
   children: React.ReactNode;
@@ -23,10 +24,15 @@ export default function AccessControl({ children, requiredPlan, moduleName }: Ac
     'Institutional': 4,
   };
 
+  // Super Admin / Administrator always get access
+  if (isSuperAdmin(user)) {
+    return <>{children}</>;
+  }
+
+  // Regular users checked against plan level
   const userLevel = user ? (planLevels[user.plan] ?? -1) : -1;
   const requiredLevel = planLevels[requiredPlan] ?? 0;
-
-  if (user?.role === 'Super Admin' || user?.role === 'Administrator' || userLevel >= requiredLevel) {
+  if (userLevel >= requiredLevel) {
     return <>{children}</>;
   }
 

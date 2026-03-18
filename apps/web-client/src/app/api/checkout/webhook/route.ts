@@ -3,10 +3,16 @@ import Stripe from 'stripe';
 import { prisma } from '@/lib/prisma';
 import { getPricingDetail, PlanType, resolveRegion } from '@/lib/pricing/catalog';
 
-type PaidPlan = Exclude<PlanType, 'Free'>;
+type PaidPlan = Exclude<PlanType, 'Scout'>;
 
 function getPaidPlan(input: unknown): PaidPlan | null {
-  if (input === 'Professional' || input === 'Premium') return input;
+  // Support new plan names
+  if (input === 'Analyst' || input === 'Trader' || input === 'ProTrader' || input === 'Institutional') {
+    return input as PaidPlan;
+  }
+  // Legacy migration: map old plan names to new ones
+  if (input === 'Professional') return 'Trader' as PaidPlan;
+  if (input === 'Premium') return 'ProTrader' as PaidPlan;
   return null;
 }
 

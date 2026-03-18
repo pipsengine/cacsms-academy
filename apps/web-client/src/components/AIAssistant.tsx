@@ -62,7 +62,7 @@ export default function AIAssistant() {
         ? data.chunks
         : [data.response || 'I am sorry, I could not reach the servers.'];
       let delay = 0;
-      chunks.forEach((chunk, index) => {
+      chunks.forEach((chunk: string, index: number) => {
         setTimeout(() => {
           setMessages(prev => prev.map(msg => msg.id === assistantId ? { ...msg, content: msg.content + chunk } : msg));
           if (index === chunks.length - 1) {

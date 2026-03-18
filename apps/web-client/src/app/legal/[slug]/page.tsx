@@ -137,8 +137,8 @@ export async function generateStaticParams() {
   return Object.keys(LEGAL_PAGES).map((slug) => ({ slug }));
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const { slug } = params;
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
   const page = LEGAL_PAGES[slug as LegalSlug];
   if (!page) {
     return {
@@ -153,8 +153,8 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-export default async function LegalPage({ params }: { params: { slug: string } }) {
-  const { slug } = params;
+export default async function LegalPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const page = LEGAL_PAGES[slug as LegalSlug];
   if (!page) {
     notFound();
@@ -200,7 +200,7 @@ export default async function LegalPage({ params }: { params: { slug: string } }
 
           <div className="flex flex-wrap gap-3 text-sm">
             {Object.entries(LEGAL_PAGES)
-              .filter(([key]) => key !== params.slug)
+              .filter(([key]) => key !== slug)
               .map(([key, entry]) => (
                 <Link
                   key={key}
