@@ -1,6 +1,5 @@
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import {
   Cpu,
   Globe,
@@ -363,14 +362,99 @@ export default function LandingPage() {
 
             <div className="relative mx-auto max-w-5xl">
               <div className="absolute inset-0 bg-gradient-to-b from-emerald-100/50 to-transparent rounded-3xl transform -translate-y-4 scale-105" />
-              <Image
-                src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&q=80&w=2000"
-                alt="Intel Trader forex intelligence dashboard"
-                width={2000}
-                height={500}
-                className="relative rounded-2xl shadow-2xl border border-zinc-200 object-cover h-[500px] w-full"
-                referrerPolicy="no-referrer"
-              />
+              <div className="relative overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-950 shadow-2xl">
+                <div className="flex h-10 items-center gap-2 border-b border-zinc-800 bg-zinc-900 px-4">
+                  <div className="h-3 w-3 rounded-full bg-red-500" />
+                  <div className="h-3 w-3 rounded-full bg-amber-500" />
+                  <div className="h-3 w-3 rounded-full bg-emerald-500" />
+                  <div className="ml-4 text-xs font-mono uppercase tracking-[0.35em] text-zinc-500">
+                    Intel Trader forex intelligence dashboard
+                  </div>
+                </div>
+
+                <div className="grid gap-4 bg-[radial-gradient(circle_at_top_right,_rgba(16,185,129,0.18),_transparent_28%),linear-gradient(180deg,_#09090b,_#111827)] p-6 lg:grid-cols-[1.1fr_0.9fr]">
+                  <div className="space-y-4">
+                    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/80 p-4">
+                      <div className="mb-4 flex items-center justify-between">
+                        <div>
+                          <p className="text-xs uppercase tracking-[0.35em] text-zinc-500">Opportunity Ranking</p>
+                          <h3 className="mt-2 text-xl font-bold text-white">GBPJPY Long Bias</h3>
+                        </div>
+                        <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-right">
+                          <p className="text-2xl font-bold text-emerald-400">94%</p>
+                          <p className="text-[10px] uppercase tracking-[0.3em] text-emerald-300">Institutional Signal</p>
+                        </div>
+                      </div>
+                      <div className="grid gap-3 md:grid-cols-3">
+                        <MetricPill label="Fractal Align" value="96%" accent="emerald" />
+                        <MetricPill label="Regime" value="Trending" accent="blue" />
+                        <MetricPill label="Breakout Prob" value="88%" accent="amber" />
+                      </div>
+                      <div className="mt-4 h-32 rounded-xl border border-zinc-800 bg-zinc-950/80 p-3">
+                        <div className="flex h-full items-end gap-2">
+                          {[32, 40, 36, 54, 48, 61, 57, 72, 68, 82, 76, 92].map((height, index) => (
+                            <div key={index} className="flex-1 rounded-t bg-gradient-to-t from-emerald-500 to-emerald-300" style={{ height: `${height}%` }} />
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <PanelCard
+                        title="Currency Strength"
+                        lines={[
+                          'JPY leading across monitored majors',
+                          'USD weakening on shorter intraday cycle',
+                          'GBP maintaining directional advantage',
+                        ]}
+                      />
+                      <PanelCard
+                        title="Liquidity Intel"
+                        lines={[
+                          'Buy-side sweep completed above prior high',
+                          'Compression released with displacement',
+                          'Nearest reaction pool mapped below expansion leg',
+                        ]}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/80 p-4">
+                      <p className="text-xs uppercase tracking-[0.35em] text-zinc-500">Live Feed Monitor</p>
+                      <div className="mt-4 space-y-3">
+                        {[
+                          ['EURUSD', 'Compression', '72%'],
+                          ['GBPUSD', 'Breakout Watch', '84%'],
+                          ['USDJPY', 'Trend Extension', '91%'],
+                          ['AUDJPY', 'Liquidity Sweep', '79%'],
+                        ].map(([pair, state, score]) => (
+                          <div key={pair} className="flex items-center justify-between rounded-xl border border-zinc-800 bg-zinc-950/70 px-3 py-3">
+                            <div>
+                              <p className="font-mono text-sm font-bold text-white">{pair}</p>
+                              <p className="text-xs text-zinc-500">{state}</p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-lg font-bold text-emerald-400">{score}</p>
+                              <p className="text-[10px] uppercase tracking-[0.3em] text-zinc-500">Signal</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/80 p-4">
+                      <p className="text-xs uppercase tracking-[0.35em] text-zinc-500">Operational Status</p>
+                      <div className="mt-4 grid gap-3">
+                        <StatusRow label="Feed Status" value="Live" accent="emerald" />
+                        <StatusRow label="Tracked Pairs" value="28" accent="blue" />
+                        <StatusRow label="Signal Queue" value="Healthy" accent="amber" />
+                        <StatusRow label="Latency" value="12ms" accent="emerald" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -497,6 +581,72 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+    </div>
+  );
+}
+
+function MetricPill({
+  label,
+  value,
+  accent,
+}: {
+  label: string;
+  value: string;
+  accent: 'emerald' | 'blue' | 'amber';
+}) {
+  const accentClass =
+    accent === 'emerald'
+      ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-300'
+      : accent === 'blue'
+        ? 'border-blue-500/20 bg-blue-500/10 text-blue-300'
+        : 'border-amber-500/20 bg-amber-500/10 text-amber-300';
+
+  return (
+    <div className={`rounded-xl border p-3 ${accentClass}`}>
+      <p className="text-[10px] uppercase tracking-[0.3em]">{label}</p>
+      <p className="mt-2 text-lg font-bold text-white">{value}</p>
+    </div>
+  );
+}
+
+function PanelCard({ title, lines }: { title: string; lines: string[] }) {
+  return (
+    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/80 p-4">
+      <p className="text-xs uppercase tracking-[0.35em] text-zinc-500">{title}</p>
+      <div className="mt-4 space-y-3">
+        {lines.map((line) => (
+          <div key={line} className="rounded-xl border border-zinc-800 bg-zinc-950/70 px-3 py-3 text-sm text-zinc-300">
+            {line}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function StatusRow({
+  label,
+  value,
+  accent,
+}: {
+  label: string;
+  value: string;
+  accent: 'emerald' | 'blue' | 'amber';
+}) {
+  const dotClass =
+    accent === 'emerald'
+      ? 'bg-emerald-500'
+      : accent === 'blue'
+        ? 'bg-blue-500'
+        : 'bg-amber-500';
+
+  return (
+    <div className="flex items-center justify-between rounded-xl border border-zinc-800 bg-zinc-950/70 px-3 py-3">
+      <div className="flex items-center gap-3">
+        <span className={`h-2.5 w-2.5 rounded-full ${dotClass}`} />
+        <span className="text-sm text-zinc-400">{label}</span>
+      </div>
+      <span className="font-mono text-sm font-bold text-white">{value}</span>
     </div>
   );
 }
