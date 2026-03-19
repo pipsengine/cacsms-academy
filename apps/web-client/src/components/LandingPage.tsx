@@ -561,11 +561,11 @@ export default function LandingPage() {
               <p className="text-sm font-semibold uppercase tracking-[0.35em] text-emerald-600">Our Courses</p>
               <h2 className="mt-3 text-3xl font-bold text-zinc-900">Today is {currentDay} in Week {calendarWeek}</h2>
               <p className="mt-4 text-lg text-zinc-600 leading-8">
-                The landing page now shows only the active lessons for the current weekly flow. As the week moves from Monday to Friday, the visible cards move with it, then the next curriculum week continues the sequence.
+                Stay aligned with a structured learning flow that updates daily, delivering only the most relevant lessons for your current stage. As the week progresses from Monday to Friday, your learning advances with it, ensuring consistent growth without overwhelm. Each new week continues the sequence seamlessly, guiding you step-by-step from foundational concepts to advanced trading mastery.
               </p>
               {currentWeekMeta && (
                 <p className="mt-4 text-sm font-medium text-zinc-500">
-                  Current curriculum track: Week {currentWeekMeta.week} · {currentWeekMeta.module}
+                  Current Curriculum Track: Week {currentWeekMeta.week} · {currentWeekMeta.module}
                 </p>
               )}
             </div>

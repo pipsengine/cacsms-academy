@@ -4,10 +4,10 @@ import { useCallback, useEffect, useState } from 'react';
 
 type DailyTipPayload = {
   title: string;
-  tip: string;
+  content: string;
   pairs: string[];
   market_state: string;
-  actionable_insight: string;
+  action: string;
   image_prompt: string;
 };
 
@@ -60,12 +60,12 @@ export default function DailyTradingTipPreview({ compact = false }: DailyTrading
       {!loading && !error && data && (
         <div className="space-y-3">
           <h4 className="text-lg font-bold text-zinc-900">{data.title}</h4>
-          <p className="text-sm text-zinc-700 leading-relaxed">{data.tip}</p>
+          <p className="text-sm text-zinc-700 leading-relaxed">{data.content}</p>
           <p className="text-xs text-zinc-500">
             <span className="font-semibold text-zinc-700">Market state:</span> {data.market_state}
           </p>
           <p className="text-xs text-zinc-500">
-            <span className="font-semibold text-zinc-700">Action:</span> {data.actionable_insight}
+            <span className="font-semibold text-zinc-700">Action:</span> {data.action}
           </p>
           {data.pairs.length > 0 && (
             <div className="flex flex-wrap gap-2 pt-1">

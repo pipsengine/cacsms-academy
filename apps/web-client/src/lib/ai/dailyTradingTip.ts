@@ -8,14 +8,15 @@ export type DailyTradingTipInput = {
 
 export type DailyTradingTipOutput = {
   title: string;
-  tip: string;
+  content: string;
   pairs: string[];
   market_state: string;
-  actionable_insight: string;
+  action: string;
   image_prompt: string;
 };
 
-const DEFAULT_IMAGE_PROMPT = 'A clean, high-quality forex trading visual showing candlestick charts, trendlines or support/resistance, dark theme, minimal text, professional fintech style';
+const DEFAULT_IMAGE_PROMPT = 'High-quality forex chart showing breakout or consolidation with clean candlesticks, dark theme, professional trading interface';
+const DEFAULT_FALLBACK_PAIRS = ['EUR/USD', 'GBP/USD'];
 
 function normalizePair(pair: string): string {
   const cleaned = pair.replace(/[^A-Za-z]/g, '').toUpperCase();
@@ -40,6 +41,11 @@ function clampTitleWords(title: string): string {
   const words = title.trim().split(/\s+/).filter(Boolean);
   if (words.length <= 8) return title.trim();
   return words.slice(0, 8).join(' ');
+}
+
+function isValidTitleWordCount(title: string): boolean {
+  const words = title.trim().split(/\s+/).filter(Boolean);
+  return words.length >= 6 && words.length <= 8;
 }
 
 function hasActionableLanguage(text: string): boolean {
@@ -97,7 +103,14 @@ function derivePairs(inputPairs: string[] | undefined, snapshot?: Partial<Market
     .slice(0, 4)
     .map((item) => normalizePair(item.pair));
 
-  return dedupePairs([...fromBreakouts, ...fromChannels]).slice(0, 2);
+  const derived = dedupePairs([...fromBreakouts, ...fromChannels]).slice(0, 2);
+  return derived.length > 0 ? derived : DEFAULT_FALLBACK_PAIRS;
+}
+
+function buildPairReference(pairs: string[]): string {
+  if (pairs.length >= 2) return `${pairs[0]} and ${pairs[1]}`;
+  if (pairs.length === 1) return pairs[0];
+  return DEFAULT_FALLBACK_PAIRS.join(' and ');
 }
 
 function extractJsonObject(text: string): string | null {
@@ -122,21 +135,23 @@ function extractJsonObject(text: string): string | null {
 function buildFallbackTip(input: DailyTradingTipInput): DailyTradingTipOutput {
   const marketState = deriveMarketState(input.marketSnapshot);
   const pairs = derivePairs(input.selectedPairs, input.marketSnapshot);
-  const pairText = pairs.length > 0 ? ` on ${pairs.join(' and ')}` : '';
-
-  const tip = `In ${marketState} conditions${pairText}, wait for a candle close beyond a key support or resistance zone before entering. Set your stop-loss beyond the rejected level and size risk to 1% per trade so one false breakout does not damage your week.`;
+  const pairText = buildPairReference(pairs);
+  const content = `Market conditions show ${marketState}, with ${pairText} offering the cleanest structure into the current session. Focus on the pair holding above support or rejecting resistance with a decisive candle close. Execute only after confirmation, then place your stop beyond invalidation and keep risk fixed at 1% per trade.`;
 
   return {
-    title: 'Trade Structure, Not Noise',
-    tip,
+    title: 'Wait For Confirmed Breakout Before Entry',
+    content,
     pairs,
     market_state: marketState,
-    actionable_insight: 'Use close-confirmed breakout entries with a stop beyond invalidation and fixed 1% risk per trade.',
+    action: 'Enter only after candle-close confirmation on structure, place the stop beyond invalidation, and cap risk at 1% per trade.',
     image_prompt: DEFAULT_IMAGE_PROMPT,
   };
 }
 
-function normalizeOutput(raw: Partial<DailyTradingTipOutput>, input: DailyTradingTipInput): DailyTradingTipOutput {
+function normalizeOutput(
+  raw: Partial<DailyTradingTipOutput> & { tip?: string; actionable_insight?: string },
+  input: DailyTradingTipInput
+): DailyTradingTipOutput {
   const fallback = buildFallbackTip(input);
 
   const pairs = raw.pairs && Array.isArray(raw.pairs)
@@ -146,33 +161,49 @@ function normalizeOutput(raw: Partial<DailyTradingTipOutput>, input: DailyTradin
   let title = typeof raw.title === 'string' ? raw.title.trim() : fallback.title;
   if (!title) title = fallback.title;
   title = clampTitleWords(title);
+  if (!isValidTitleWordCount(title)) {
+    title = fallback.title;
+  }
 
   let marketState = typeof raw.market_state === 'string' ? raw.market_state.trim() : '';
   if (!marketState) marketState = fallback.market_state;
 
-  let tip = typeof raw.tip === 'string' ? raw.tip.trim() : fallback.tip;
-  if (!tip) tip = fallback.tip;
+  let content = typeof raw.content === 'string'
+    ? raw.content.trim()
+    : typeof raw.tip === 'string'
+      ? raw.tip.trim()
+      : fallback.content;
+  if (!content) content = fallback.content;
 
-  if (!hasMarketCondition(tip)) {
-    tip = `${tip} Current structure is ${marketState}.`;
+  if (!hasMarketCondition(content)) {
+    content = `${content} Current structure is ${marketState}.`;
   }
 
-  if (!hasActionableLanguage(tip)) {
-    tip = `${tip} Enter only after a confirmed close and keep risk fixed at 1%.`;
+  if (!hasActionableLanguage(content)) {
+    content = `${content} Enter only after a confirmed close and keep risk fixed at 1%.`;
   }
 
-  const sentences = tip
+  const pairText = buildPairReference(pairs);
+  if (!pairs.some((pair) => content.includes(pair))) {
+    content = `${content} Prioritize ${pairText} while this structure remains intact.`;
+  }
+
+  const sentences = content
     .split(/(?<=[.!?])\s+/)
     .map((part) => part.trim())
     .filter(Boolean);
 
-  if (sentences.length < 2) {
-    tip = `${tip} Set your stop beyond the invalidation level before entry.`;
-  } else if (sentences.length > 3) {
-    tip = sentences.slice(0, 3).join(' ');
+  if (sentences.length < 3) {
+    content = `${content} Set your stop beyond the invalidation level before entry.`;
+  } else if (sentences.length > 4) {
+    content = sentences.slice(0, 4).join(' ');
   }
 
-  let actionable = typeof raw.actionable_insight === 'string' ? raw.actionable_insight.trim() : '';
+  let actionable = typeof raw.action === 'string'
+    ? raw.action.trim()
+    : typeof raw.actionable_insight === 'string'
+      ? raw.actionable_insight.trim()
+      : '';
   if (!actionable) {
     actionable = 'Wait for confirmation at key levels, place your stop beyond invalidation, and cap risk to 1% per trade.';
   }
@@ -185,16 +216,16 @@ function normalizeOutput(raw: Partial<DailyTradingTipOutput>, input: DailyTradin
     ? raw.image_prompt.trim()
     : DEFAULT_IMAGE_PROMPT;
 
-  if (countSentences(tip) < 2 || countSentences(tip) > 3) {
+  if (countSentences(content) < 3 || countSentences(content) > 4) {
     return fallback;
   }
 
   return {
     title,
-    tip,
+    content,
     pairs,
     market_state: marketState,
-    actionable_insight: actionable,
+    action: actionable,
     image_prompt: imagePrompt,
   };
 }
@@ -225,14 +256,15 @@ function buildPrompt(input: DailyTradingTipInput): string {
       }
     : null;
 
-  return `SYSTEM ROLE:
-You are an institutional-grade Forex trading assistant for Intel Trader. You provide concise, actionable daily trading insights based on current or recent market conditions.
+  return `FINAL COURSE PROMPT (UI-OPTIMIZED)
+SYSTEM ROLE:
+You are a professional Forex trading assistant for Intel Trader.
 
 OBJECTIVE:
-Generate a high-quality daily trading tip that combines:
-1. Practical trading advice
-2. Current or recent market behavior (trend, consolidation, breakout, volatility)
-3. Reference to 1-2 relevant currency pairs when applicable
+Generate a daily market context tip that combines:
+1. Current market condition
+2. Specific currency pairs
+3. One clear execution rule
 
 INPUT DATA:
 - market_state_hint: ${marketState}
@@ -240,28 +272,28 @@ INPUT DATA:
 - market_snapshot: ${JSON.stringify(snapshotSummary)}
 
 STRICT RULES:
-1. Title must be <= 8 words
-2. Tip must be 2-3 sentences only
-3. Must include at least ONE actionable idea
-4. Must reference market condition (trend, range, breakout, rejection, etc.)
-5. Avoid generic advice (e.g., "be patient" alone is not allowed)
-6. Use professional tone (no hype, no promises)
-7. If market data is unavailable -> fallback to educational but still actionable tip
+1. Title: max 6-8 words
+2. Body: max 3-4 sentences
+3. Must include market state and execution action
+4. Must reference 1-2 currency pairs
+5. Must be practical, realistic, and immediately usable
+6. Must not feel generic
+7. Use professional tone with no hype or promises
 
 OUTPUT FORMAT (STRICT JSON ONLY):
 {
   "title": "string",
-  "tip": "string",
-  "pairs": ["EUR/USD", "GBP/USD"],
-  "market_state": "short description",
-  "actionable_insight": "specific trading advice derived from the tip",
-  "image_prompt": "A clean, high-quality forex trading visual showing candlestick charts, trendlines or support/resistance, dark theme, minimal text, professional fintech style"
+  "content": "short paragraph with market context and advice",
+  "market_state": "e.g. bullish bias, range-bound, breakout conditions",
+  "action": "clear execution rule",
+  "pairs": ["AUD/NZD", "AUD/JPY"],
+  "image_prompt": "High-quality forex chart showing breakout or consolidation with clean candlesticks, dark theme, professional trading interface"
 }
 
-QUALITY CHECKS BEFORE FINAL OUTPUT:
-- Ensure tip reflects a real trading scenario
-- Ensure at least one pair is mentioned if market context exists
-- Ensure clarity for beginner-to-intermediate traders
+QUALITY CHECK:
+- Must feel like real market insight
+- Must not be generic
+- Must be usable immediately by a trader
 
 Return only valid JSON.`;
 }

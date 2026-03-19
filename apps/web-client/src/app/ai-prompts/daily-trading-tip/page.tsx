@@ -17,7 +17,7 @@ export default function DailyTradingTipPage() {
         <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5">
           <p className="text-xs uppercase tracking-[0.28em] text-zinc-500">Output Contract</p>
           <p className="mt-3 text-sm text-zinc-300 leading-relaxed">
-            The generator returns strict JSON with title, tip, pairs, market_state, actionable_insight, and image_prompt.
+            The generator returns strict JSON with title, content, market_state, action, pairs, and image_prompt.
             If market data is weak, it falls back to an educational but actionable scenario.
           </p>
         </div>
