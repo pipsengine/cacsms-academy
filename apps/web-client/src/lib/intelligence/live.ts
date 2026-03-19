@@ -1,4 +1,3 @@
-import { getTrackedPairs } from '@/lib/market/config';
 import { getLiquidityOverview } from '@/lib/market/liquidity';
 import { getMarketDataService } from '@/lib/market/service';
 import type { ForexCandle } from '@/lib/market/types';
@@ -90,7 +89,11 @@ export async function getLiveRankedOpportunities(): Promise<{ provider: string; 
   const service = getMarketDataService();
   const snapshot = await service.getSnapshot();
   const liquidity = await getLiquidityOverview();
-  const pairs = getTrackedPairs().slice(0, 8);
+  const snapshotPairs = [...new Set([
+    ...snapshot.channels.map((entry) => entry.pair),
+    ...snapshot.breakouts.map((entry) => entry.pair),
+  ])];
+  const pairs = (snapshotPairs.length > 0 ? snapshotPairs : [...new Set(snapshot.channels.map((entry) => entry.pair))]).slice(0, 8);
 
   const opportunities = await Promise.all(
     pairs.map(async (pair) => {

@@ -31,6 +31,9 @@ export default function CurrencyStrengthHeatmap() {
               <span className="text-xs font-mono mt-1">
                 {currency.score}%
               </span>
+              <span className="text-[10px] font-mono mt-1 opacity-80">
+                {currency.score >= 62 ? 'LONG' : currency.score <= 38 ? 'SHORT' : 'NEUTRAL'}
+              </span>
             </div>
           )) : (
             <div className="col-span-4 text-center text-zinc-500 font-mono text-sm py-8">

@@ -8,6 +8,7 @@ import path from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
 import { fileURLToPath } from 'node:url';
 import { getMarketDataService } from './src/lib/market/service.ts';
+import { syncDerivedAlerts } from './src/lib/alerts/service.ts';
 
 if (!process.env.NODE_ENV) {
   (process.env as any).NODE_ENV = process.env.npm_lifecycle_event === 'start' ? 'production' : 'development';
@@ -74,10 +75,17 @@ app.prepare().then(() => {
     console.error('Initial market snapshot failed', error);
   });
 
+  void syncDerivedAlerts().catch((error) => {
+    console.error('Initial derived alert sync failed', error);
+  });
+
   setInterval(() => {
-    void marketService.refresh().then(() => emitSnapshot(io)).catch((error) => {
-      console.error('Market refresh failed', error);
-    });
+    void marketService.refresh()
+      .then(() => emitSnapshot(io))
+      .then(() => syncDerivedAlerts())
+      .catch((error) => {
+        console.error('Market refresh failed', error);
+      });
   }, Number(process.env.FOREX_REFRESH_SECONDS ?? 60) * 1000);
 
   io.on('connection', (socket) => {

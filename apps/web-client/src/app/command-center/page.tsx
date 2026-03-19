@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef, useState } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import AccessControl from '@/components/AccessControl';
 import CurrencyStrengthHeatmap from '@/components/CurrencyStrengthHeatmap';
@@ -13,6 +14,27 @@ import { getAccessibleFeatures } from '@/lib/auth/permissions';
 export default function CommandCenterPage() {
   const { user } = useAuth();
   const features = getAccessibleFeatures(user);
+  const leftColumnRef = useRef<HTMLDivElement | null>(null);
+  const [topRowHeight, setTopRowHeight] = useState<number | null>(null);
+
+  useEffect(() => {
+    const target = leftColumnRef.current;
+    if (!target) return;
+
+    const updateHeight = () => {
+      setTopRowHeight(Math.ceil(target.getBoundingClientRect().height));
+    };
+
+    updateHeight();
+    const observer = new ResizeObserver(() => updateHeight());
+    observer.observe(target);
+    window.addEventListener('resize', updateHeight);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', updateHeight);
+    };
+  }, []);
 
   return (
     <DashboardLayout>
@@ -24,9 +46,9 @@ export default function CommandCenterPage() {
           </p>
         </div>
 
-        <div className="grid items-stretch gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+        <div className="grid items-start gap-6 xl:grid-cols-[1.1fr_0.9fr]">
           {features.currencyStrength && (
-            <div className="space-y-6">
+            <div ref={leftColumnRef} className="space-y-6 self-start">
               <AccessControl requiredPlan="Scout" moduleName="Currency Strength Analytics">
                 <CurrencyStrengthHeatmap />
               </AccessControl>
@@ -38,9 +60,16 @@ export default function CommandCenterPage() {
           )}
 
           {features.breakoutEngine && (
-            <AccessControl requiredPlan="Analyst" moduleName="Breakout Engine">
-              <BreakoutProbabilityTable />
-            </AccessControl>
+            <div
+              className="min-h-0 self-start overflow-hidden"
+              style={topRowHeight ? { height: `${topRowHeight}px` } : undefined}
+            >
+              <AccessControl requiredPlan="Analyst" moduleName="Breakout Engine">
+                <div className="h-full min-h-0">
+                  <BreakoutProbabilityTable />
+                </div>
+              </AccessControl>
+            </div>
           )}
         </div>
 

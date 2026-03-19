@@ -6,6 +6,16 @@ import { motion, AnimatePresence } from 'motion/react';
 import ChartModal from './ChartModal';
 import { useMarketData } from './MarketDataProvider';
 
+function formatPrice(pair: string, value?: number | null) {
+  if (!Number.isFinite(value)) return '--';
+  return pair.endsWith('JPY') ? value.toFixed(3) : value.toFixed(5);
+}
+
+function formatPercent(value?: number | null, digits = 2) {
+  if (!Number.isFinite(value)) return '--';
+  return value.toFixed(digits);
+}
+
 export default function BreakoutProbabilityTable() {
   const { breakouts, isConnected } = useMarketData();
   const [selectedChart, setSelectedChart] = useState<{pair: string, tf: string, type: string} | null>(null);
@@ -21,7 +31,7 @@ export default function BreakoutProbabilityTable() {
           </div>
         </div>
         <div className="p-4 flex-1 min-h-0 overflow-y-auto">
-          <div className="space-y-3">
+          <div className="space-y-3 min-h-0">
             <AnimatePresence>
               {breakouts.length > 0 ? breakouts.map((bo, i) => (
                 <motion.div 
@@ -43,9 +53,19 @@ export default function BreakoutProbabilityTable() {
                       <div className="flex items-center gap-2">
                         <span className="font-bold text-zinc-200">{bo.pair}</span>
                         <span className="text-xs font-mono text-zinc-500">{bo.tf}</span>
+                        <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded border ${
+                          bo.channelStage === 'Confirmed'
+                            ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-300'
+                            : 'border-amber-500/20 bg-amber-500/10 text-amber-300'
+                        }`}>
+                          {bo.channelStage}
+                        </span>
                       </div>
                       <div className="text-xs font-mono text-zinc-400 mt-0.5">
-                        {bo.time}
+                        {bo.breakoutType ?? 'Structure Watch'} · {bo.boundary ?? 'LEVEL'} · {bo.time}
+                      </div>
+                      <div className="text-[10px] font-mono text-zinc-500 mt-1">
+                        Trigger {formatPrice(bo.pair, bo.triggerPrice)} · Live {formatPrice(bo.pair, bo.currentPrice)} · Gap {formatPercent(bo.distanceToTriggerPct, 3)}%
                       </div>
                     </div>
                   </div>
@@ -71,6 +91,9 @@ export default function BreakoutProbabilityTable() {
                         'border-amber-500/30 text-amber-400 bg-amber-500/10'
                       }`}>
                         {bo.status}
+                      </div>
+                      <div className="text-[10px] font-mono text-zinc-500">
+                        Width {formatPercent(bo.channelWidthPct, 2)}%
                       </div>
                     </div>
                   </div>

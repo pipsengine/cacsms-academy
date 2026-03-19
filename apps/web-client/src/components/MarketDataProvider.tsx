@@ -17,6 +17,13 @@ interface ChannelData {
   score: number;
   bias: string;
   prob: number;
+  stage: 'Developing' | 'Confirmed';
+  support: number;
+  resistance: number;
+  currentPrice: number;
+  widthPct: number;
+  containmentPct: number;
+  breakoutBias: 'LONG' | 'SHORT' | 'NEUTRAL';
   timestamp?: string;
 }
 
@@ -27,6 +34,13 @@ interface BreakoutData {
   conf: number;
   time: string;
   status: string;
+  boundary: 'SUPPORT' | 'RESISTANCE';
+  triggerPrice: number;
+  currentPrice: number;
+  distanceToTriggerPct: number;
+  channelWidthPct: number;
+  breakoutType: 'Continuation' | 'Compression Release' | 'Channel Reversal';
+  channelStage: 'Developing' | 'Confirmed';
   timestamp?: string;
 }
 

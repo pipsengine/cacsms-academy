@@ -1,6 +1,7 @@
 export type CurrencyStrength = {
   name: string;
   score: number;
+  bias: 'LONG' | 'SHORT' | 'NEUTRAL';
 };
 
 export type ChannelSignal = {
@@ -11,6 +12,13 @@ export type ChannelSignal = {
   score: number;
   bias: 'LONG' | 'SHORT' | 'NEUTRAL';
   prob: number;
+  stage: 'Developing' | 'Confirmed';
+  support: number;
+  resistance: number;
+  currentPrice: number;
+  widthPct: number;
+  containmentPct: number;
+  breakoutBias: 'LONG' | 'SHORT' | 'NEUTRAL';
 };
 
 export type BreakoutSignal = {
@@ -20,6 +28,13 @@ export type BreakoutSignal = {
   conf: number;
   time: string;
   status: 'ACTIVE' | 'TRIGGERED' | 'MONITORING';
+  boundary: 'SUPPORT' | 'RESISTANCE';
+  triggerPrice: number;
+  currentPrice: number;
+  distanceToTriggerPct: number;
+  channelWidthPct: number;
+  breakoutType: 'Continuation' | 'Compression Release' | 'Channel Reversal';
+  channelStage: 'Developing' | 'Confirmed';
 };
 
 export type ForexCandle = {

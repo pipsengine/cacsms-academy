@@ -42,23 +42,273 @@ function determinePairBias(candles: ForexCandle[]): 'LONG' | 'SHORT' | 'NEUTRAL'
   return 'NEUTRAL';
 }
 
-function determineChannelType(candles: ForexCandle[]) {
+type RegressionLine = {
+  slope: number;
+  intercept: number;
+};
+
+type AnalyzedChannel = {
+  channel: ChannelSignal;
+  breakout: BreakoutSignal;
+};
+
+function linearRegression(values: number[]): RegressionLine {
+  if (values.length === 0) return { slope: 0, intercept: 0 };
+
+  const xs = values.map((_, index) => index);
+  const xMean = mean(xs);
+  const yMean = mean(values);
+  const numerator = values.reduce((total, value, index) => total + ((xs[index] - xMean) * (value - yMean)), 0);
+  const denominator = xs.reduce((total, value) => total + ((value - xMean) ** 2), 0);
+  const slope = denominator === 0 ? 0 : numerator / denominator;
+  return {
+    slope,
+    intercept: yMean - (slope * xMean),
+  };
+}
+
+function project(line: RegressionLine, index: number) {
+  return line.intercept + (line.slope * index);
+}
+
+function classifyChannelType(upperSlope: number, lowerSlope: number, compression: number, avgWidth: number) {
+  const slopeThreshold = Math.max(avgWidth * 0.0008, 0.00001);
+  const upperFlat = Math.abs(upperSlope) <= slopeThreshold;
+  const lowerFlat = Math.abs(lowerSlope) <= slopeThreshold;
+
+  if (upperFlat && lowerFlat) return 'Horizontal';
+  if (upperSlope > slopeThreshold && lowerSlope > slopeThreshold) return 'Ascending';
+  if (upperSlope < -slopeThreshold && lowerSlope < -slopeThreshold) return 'Descending';
+  if (upperSlope < -slopeThreshold && lowerSlope > slopeThreshold) return 'Sym Triangle';
+  if (compression > 0.12 && upperFlat) return 'Ascending Triangle';
+  if (compression > 0.12 && lowerFlat) return 'Descending Triangle';
+  return compression > 0.08 ? 'Compression Channel' : 'Directional Channel';
+}
+
+function getSlopeCoherence(type: string, upperSlope: number, lowerSlope: number) {
+  const sameDirection = Math.sign(upperSlope) === Math.sign(lowerSlope);
+  if (type.includes('Triangle')) {
+    return upperSlope <= 0 && lowerSlope >= 0 ? 1 : 0.55;
+  }
+  if (type === 'Horizontal') {
+    return Math.max(0, 1 - (Math.abs(upperSlope) + Math.abs(lowerSlope)) * 10_000);
+  }
+  return sameDirection ? 1 : 0.5;
+}
+
+function analyzeChannel(pair: string, candles: ForexCandle[], timeframe: string): AnalyzedChannel | null {
+  if (candles.length < 20) return null;
+
   const closes = candles.map((candle) => candle.close);
   const highs = candles.map((candle) => candle.high);
   const lows = candles.map((candle) => candle.low);
-  const move = closes[closes.length - 1] - closes[0];
-  const width = Math.max(...highs) - Math.min(...lows);
-  const noise = stdDev(closes);
+  const avgClose = mean(closes);
+  const avgRange = mean(candles.map((candle) => candle.high - candle.low));
+  const latest = candles[candles.length - 1];
+  const previous = candles[candles.length - 2] ?? latest;
+  const upperLine = linearRegression(highs);
+  const lowerLine = linearRegression(lows);
 
-  if (Math.abs(move) < width * 0.08) {
-    return noise < width * 0.18 ? 'Horizontal' : 'Sym Triangle';
+  const projected = candles.map((_, index) => {
+    let upper = project(upperLine, index);
+    let lower = project(lowerLine, index);
+    if (upper <= lower) {
+      const midpoint = (upper + lower) / 2;
+      const padding = Math.max(avgRange * 1.1, avgClose * 0.0012);
+      upper = midpoint + (padding / 2);
+      lower = midpoint - (padding / 2);
+    }
+    return { upper, lower, width: upper - lower };
+  });
+
+  const widths = projected.map((entry) => entry.width);
+  const avgWidth = mean(widths);
+  if (!Number.isFinite(avgWidth) || avgWidth <= Math.max(avgClose * 0.00025, 0.00001)) {
+    return null;
   }
 
-  return move > 0 ? 'Ascending' : 'Descending';
+  const latestProjection = projected[projected.length - 1];
+  const tolerance = Math.max(avgWidth * 0.12, avgClose * 0.00035);
+  const containment = candles.filter((candle, index) => (
+    candle.high <= projected[index].upper + tolerance
+    && candle.low >= projected[index].lower - tolerance
+  )).length;
+  const resistanceTouches = candles.filter((candle, index) => Math.abs(candle.high - projected[index].upper) <= tolerance).length;
+  const supportTouches = candles.filter((candle, index) => Math.abs(candle.low - projected[index].lower) <= tolerance).length;
+
+  const containmentPct = clamp(Math.round((containment / candles.length) * 100), 0, 100);
+  const widthStability = clamp(1 - (stdDev(widths) / avgWidth), 0, 1);
+  const compression = clamp((widths[0] - widths[widths.length - 1]) / widths[0], -1, 1);
+  const type = classifyChannelType(upperLine.slope, lowerLine.slope, compression, avgWidth);
+  const slopeCoherence = getSlopeCoherence(type, upperLine.slope, lowerLine.slope);
+  const noisePenalty = clamp((stdDev(closes) / avgWidth) * 40, 0, 35);
+  const touchScore = clamp(Math.round(((supportTouches + resistanceTouches) / 8) * 100), 0, 100);
+  const stage: ChannelSignal['stage'] = supportTouches >= 2
+    && resistanceTouches >= 2
+    && containmentPct >= 68
+    && widthStability >= 0.45
+      ? 'Confirmed'
+      : 'Developing';
+
+  const currentPrice = latest.close;
+  const support = latestProjection.lower;
+  const resistance = latestProjection.upper;
+  const distanceToResistance = (resistance - currentPrice) / avgWidth;
+  const distanceToSupport = (currentPrice - support) / avgWidth;
+  const proximityScore = clamp(Math.round((1 - Math.min(Math.abs(distanceToResistance), Math.abs(distanceToSupport))) * 100), 0, 100);
+  const trendBias = determinePairBias(candles);
+
+  let breakoutBias: ChannelSignal['breakoutBias'] = 'NEUTRAL';
+  if (currentPrice >= resistance - (avgWidth * 0.18) && trendBias !== 'SHORT') breakoutBias = 'LONG';
+  if (currentPrice <= support + (avgWidth * 0.18) && trendBias !== 'LONG') breakoutBias = 'SHORT';
+  if (breakoutBias === 'NEUTRAL' && stage === 'Confirmed') breakoutBias = trendBias;
+
+  const score = clamp(
+    Math.round(
+      (touchScore * 0.24)
+      + (containmentPct * 0.24)
+      + (widthStability * 100 * 0.18)
+      + (slopeCoherence * 100 * 0.16)
+      + (Math.max(0, 100 - noisePenalty) * 0.18)
+    ),
+    42,
+    98
+  );
+  const prob = clamp(
+    Math.round(
+      (score * 0.5)
+      + (Math.max(0, compression) * 100 * 0.22)
+      + (proximityScore * 0.18)
+      + ((stage === 'Confirmed' ? 92 : 62) * 0.1)
+    ),
+    40,
+    98
+  );
+
+  const touches = `R${Math.max(0, resistanceTouches)} | S${Math.max(0, supportTouches)}`;
+  const bias = breakoutBias === 'NEUTRAL' ? trendBias : breakoutBias;
+  const channel: ChannelSignal = {
+    pair,
+    tf: timeframe,
+    type,
+    touches,
+    score,
+    bias,
+    prob,
+    stage,
+    support,
+    resistance,
+    currentPrice,
+    widthPct: clamp(Number(((avgWidth / avgClose) * 100).toFixed(2)), 0, 100),
+    containmentPct,
+    breakoutBias,
+  };
+
+  const resistanceExtension = (currentPrice - resistance) / avgWidth;
+  const supportExtension = (support - currentPrice) / avgWidth;
+  const direction: BreakoutSignal['dir'] = breakoutBias === 'SHORT'
+    ? 'SHORT'
+    : breakoutBias === 'LONG'
+      ? 'LONG'
+      : Math.abs(distanceToResistance) <= Math.abs(distanceToSupport)
+        ? 'LONG'
+        : 'SHORT';
+  const boundary: BreakoutSignal['boundary'] = direction === 'LONG' ? 'RESISTANCE' : 'SUPPORT';
+  const triggerPrice = boundary === 'RESISTANCE' ? resistance : support;
+  const extension = boundary === 'RESISTANCE' ? resistanceExtension : supportExtension;
+  const distanceToTriggerPct = Math.abs(((triggerPrice - currentPrice) / currentPrice) * 100);
+  const recentReference = candles[Math.max(0, candles.length - 6)].close;
+  const momentum = Math.abs((latest.close - recentReference) / recentReference);
+  const triggerConfirmed = boundary === 'RESISTANCE'
+    ? latest.close > resistance && previous.close <= resistance
+    : latest.close < support && previous.close >= support;
+
+  let status: BreakoutSignal['status'] = 'MONITORING';
+  if (triggerConfirmed || extension > 0.08) {
+    status = 'TRIGGERED';
+  } else if (distanceToTriggerPct <= ((avgWidth / currentPrice) * 100 * 0.3) || breakoutBias !== 'NEUTRAL') {
+    status = 'ACTIVE';
+  }
+
+  const breakoutType: BreakoutSignal['breakoutType'] = type.includes('Triangle') || compression > 0.12
+    ? 'Compression Release'
+    : trendBias === direction
+      ? 'Continuation'
+      : 'Channel Reversal';
+  const conf = clamp(
+    Math.round(
+      (score * 0.34)
+      + (Math.max(0, compression) * 100 * 0.18)
+      + (clamp(Math.round(momentum * 14_000), 0, 100) * 0.14)
+      + (Math.max(0, 100 - (distanceToTriggerPct * 220)) * 0.16)
+      + ((status === 'TRIGGERED' ? 96 : status === 'ACTIVE' ? 78 : 58) * 0.18)
+    ),
+    45,
+    98
+  );
+
+  const breakout: BreakoutSignal = {
+    pair,
+    tf: timeframe,
+    dir: direction,
+    conf,
+    time: minutesAgo(latest.datetime),
+    status,
+    boundary,
+    triggerPrice,
+    currentPrice,
+    distanceToTriggerPct: clamp(Number(distanceToTriggerPct.toFixed(3)), 0, 100),
+    channelWidthPct: clamp(Number(((avgWidth / currentPrice) * 100).toFixed(2)), 0, 100),
+    breakoutType,
+    channelStage: stage,
+  };
+
+  return { channel, breakout };
+}
+
+function getCurrencyBiasFromScore(score: number): 'LONG' | 'SHORT' | 'NEUTRAL' {
+  if (score >= 62) return 'LONG';
+  if (score <= 38) return 'SHORT';
+  return 'NEUTRAL';
+}
+
+function selectPairsFromCurrencyStrength(
+  currencies: CurrencyStrength[],
+  pairs: string[],
+  maxPairs = 8
+) {
+  const scoreByCurrency = new Map(currencies.map((entry) => [entry.name, entry.score] as const));
+
+  return pairs
+    .map((pair) => {
+      if (pair.length !== 6) return null;
+      const base = pair.slice(0, 3);
+      const quote = pair.slice(3);
+      const baseScore = scoreByCurrency.get(base);
+      const quoteScore = scoreByCurrency.get(quote);
+      if (baseScore == null || quoteScore == null) return null;
+
+      const divergence = Math.abs(baseScore - quoteScore);
+      const baseBias = getCurrencyBiasFromScore(baseScore);
+      const quoteBias = getCurrencyBiasFromScore(quoteScore);
+      const aligned = (baseBias === 'LONG' && quoteBias === 'SHORT') || (baseBias === 'SHORT' && quoteBias === 'LONG');
+      const neutralPenalty = baseBias === 'NEUTRAL' || quoteBias === 'NEUTRAL' ? 12 : 0;
+      const pairScore = divergence + (aligned ? 18 : 0) - neutralPenalty;
+
+      return {
+        pair,
+        pairScore,
+      };
+    })
+    .filter((entry): entry is { pair: string; pairScore: number } => Boolean(entry))
+    .sort((left, right) => right.pairScore - left.pairScore)
+    .slice(0, maxPairs)
+    .map((entry) => entry.pair);
 }
 
 function buildCurrencyStrengths(series: Record<string, ForexCandle[]>): CurrencyStrength[] {
   const currencies = new Map<string, number>();
+  const currencyCounts = new Map<string, number>();
 
   for (const [pair, candles] of Object.entries(series)) {
     if (pair.length !== 6 || candles.length < 2) continue;
@@ -70,94 +320,87 @@ function buildCurrencyStrengths(series: Record<string, ForexCandle[]>): Currency
 
     currencies.set(base, (currencies.get(base) ?? 0) + changePct);
     currencies.set(quote, (currencies.get(quote) ?? 0) - changePct);
+    currencyCounts.set(base, (currencyCounts.get(base) ?? 0) + 1);
+    currencyCounts.set(quote, (currencyCounts.get(quote) ?? 0) + 1);
   }
 
-  const values = [...currencies.values()];
-  const min = Math.min(...values, 0);
-  const max = Math.max(...values, 1);
-  const range = max - min || 1;
+  const averaged = [...currencies.entries()].map(([name, total]) => {
+    const count = currencyCounts.get(name) ?? 1;
+    return [name, total / count] as const;
+  });
 
-  return [...currencies.entries()]
+  const values = averaged.map(([, value]) => value);
+  if (values.length === 0) return [];
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const range = max - min;
+
+  if (range === 0) {
+    return averaged
+      .map(([name]) => ({ name, score: 50, bias: 'NEUTRAL' as const }))
+      .sort((left, right) => right.score - left.score);
+  }
+
+  return averaged
     .map(([name, raw]) => ({
       name,
-      score: Math.round(((raw - min) / range) * 100),
+      score: clamp(Math.round(((raw - min) / range) * 100), 0, 100),
+      bias: getCurrencyBiasFromScore(clamp(Math.round(((raw - min) / range) * 100), 0, 100)),
     }))
     .sort((left, right) => right.score - left.score);
 }
 
-function buildChannelSignals(series: Record<string, ForexCandle[]>, timeframe: string): ChannelSignal[] {
-  return Object.entries(series)
-    .filter(([, candles]) => candles.length >= 2)
-    .map(([pair, candles]) => {
-      const closes = candles.map((candle) => candle.close);
-      const highs = candles.map((candle) => candle.high);
-      const lows = candles.map((candle) => candle.low);
-      const meanClose = mean(closes);
-      const width = Math.max(...highs) - Math.min(...lows);
-      const slope = closes[closes.length - 1] - closes[0];
-      const relativeSlope = meanClose ? Math.abs(slope / meanClose) : 0;
-      const volatility = meanClose ? width / meanClose : 0;
-      const score = clamp(Math.round(55 + relativeSlope * 1200 + volatility * 350), 45, 96);
-      const prob = clamp(Math.round(50 + relativeSlope * 1000), 40, 93);
-      const bias = determinePairBias(candles);
-      const type = determineChannelType(candles);
-      const resistanceTouches = clamp(Math.round(2 + prob / 22), 2, 5);
-      const supportTouches = clamp(Math.round(2 + score / 26), 2, 5);
+const CURRENCY_STRENGTH_TIMEFRAMES: Array<{ interval: string; points: number; weight: number }> = [
+  { interval: '1week', points: 52, weight: 0.5 },
+  { interval: '1day', points: 90, weight: 0.3 },
+  { interval: '4h', points: 90, weight: 0.2 },
+];
 
+async function buildWeightedCurrencyStrengths(
+  provider: ForexMarketProvider,
+  pairs: string[]
+): Promise<CurrencyStrength[]> {
+  const weighted = new Map<string, number>();
+  const weights = new Map<string, number>();
+
+  for (const { interval, points, weight } of CURRENCY_STRENGTH_TIMEFRAMES) {
+    const tfSeries = await fetchSeries(provider, pairs, interval, points);
+    const tfStrengths = buildCurrencyStrengths(tfSeries);
+
+    for (const strength of tfStrengths) {
+      weighted.set(strength.name, (weighted.get(strength.name) ?? 0) + strength.score * weight);
+      weights.set(strength.name, (weights.get(strength.name) ?? 0) + weight);
+    }
+  }
+
+  return [...weighted.entries()]
+    .map(([name, value]) => {
+      const totalWeight = weights.get(name) ?? 1;
+      const score = clamp(Math.round(value / totalWeight), 0, 100);
       return {
-        pair,
-        tf: timeframe,
-        type,
-        touches: `R${resistanceTouches} | S${supportTouches}`,
+        name,
         score,
-        bias,
-        prob,
+        bias: getCurrencyBiasFromScore(score),
       };
     })
-    .sort((left, right) => right.score - left.score)
-    .slice(0, 6);
+    .sort((left, right) => right.score - left.score);
 }
 
-function buildBreakoutSignals(series: Record<string, ForexCandle[]>, timeframe: string): BreakoutSignal[] {
-  return Object.entries(series)
-    .filter(([, candles]) => candles.length >= 2)
-    .map(([pair, candles]) => {
-      const latest = candles[candles.length - 1];
-      const history = candles.slice(0, -1);
-      const previousHigh = Math.max(...history.map((candle) => candle.high));
-      const previousLow = Math.min(...history.map((candle) => candle.low));
-      const width = previousHigh - previousLow || latest.close * 0.001;
-      const highBreak = (latest.close - previousHigh) / width;
-      const lowBreak = (previousLow - latest.close) / width;
+function buildStructuredSignals(series: Record<string, ForexCandle[]>, timeframe: string) {
+  const analyzed = Object.entries(series)
+    .map(([pair, candles]) => analyzeChannel(pair, candles, timeframe))
+    .filter((entry): entry is AnalyzedChannel => entry !== null);
 
-      let dir: 'LONG' | 'SHORT' = determinePairBias(candles) === 'SHORT' ? 'SHORT' : 'LONG';
-      let status: 'ACTIVE' | 'TRIGGERED' | 'MONITORING' = 'MONITORING';
-      let conf = 58;
-
-      if (highBreak > 0.05) {
-        dir = 'LONG';
-        status = highBreak > 0.2 ? 'TRIGGERED' : 'ACTIVE';
-        conf = clamp(Math.round(68 + highBreak * 120), 60, 95);
-      } else if (lowBreak > 0.05) {
-        dir = 'SHORT';
-        status = lowBreak > 0.2 ? 'TRIGGERED' : 'ACTIVE';
-        conf = clamp(Math.round(68 + lowBreak * 120), 60, 95);
-      } else {
-        const momentum = Math.abs((latest.close - history[0].close) / history[0].close);
-        conf = clamp(Math.round(52 + momentum * 1200), 45, 78);
-      }
-
-      return {
-        pair,
-        tf: timeframe,
-        dir,
-        conf,
-        time: minutesAgo(latest.datetime),
-        status,
-      };
-    })
-    .sort((left, right) => right.conf - left.conf)
-    .slice(0, 6);
+  return {
+    channels: analyzed
+      .map((entry) => entry.channel)
+      .sort((left, right) => right.score - left.score)
+      .slice(0, 6),
+    breakouts: analyzed
+      .map((entry) => entry.breakout)
+      .sort((left, right) => right.conf - left.conf)
+      .slice(0, 6),
+  };
 }
 
 async function fetchSeries(provider: ForexMarketProvider, pairs: string[], interval: string, outputsize: number) {
@@ -213,36 +456,26 @@ function extractPriceTimestamps(series: Record<string, ForexCandle[]>): Record<s
   return priceTimestamps;
 }
 
-async function buildMultiTfChannels(
+async function buildMultiTfStructure(
   provider: ForexMarketProvider,
   pairs: string[]
-): Promise<ChannelSignal[]> {
-  const all: ChannelSignal[] = [];
-  for (const { label, interval, points } of CHANNEL_TIMEFRAMES) {
-    try {
-      const tfSeries = await fetchSeries(provider, pairs, interval, points);
-      all.push(...buildChannelSignals(tfSeries, label));
-    } catch {
-      // skip this timeframe if provider fails
-    }
-  }
-  return all.sort((a, b) => b.score - a.score);
-}
-
-async function buildMultiTfBreakouts(
-  provider: ForexMarketProvider,
-  pairs: string[]
-): Promise<BreakoutSignal[]> {
-  const all: BreakoutSignal[] = [];
+): Promise<{ channels: ChannelSignal[]; breakouts: BreakoutSignal[] }> {
+  const channels: ChannelSignal[] = [];
+  const breakouts: BreakoutSignal[] = [];
   for (const { label, interval, points } of BREAKOUT_TIMEFRAMES) {
     try {
       const tfSeries = await fetchSeries(provider, pairs, interval, points);
-      all.push(...buildBreakoutSignals(tfSeries, label));
+      const structured = buildStructuredSignals(tfSeries, label);
+      channels.push(...structured.channels);
+      breakouts.push(...structured.breakouts);
     } catch {
       // skip this timeframe if provider fails
     }
   }
-  return all.sort((a, b) => b.conf - a.conf).slice(0, 12);
+  return {
+    channels: channels.sort((left, right) => right.score - left.score).slice(0, 18),
+    breakouts: breakouts.sort((left, right) => right.conf - left.conf).slice(0, 12),
+  };
 }
 
 function createProvider(): ForexMarketProvider {
@@ -326,12 +559,14 @@ export class MarketDataService {
         if (Object.keys(series).length === 0) {
           throw new Error('No live candles returned for tracked major pairs');
         }
-        const channels = await buildMultiTfChannels(this.provider, this.trackedPairs);
-        const breakouts = await buildMultiTfBreakouts(this.provider, this.trackedPairs);
+        const currencies = await buildWeightedCurrencyStrengths(this.provider, this.trackedPairs);
+        const activePairs = selectPairsFromCurrencyStrength(currencies, this.trackedPairs, 8);
+        const analysisPairs = activePairs.length > 0 ? activePairs : this.trackedPairs;
+        const { channels, breakouts } = await buildMultiTfStructure(this.provider, analysisPairs);
         const snapshot: MarketSnapshot = {
           provider: this.provider.name,
           generatedAt: new Date().toISOString(),
-          currencies: buildCurrencyStrengths(series),
+          currencies: currencies.length > 0 ? currencies : buildCurrencyStrengths(series),
           channels,
           breakouts,
           prices: extractPrices(series),

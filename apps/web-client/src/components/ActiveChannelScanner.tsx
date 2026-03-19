@@ -74,7 +74,12 @@ export default function ActiveChannelScanner() {
                       </div>
                     </td>
                     <td className="px-4 py-3 font-mono text-zinc-400">{channel.tf}</td>
-                    <td className="px-4 py-3 text-zinc-300">{channel.type}</td>
+                    <td className="px-4 py-3 text-zinc-300">
+                      <div>{channel.type}</div>
+                      <div className={`mt-1 text-[10px] font-mono ${channel.stage === 'Confirmed' ? 'text-emerald-400' : 'text-amber-400'}`}>
+                        {channel.stage} · W {channel.widthPct.toFixed(2)}%
+                      </div>
+                    </td>
                     <td className="px-4 py-3 font-mono text-zinc-400">{channel.touches}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
@@ -98,7 +103,12 @@ export default function ActiveChannelScanner() {
                         {channel.bias}
                       </div>
                     </td>
-                    <td className="px-4 py-3 font-mono text-zinc-300 transition-all duration-500">{channel.prob}%</td>
+                    <td className="px-4 py-3 font-mono text-zinc-300 transition-all duration-500">
+                      <div>{channel.prob}%</div>
+                      <div className="mt-1 text-[10px] text-zinc-500">
+                        C {channel.containmentPct}%
+                      </div>
+                    </td>
                     <td className="px-4 py-3 text-right">
                       <button 
                         onClick={() => setSelectedChart({ pair: channel.pair, tf: channel.tf, type: channel.type })}

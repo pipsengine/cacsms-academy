@@ -1,7 +1,6 @@
-import { getTrackedPairs } from '@/lib/market/config';
 import { getLiquidityOverview } from '@/lib/market/liquidity';
 import { getMarketDataService } from '@/lib/market/service';
-import type { ForexCandle } from '@/lib/market/types';
+import type { BreakoutSignal, ChannelSignal, ForexCandle } from '@/lib/market/types';
 import type { MarketRegime } from './types';
 
 type DecisionHorizon = 'Daily' | 'Weekly' | 'Monthly';
@@ -12,14 +11,23 @@ type DecisionPick = {
   confidence: number;
   currentPrice: number;
   timeframe: string;
+  tradeType: 'Breakout Continuation' | 'Compression Release' | 'Channel Reversal';
+  entry: number;
+  stopLoss: number;
+  takeProfit: number;
+  riskReward: number;
+  riskPct: number;
+  riskAcceptable: boolean;
   confirmations: Array<{ timeframe: string; direction: 'LONG' | 'SHORT' }>;
   regime: MarketRegime;
   conditions: {
+    structureConfirmed: boolean;
     trendAligned: boolean;
     breakoutReady: boolean;
     currencyStrengthEdge: boolean;
     regimeSupportive: boolean;
     liquiditySupportive: boolean;
+    riskAcceptable: boolean;
   };
 };
 
@@ -69,16 +77,6 @@ function getRegime(candles: ForexCandle[]): MarketRegime {
   return 'Range Bound';
 }
 
-function getBreakoutProbability(candles: ForexCandle[]) {
-  const latest = candles[candles.length - 1];
-  const history = candles.slice(0, -1);
-  const high = Math.max(...history.map((candle) => candle.high));
-  const low = Math.min(...history.map((candle) => candle.low));
-  const width = Math.max(high - low, latest.close * 0.0001);
-  const extension = Math.max((latest.close - high) / width, (low - latest.close) / width, 0);
-  return clamp(52 + Math.round(extension * 120), 48, 98);
-}
-
 function getCurrencyDiff(snapshot: Awaited<ReturnType<ReturnType<typeof getMarketDataService>['getSnapshot']>>, pair: string) {
   const base = pair.slice(0, 3);
   const quote = pair.slice(3);
@@ -94,6 +92,56 @@ function getMomentumScore(candles: ForexCandle[]) {
   return clamp(Math.round(50 + movePct * 5200), 40, 98);
 }
 
+function getTradeType(breakout: BreakoutSignal): DecisionPick['tradeType'] {
+  if (breakout.breakoutType === 'Compression Release') return 'Compression Release';
+  if (breakout.breakoutType === 'Channel Reversal') return 'Channel Reversal';
+  return 'Breakout Continuation';
+}
+
+function getStructureMaps(snapshot: Awaited<ReturnType<ReturnType<typeof getMarketDataService>['getSnapshot']>>) {
+  const channelMap = new Map<string, ChannelSignal>();
+  const breakoutMap = new Map<string, BreakoutSignal>();
+
+  for (const channel of snapshot.channels) {
+    channelMap.set(`${channel.pair}:${channel.tf}`, channel);
+  }
+
+  for (const breakout of snapshot.breakouts) {
+    breakoutMap.set(`${breakout.pair}:${breakout.tf}`, breakout);
+  }
+
+  return { channelMap, breakoutMap };
+}
+
+function createTradePlan(channel: ChannelSignal, breakout: BreakoutSignal, direction: 'LONG' | 'SHORT') {
+  const width = Math.max(Math.abs(channel.resistance - channel.support), channel.currentPrice * 0.0005);
+  const buffer = width * 0.1;
+  const entry = breakout.status === 'TRIGGERED'
+    ? breakout.currentPrice
+    : breakout.triggerPrice;
+  const stopLoss = direction === 'LONG'
+    ? channel.support - buffer
+    : channel.resistance + buffer;
+  const riskDistance = Math.abs(entry - stopLoss);
+  const rewardMultiple = breakout.breakoutType === 'Compression Release' ? 2.2 : 1.8;
+  const takeProfit = direction === 'LONG'
+    ? entry + (riskDistance * rewardMultiple)
+    : entry - (riskDistance * rewardMultiple);
+  const riskPct = (riskDistance / entry) * 100;
+  const rewardPct = (Math.abs(takeProfit - entry) / entry) * 100;
+  const riskReward = rewardPct === 0 ? 0 : rewardPct / riskPct;
+  const riskAcceptable = riskPct >= 0.08 && riskPct <= 1.35 && riskReward >= 1.6;
+
+  return {
+    entry,
+    stopLoss,
+    takeProfit,
+    riskPct: clamp(Number(riskPct.toFixed(3)), 0, 100),
+    riskReward: Number(riskReward.toFixed(2)),
+    riskAcceptable,
+  };
+}
+
 async function scoreHorizon(
   horizon: DecisionHorizon,
   timeframe: string,
@@ -106,7 +154,11 @@ async function scoreHorizon(
   const service = getMarketDataService();
   const snapshot = await service.getSnapshot();
   const liquidity = await getLiquidityOverview();
-  const trackedPairs = getTrackedPairs();
+  const { channelMap, breakoutMap } = getStructureMaps(snapshot);
+  const trackedPairs = [...new Set([
+    ...snapshot.channels.map((entry) => entry.pair),
+    ...snapshot.breakouts.map((entry) => entry.pair),
+  ])].slice(0, 10);
 
   const picks = await Promise.all(
     trackedPairs.map(async (pair): Promise<DecisionPick | null> => {
@@ -122,7 +174,17 @@ async function scoreHorizon(
         return null;
       }
 
-      const direction = getDirection(primary);
+      const primaryChannel = channelMap.get(`${pair}:${primaryTf}`);
+      const primaryBreakout = breakoutMap.get(`${pair}:${primaryTf}`);
+      if (!primaryChannel || !primaryBreakout) {
+        return null;
+      }
+
+      const rawDirection = primaryChannel.breakoutBias !== 'NEUTRAL'
+        ? primaryChannel.breakoutBias
+        : primaryBreakout.dir;
+      const direction: 'LONG' | 'SHORT' = rawDirection;
+
       const confirmDirection = getDirection(confirm);
       const secondaryDirection = secondaryConfirm.length ? getDirection(secondaryConfirm) : direction;
       const confirmations: Array<{ timeframe: string; direction: 'LONG' | 'SHORT' }> = [
@@ -133,14 +195,13 @@ async function scoreHorizon(
         confirmations.push({ timeframe: secondaryConfirmTf, direction: secondaryDirection });
       }
       const trendAligned = direction === confirmDirection && direction === secondaryDirection;
+      const structureConfirmed = primaryChannel.stage === 'Confirmed' && primaryBreakout.channelStage === 'Confirmed';
 
-      const breakoutProbValues = [
-        getBreakoutProbability(primary),
-        getBreakoutProbability(confirm),
-      ];
-      if (secondaryConfirm.length) {
-        breakoutProbValues.push(getBreakoutProbability(secondaryConfirm));
-      }
+      const breakoutProbValues = [primaryBreakout.conf];
+      const confirmBreakout = breakoutMap.get(`${pair}:${confirmTf}`);
+      if (confirmBreakout) breakoutProbValues.push(confirmBreakout.conf);
+      const secondaryBreakout = secondaryConfirmTf ? breakoutMap.get(`${pair}:${secondaryConfirmTf}`) : undefined;
+      if (secondaryBreakout) breakoutProbValues.push(secondaryBreakout.conf);
       const breakoutProb = Math.round(mean(breakoutProbValues));
       const currencyDiff = getCurrencyDiff(snapshot, pair);
       const momentumScores = [
@@ -159,22 +220,29 @@ async function scoreHorizon(
         || (direction === 'LONG' && liquiditySignal.liquidityBias === 'BUY-SIDE')
         || (direction === 'SHORT' && liquiditySignal.liquidityBias === 'SELL-SIDE');
 
-      const breakoutReady = breakoutProb >= 75;
+      const breakoutReady = (primaryBreakout.status === 'ACTIVE' || primaryBreakout.status === 'TRIGGERED')
+        && breakoutProb >= 72
+        && primaryBreakout.distanceToTriggerPct <= 0.45;
       const currencyStrengthEdge = currencyDiff >= 60;
       const regimeSupportive = regime === 'Trending' || regime === 'Volatility Compression';
+      const tradePlan = createTradePlan(primaryChannel, primaryBreakout, direction);
 
       const trendScore = trendAligned ? 95 : 55;
+      const structureScore = structureConfirmed ? 94 : 56;
       const regimeScore = regimeSupportive ? 90 : 52;
       const liquidityScore = liquiditySupportive ? 92 : 50;
+      const riskScore = tradePlan.riskAcceptable ? 94 : 48;
 
       const confidence = clamp(
         Math.round(
-          (trendScore * 0.24)
-          + (breakoutProb * 0.24)
-          + (currencyDiff * 0.2)
-          + (momentumScore * 0.16)
+          (structureScore * 0.22)
+          + (trendScore * 0.2)
+          + (breakoutProb * 0.2)
+          + (currencyDiff * 0.16)
+          + (momentumScore * 0.12)
           + (regimeScore * 0.08)
           + (liquidityScore * 0.08)
+          + (riskScore * 0.14)
         ),
         45,
         99
@@ -183,10 +251,12 @@ async function scoreHorizon(
       const currentPrice = snapshot.prices[pair] ?? primary[primary.length - 1].close;
 
       const allConditionsMet = trendAligned
+        && structureConfirmed
         && breakoutReady
         && currencyStrengthEdge
         && regimeSupportive
-        && liquiditySupportive;
+        && liquiditySupportive
+        && tradePlan.riskAcceptable;
 
       if (!allConditionsMet || confidence < minimumConfidence) {
         return null;
@@ -198,14 +268,23 @@ async function scoreHorizon(
         confidence,
         currentPrice,
         timeframe,
+        tradeType: getTradeType(primaryBreakout),
+        entry: tradePlan.entry,
+        stopLoss: tradePlan.stopLoss,
+        takeProfit: tradePlan.takeProfit,
+        riskReward: tradePlan.riskReward,
+        riskPct: tradePlan.riskPct,
+        riskAcceptable: tradePlan.riskAcceptable,
         confirmations,
         regime,
         conditions: {
+          structureConfirmed,
           trendAligned,
           breakoutReady,
           currencyStrengthEdge,
           regimeSupportive,
           liquiditySupportive,
+          riskAcceptable: tradePlan.riskAcceptable,
         },
       };
     })
