@@ -1,3 +1,5 @@
+"use client";
+
 import React from 'react';
 import Link from 'next/link';
 import {
@@ -18,6 +20,13 @@ import {
   Menu,
 } from 'lucide-react';
 import PricingPlans from '@/components/PricingPlans';
+import DailyTradingTipPreview from '@/components/DailyTradingTipPreview';
+import WeeklyAnalysisOverview from '@/components/WeeklyAnalysisOverview';
+import {
+  forexCourseCurriculum,
+  getAllCurriculumTopics,
+  type CurriculumDay,
+} from '@/lib/learning/curriculum';
 
 const problemCards = [
   {
@@ -125,7 +134,41 @@ const faqItems = [
   },
 ];
 
+const courseTopicCards = getAllCurriculumTopics();
+const lessonDays: CurriculumDay[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+
+function getIsoWeekNumber(date: Date) {
+  const utcDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  const dayNumber = utcDate.getUTCDay() || 7;
+  utcDate.setUTCDate(utcDate.getUTCDate() + 4 - dayNumber);
+  const yearStart = new Date(Date.UTC(utcDate.getUTCFullYear(), 0, 1));
+  return Math.ceil((((utcDate.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
+}
+
+function getCurriculumDayFromDate(date: Date): CurriculumDay {
+  const jsDay = date.getDay();
+
+  if (jsDay === 0) return 'Monday';
+  if (jsDay === 6) return 'Friday';
+
+  return lessonDays[jsDay - 1] ?? 'Monday';
+}
+
 export default function LandingPage() {
+  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+
+  const today = new Date();
+  const calendarWeek = getIsoWeekNumber(today);
+  const currentDay = getCurriculumDayFromDate(today);
+  const curriculumWeekNumber = ((calendarWeek - 1) % forexCourseCurriculum.length) + 1;
+  const currentDayIndex = lessonDays.indexOf(currentDay);
+  const visibleCourseTopics = courseTopicCards.filter((topic) => (
+    topic.week === curriculumWeekNumber &&
+    lessonDays.indexOf(topic.day) >= currentDayIndex &&
+    lessonDays.indexOf(topic.day) <= currentDayIndex + 2
+  ));
+  const currentWeekMeta = forexCourseCurriculum.find((week) => week.week === curriculumWeekNumber);
+
   const faqSchema = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -152,11 +195,13 @@ export default function LandingPage() {
             </Link>
 
             <nav className="hidden md:flex items-center gap-8">
-              <Link href="#platform" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors">Platform</Link>
-              <Link href="#technology" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors">Technology</Link>
-              <Link href="#how-it-works" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors">How It Works</Link>
-              <Link href="#pricing" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors">Pricing</Link>
-              <Link href="#faq" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors">FAQ</Link>
+              <Link href="/#platform" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors">Platform</Link>
+              <Link href="/#how-it-works" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors">How It Works</Link>
+              <Link href="/#daily-trading-tips" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors">Daily Trading Tips</Link>
+              <Link href="/#our-courses" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors">Our Courses</Link>
+              <Link href="/#weekly-analysis" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors">Weekly Analysis</Link>
+              <Link href="/#pricing" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors">Pricing</Link>
+              <Link href="/#faq" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors">FAQ</Link>
             </nav>
 
             <div className="hidden md:flex items-center gap-4">
@@ -164,10 +209,33 @@ export default function LandingPage() {
               <Link href="/register" className="text-sm font-bold bg-zinc-900 text-white px-5 py-2.5 rounded-lg hover:bg-zinc-800 transition-colors">Sign Up</Link>
             </div>
 
-            <button className="md:hidden p-2 text-zinc-600" aria-label="Open menu">
+            <button
+              className="md:hidden p-2 text-zinc-600"
+              aria-label="Open menu"
+              onClick={() => setMobileMenuOpen((open) => !open)}
+            >
               <Menu className="w-6 h-6" />
             </button>
           </div>
+
+          {mobileMenuOpen && (
+            <div className="md:hidden border-t border-zinc-200 bg-white px-4 py-4">
+              <nav className="flex flex-col gap-3">
+                <Link href="/#platform" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-zinc-700 hover:text-zinc-900 transition-colors">Platform</Link>
+                <Link href="/#how-it-works" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-zinc-700 hover:text-zinc-900 transition-colors">How It Works</Link>
+                <Link href="/#daily-trading-tips" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-zinc-700 hover:text-zinc-900 transition-colors">Daily Trading Tips</Link>
+                <Link href="/#our-courses" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-zinc-700 hover:text-zinc-900 transition-colors">Our Courses</Link>
+                <Link href="/#weekly-analysis" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-zinc-700 hover:text-zinc-900 transition-colors">Weekly Analysis</Link>
+                <Link href="/#pricing" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-zinc-700 hover:text-zinc-900 transition-colors">Pricing</Link>
+                <Link href="/#faq" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-zinc-700 hover:text-zinc-900 transition-colors">FAQ</Link>
+              </nav>
+
+              <div className="mt-4 flex flex-col gap-3 border-t border-zinc-200 pt-4">
+                <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-zinc-700 hover:text-zinc-900 transition-colors">Login</Link>
+                <Link href="/register" onClick={() => setMobileMenuOpen(false)} className="inline-flex justify-center items-center rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-bold text-white hover:bg-zinc-800 transition-colors">Sign Up</Link>
+              </div>
+            </div>
+          )}
         </div>
       </header>
 
@@ -250,7 +318,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section id="platform" className="py-24 bg-zinc-50 border-y border-zinc-200">
+        <section id="platform" className="scroll-mt-28 py-24 bg-zinc-50 border-y border-zinc-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-3xl mx-auto mb-16">
               <h2 className="text-3xl font-bold text-zinc-900 mb-6">Why Traditional Trading Workflows Break Down</h2>
@@ -274,7 +342,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section id="technology" className="py-24">
+        <section id="technology" className="scroll-mt-28 py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               <div>
@@ -321,7 +389,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section id="how-it-works" className="py-24 bg-zinc-900 text-white">
+        <section id="how-it-works" className="scroll-mt-28 py-24 bg-zinc-900 text-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-3xl mx-auto mb-16">
               <h2 className="text-3xl font-bold mb-6">Live Forex Scanning and Ranked Market Awareness</h2>
@@ -459,7 +527,110 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <PricingPlans />
+        <section id="daily-trading-tips" className="scroll-mt-28 py-24 bg-zinc-50 border-y border-zinc-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-10 items-start">
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-[0.35em] text-emerald-600">Daily Trading Tips</p>
+                <h2 className="mt-3 text-3xl font-bold text-zinc-900">Daily market context with actionable execution guidance</h2>
+                <p className="mt-4 text-lg leading-8 text-zinc-600">
+                  This section gives traders one focused idea for the day, tied to current market conditions, pair context, and a practical execution rule.
+                </p>
+                <div className="mt-6 flex flex-col gap-3 text-sm text-zinc-600">
+                  <p>Includes market state, relevant pairs, and one clear action point.</p>
+                  <p>Designed for daily workflow alignment before execution decisions begin.</p>
+                </div>
+                <div className="mt-8">
+                  <Link href="/daily-tips" className="inline-flex items-center gap-2 rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-zinc-800 transition-colors">
+                    Open Daily Tips Section
+                    <ChevronRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-emerald-200 bg-white p-6 shadow-sm">
+                <DailyTradingTipPreview compact />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="our-courses" className="scroll-mt-28 py-24">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center max-w-3xl mx-auto mb-14">
+              <p className="text-sm font-semibold uppercase tracking-[0.35em] text-emerald-600">Our Courses</p>
+              <h2 className="mt-3 text-3xl font-bold text-zinc-900">Today is {currentDay} in Week {calendarWeek}</h2>
+              <p className="mt-4 text-lg text-zinc-600 leading-8">
+                The landing page now shows only the active lessons for the current weekly flow. As the week moves from Monday to Friday, the visible cards move with it, then the next curriculum week continues the sequence.
+              </p>
+              {currentWeekMeta && (
+                <p className="mt-4 text-sm font-medium text-zinc-500">
+                  Current curriculum track: Week {currentWeekMeta.week} · {currentWeekMeta.module}
+                </p>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              {visibleCourseTopics.map((topic) => (
+                <div key={topic.slug} className="flex h-full flex-col rounded-2xl border border-zinc-200 bg-zinc-50 p-6 shadow-sm">
+                  <div className="flex flex-wrap items-center gap-2 text-xs">
+                    <span className="rounded-full bg-emerald-50 px-2.5 py-1 font-semibold uppercase tracking-[0.2em] text-emerald-700">Week {topic.week}</span>
+                    <span className="rounded-full bg-white px-2.5 py-1 font-semibold text-zinc-500">{topic.day}</span>
+                    <span className="rounded-full bg-white px-2.5 py-1 font-semibold text-zinc-500">{topic.level}</span>
+                  </div>
+                  <p className="mt-4 text-xs font-semibold uppercase tracking-[0.25em] text-zinc-500">{topic.module}</p>
+                  <h3 className="mt-2 text-xl font-bold text-zinc-900">{topic.title}</h3>
+                  <p className="mt-3 flex-1 text-sm leading-7 text-zinc-600">{topic.summary}</p>
+                  <div className="mt-5">
+                    <Link href={`/our-courses/topic?slug=${encodeURIComponent(topic.slug)}`} className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 hover:text-emerald-800">
+                      Read More
+                      <ChevronRight className="h-4 w-4" />
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-10 text-center">
+              <Link href="/our-courses" className="inline-flex items-center gap-2 rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-zinc-800 transition-colors">
+                Open Our Courses Section
+                <ChevronRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        <section id="weekly-analysis" className="scroll-mt-28 py-24 bg-zinc-50 border-y border-zinc-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-[0.92fr_1.08fr] gap-10 items-start">
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-[0.35em] text-emerald-600">Weekly Analysis</p>
+                <h2 className="mt-3 text-3xl font-bold text-zinc-900">Weekly market review, opportunity ranking, and execution focus</h2>
+                <p className="mt-4 text-lg leading-8 text-zinc-600">
+                  This section summarizes market health and top opportunities so traders can plan the week with stronger directional context and better prioritization.
+                </p>
+                <div className="mt-6 flex flex-col gap-3 text-sm text-zinc-600">
+                  <p>Includes current market mode, tracked pair health, and ranked opportunities.</p>
+                  <p>Useful as a weekly planning and review checkpoint before placing trades.</p>
+                </div>
+                <div className="mt-8">
+                  <Link href="/weekly-analysis" className="inline-flex items-center gap-2 rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-zinc-800 transition-colors">
+                    Open Weekly Analysis Section
+                    <ChevronRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              </div>
+
+              <div>
+                <WeeklyAnalysisOverview />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="pricing" className="scroll-mt-28">
+          <PricingPlans />
+        </section>
 
         <section className="py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -477,7 +648,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section id="faq" className="py-24 bg-zinc-50 border-y border-zinc-200">
+        <section id="faq" className="scroll-mt-28 py-24 bg-zinc-50 border-y border-zinc-200">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-3xl mx-auto mb-14">
               <h2 className="text-3xl font-bold text-zinc-900 mb-5">Frequently Asked Questions</h2>
