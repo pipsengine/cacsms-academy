@@ -16,7 +16,7 @@ export default function ConfigurationPage() {
     refreshMs: 60000,
     trackedPairs: 0,
     stale: true,
-    mode: 'live' as 'live' | 'fallback-cache' | 'fallback-mock',
+    mode: 'live' as 'live' | 'fallback-cache' | 'offline',
     lastErrorMessage: null as string | null,
   });
   
@@ -269,8 +269,8 @@ export default function ConfigurationPage() {
                 </div>
                 <div className="flex justify-between text-zinc-400">
                   <span>Data Feed</span>
-                  <span className={`font-mono ${marketStatus.mode === 'live' && !marketStatus.stale ? 'text-emerald-400' : 'text-amber-400'}`}>
-                    {marketStatus.mode === 'live' && !marketStatus.stale ? 'Live' : marketStatus.mode === 'fallback-mock' ? 'Fallback Mock' : 'Cached'}
+                  <span className={`font-mono ${marketStatus.mode === 'live' && !marketStatus.stale ? 'text-emerald-400' : marketStatus.mode === 'offline' ? 'text-red-400' : 'text-amber-400'}`}>
+                    {marketStatus.mode === 'live' && !marketStatus.stale ? 'Live' : marketStatus.mode === 'offline' ? 'Offline' : 'Cached'}
                   </span>
                 </div>
                 <div className="flex justify-between text-zinc-400">

@@ -66,6 +66,8 @@ app.prepare().then(() => {
     target.emit('currency_update', { ...payload, data: snapshot.currencies });
     target.emit('channel_update', { ...payload, data: snapshot.channels });
     target.emit('breakout_update', { ...payload, data: snapshot.breakouts });
+    target.emit('prices_update', { ...payload, data: snapshot.prices });
+    target.emit('price_timestamps_update', { ...payload, data: snapshot.priceTimestamps });
   }
 
   void marketService.refresh().then(() => emitSnapshot(io)).catch((error) => {

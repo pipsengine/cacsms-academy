@@ -1,6 +1,6 @@
 import { getForexProviderName, getForexRefreshMs, getTrackedPairs, normalizePair, timeframeToInterval } from './config.ts';
-import { MockForexMarketProvider } from './providers/mock.ts';
 import { TwelveDataForexMarketProvider } from './providers/twelveData.ts';
+import { YahooFinanceForexMarketProvider } from './providers/yahoo.ts';
 import type { BreakoutSignal, ChannelSignal, CurrencyStrength, ForexCandle, ForexMarketProvider, MarketSnapshot } from './types.ts';
 
 type SnapshotCache = {
@@ -87,6 +87,7 @@ function buildCurrencyStrengths(series: Record<string, ForexCandle[]>): Currency
 
 function buildChannelSignals(series: Record<string, ForexCandle[]>, timeframe: string): ChannelSignal[] {
   return Object.entries(series)
+    .filter(([, candles]) => candles.length >= 2)
     .map(([pair, candles]) => {
       const closes = candles.map((candle) => candle.close);
       const highs = candles.map((candle) => candle.high);
@@ -119,6 +120,7 @@ function buildChannelSignals(series: Record<string, ForexCandle[]>, timeframe: s
 
 function buildBreakoutSignals(series: Record<string, ForexCandle[]>, timeframe: string): BreakoutSignal[] {
   return Object.entries(series)
+    .filter(([, candles]) => candles.length >= 2)
     .map(([pair, candles]) => {
       const latest = candles[candles.length - 1];
       const history = candles.slice(0, -1);
@@ -160,21 +162,101 @@ function buildBreakoutSignals(series: Record<string, ForexCandle[]>, timeframe: 
 
 async function fetchSeries(provider: ForexMarketProvider, pairs: string[], interval: string, outputsize: number) {
   const entries = await Promise.all(
-    pairs.map(async (pair) => [pair, await provider.getCandles(pair, interval, outputsize)] as const)
+    pairs.map(async (pair) => {
+      try {
+        const candles = await provider.getCandles(pair, interval, outputsize);
+        if (!candles.length) return null;
+        return [pair, candles] as const;
+      } catch {
+        return null;
+      }
+    })
   );
 
-  return Object.fromEntries(entries);
+  const validEntries = entries.filter((entry): entry is readonly [string, ForexCandle[]] => entry !== null);
+  return Object.fromEntries(validEntries);
+}
+
+const CHANNEL_TIMEFRAMES: Array<{ label: string; interval: string; points: number }> = [
+  { label: 'D',     interval: '1day',  points: 100 },
+  { label: 'H4',    interval: '4h',    points: 60 },
+  { label: 'H1',    interval: '1h',    points: 60 },
+  { label: '30min', interval: '30min', points: 60 },
+  { label: '15min', interval: '15min', points: 60 },
+];
+
+const BREAKOUT_TIMEFRAMES: Array<{ label: string; interval: string; points: number }> = [
+  { label: 'D',     interval: '1day',  points: 100 },
+  { label: 'H4',    interval: '4h',    points: 60 },
+  { label: 'H1',    interval: '1h',    points: 60 },
+  { label: '30min', interval: '30min', points: 60 },
+  { label: '15min', interval: '15min', points: 60 },
+];
+
+function extractPrices(series: Record<string, ForexCandle[]>): Record<string, number> {
+  const prices: Record<string, number> = {};
+  for (const [pair, candles] of Object.entries(series)) {
+    if (candles.length > 0) {
+      prices[pair] = candles[candles.length - 1].close;
+    }
+  }
+  return prices;
+}
+
+function extractPriceTimestamps(series: Record<string, ForexCandle[]>): Record<string, string> {
+  const priceTimestamps: Record<string, string> = {};
+  for (const [pair, candles] of Object.entries(series)) {
+    if (candles.length > 0) {
+      priceTimestamps[pair] = candles[candles.length - 1].datetime;
+    }
+  }
+  return priceTimestamps;
+}
+
+async function buildMultiTfChannels(
+  provider: ForexMarketProvider,
+  pairs: string[]
+): Promise<ChannelSignal[]> {
+  const all: ChannelSignal[] = [];
+  for (const { label, interval, points } of CHANNEL_TIMEFRAMES) {
+    try {
+      const tfSeries = await fetchSeries(provider, pairs, interval, points);
+      all.push(...buildChannelSignals(tfSeries, label));
+    } catch {
+      // skip this timeframe if provider fails
+    }
+  }
+  return all.sort((a, b) => b.score - a.score);
+}
+
+async function buildMultiTfBreakouts(
+  provider: ForexMarketProvider,
+  pairs: string[]
+): Promise<BreakoutSignal[]> {
+  const all: BreakoutSignal[] = [];
+  for (const { label, interval, points } of BREAKOUT_TIMEFRAMES) {
+    try {
+      const tfSeries = await fetchSeries(provider, pairs, interval, points);
+      all.push(...buildBreakoutSignals(tfSeries, label));
+    } catch {
+      // skip this timeframe if provider fails
+    }
+  }
+  return all.sort((a, b) => b.conf - a.conf).slice(0, 12);
 }
 
 function createProvider(): ForexMarketProvider {
   const providerName = getForexProviderName();
   const apiKey = process.env.TWELVE_DATA_API_KEY;
 
-  if (providerName === 'twelvedata' && apiKey) {
-    return new TwelveDataForexMarketProvider(apiKey);
+  if (providerName === 'twelvedata') {
+    if (apiKey) {
+      return new TwelveDataForexMarketProvider(apiKey);
+    }
+    return new YahooFinanceForexMarketProvider();
   }
 
-  return new MockForexMarketProvider();
+  return new YahooFinanceForexMarketProvider();
 }
 
 export class MarketDataService {
@@ -183,7 +265,7 @@ export class MarketDataService {
   private readonly trackedPairs = getTrackedPairs().map(normalizePair);
   private cache: SnapshotCache | null = null;
   private inflight: Promise<SnapshotCache> | null = null;
-  private lastRefreshMode: 'live' | 'fallback-cache' | 'fallback-mock' = 'live';
+  private lastRefreshMode: 'live' | 'fallback-cache' | 'offline' = 'live';
   private lastErrorMessage: string | null = null;
 
   get providerName() {
@@ -231,8 +313,7 @@ export class MarketDataService {
     try {
       return await this.provider.getCandles(normalizedPair, interval, points);
     } catch {
-      const fallback = new MockForexMarketProvider();
-      return fallback.getCandles(normalizedPair, interval, points);
+      return [];
     }
   }
 
@@ -242,12 +323,19 @@ export class MarketDataService {
     this.inflight = (async () => {
       try {
         const series = await fetchSeries(this.provider, this.trackedPairs, '1min', 30);
+        if (Object.keys(series).length === 0) {
+          throw new Error('No live candles returned for tracked major pairs');
+        }
+        const channels = await buildMultiTfChannels(this.provider, this.trackedPairs);
+        const breakouts = await buildMultiTfBreakouts(this.provider, this.trackedPairs);
         const snapshot: MarketSnapshot = {
           provider: this.provider.name,
           generatedAt: new Date().toISOString(),
           currencies: buildCurrencyStrengths(series),
-          channels: buildChannelSignals(series, 'M1'),
-          breakouts: buildBreakoutSignals(series, 'M1'),
+          channels,
+          breakouts,
+          prices: extractPrices(series),
+          priceTimestamps: extractPriceTimestamps(series),
         };
 
         this.lastRefreshMode = 'live';
@@ -261,17 +349,17 @@ export class MarketDataService {
           return this.cache;
         }
 
-        const fallbackProvider = new MockForexMarketProvider();
-        const fallbackSeries = await fetchSeries(fallbackProvider, this.trackedPairs, '1min', 30);
         const snapshot: MarketSnapshot = {
-          provider: `${this.provider.name}-fallback`,
+          provider: `${this.provider.name}-unavailable`,
           generatedAt: new Date().toISOString(),
-          currencies: buildCurrencyStrengths(fallbackSeries),
-          channels: buildChannelSignals(fallbackSeries, 'M1'),
-          breakouts: buildBreakoutSignals(fallbackSeries, 'M1'),
+          currencies: [],
+          channels: [],
+          breakouts: [],
+          prices: {},
+          priceTimestamps: {},
         };
-        this.lastRefreshMode = 'fallback-mock';
-        this.cache = { snapshot, chartSeries: fallbackSeries };
+        this.lastRefreshMode = 'offline';
+        this.cache = { snapshot, chartSeries: {} };
         return this.cache;
       } finally {
         this.inflight = null;

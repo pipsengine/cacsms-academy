@@ -36,6 +36,8 @@ export type MarketSnapshot = {
   currencies: CurrencyStrength[];
   channels: ChannelSignal[];
   breakouts: BreakoutSignal[];
+  prices: Record<string, number>;
+  priceTimestamps: Record<string, string>;
 };
 
 export interface ForexMarketProvider {

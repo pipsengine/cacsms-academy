@@ -3,6 +3,7 @@
 import DashboardLayout from '@/components/DashboardLayout';
 import AccessControl from '@/components/AccessControl';
 import CurrencyStrengthHeatmap from '@/components/CurrencyStrengthHeatmap';
+import AITradeDecisionCard from '@/components/AITradeDecisionCard';
 import ActiveChannelScanner from '@/components/ActiveChannelScanner';
 import BreakoutProbabilityTable from '@/components/BreakoutProbabilityTable';
 import OpportunityRanking from '@/components/OpportunityRanking';
@@ -23,11 +24,17 @@ export default function CommandCenterPage() {
           </p>
         </div>
 
-        <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+        <div className="grid items-stretch gap-6 xl:grid-cols-[1.1fr_0.9fr]">
           {features.currencyStrength && (
-            <AccessControl requiredPlan="Scout" moduleName="Currency Strength Analytics">
-              <CurrencyStrengthHeatmap />
-            </AccessControl>
+            <div className="space-y-6">
+              <AccessControl requiredPlan="Scout" moduleName="Currency Strength Analytics">
+                <CurrencyStrengthHeatmap />
+              </AccessControl>
+
+              <AccessControl requiredPlan="Trader" moduleName="AI Decision Engine">
+                <AITradeDecisionCard />
+              </AccessControl>
+            </div>
           )}
 
           {features.breakoutEngine && (
@@ -39,13 +46,15 @@ export default function CommandCenterPage() {
 
         <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
           {features.channelScanner && (
-            <AccessControl requiredPlan="Analyst" moduleName="Channel Scanner">
-              <ActiveChannelScanner />
-            </AccessControl>
+            <div className="h-[620px]">
+              <AccessControl requiredPlan="Analyst" moduleName="Channel Scanner">
+                <ActiveChannelScanner />
+              </AccessControl>
+            </div>
           )}
 
           {features.opportunityRadar && (
-            <div className="min-h-[620px]">
+            <div className="h-[620px]">
               <AccessControl requiredPlan="Trader" moduleName="AI Probability Engine">
                 <OpportunityRanking />
               </AccessControl>

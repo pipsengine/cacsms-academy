@@ -12,8 +12,9 @@ const DEFAULT_SYMBOLS = [
   'AUDJPY',
   'EURAUD',
   'AUDNZD',
-  'USDNGN',
 ];
+
+const MAJOR_CURRENCIES = new Set(['USD', 'EUR', 'GBP', 'JPY', 'CHF', 'CAD', 'AUD', 'NZD']);
 
 export function getTrackedPairs() {
   const raw = process.env.FOREX_SYMBOLS;
@@ -22,9 +23,15 @@ export function getTrackedPairs() {
   const symbols = raw
     .split(',')
     .map((value) => value.trim().toUpperCase())
-    .filter(Boolean);
+    .filter((value) => {
+      if (!value || value.length !== 6) return false;
+      const base = value.slice(0, 3);
+      const quote = value.slice(3);
+      return MAJOR_CURRENCIES.has(base) && MAJOR_CURRENCIES.has(quote);
+    });
 
-  return symbols.length > 0 ? symbols : DEFAULT_SYMBOLS;
+  const uniqueSymbols = [...new Set(symbols)];
+  return uniqueSymbols.length > 0 ? uniqueSymbols : DEFAULT_SYMBOLS;
 }
 
 export function getForexRefreshMs() {
@@ -34,7 +41,7 @@ export function getForexRefreshMs() {
 }
 
 export function getForexProviderName() {
-  return (process.env.FOREX_DATA_PROVIDER || 'twelvedata').trim().toLowerCase();
+  return (process.env.FOREX_DATA_PROVIDER || 'yahoo').trim().toLowerCase();
 }
 
 export function normalizePair(pair: string) {
@@ -57,13 +64,16 @@ export function timeframeToInterval(timeframe: string) {
     case 'M5':
       return '5min';
     case 'M15':
+    case '15MIN':
       return '15min';
     case 'M30':
+    case '30MIN':
       return '30min';
     case 'H1':
       return '1h';
     case 'H4':
       return '4h';
+    case 'D':
     case 'D1':
       return '1day';
     case 'W1':

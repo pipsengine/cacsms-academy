@@ -6,21 +6,37 @@ import { motion, AnimatePresence } from 'motion/react';
 import ChartModal from './ChartModal';
 import { useMarketData } from './MarketDataProvider';
 
+function formatPrice(pair: string, price: number): string {
+  if (pair.endsWith('JPY')) return price.toFixed(3);
+  return price.toFixed(5);
+}
+
+function formatQuoteAge(timestamp?: string): string {
+  if (!timestamp) return 'No quote time';
+  const ageMs = Date.now() - Date.parse(timestamp);
+  if (!Number.isFinite(ageMs) || ageMs < 0) return 'Just now';
+  const ageMin = Math.floor(ageMs / 60000);
+  if (ageMin < 1) return 'Just now';
+  if (ageMin < 60) return `${ageMin}m ago`;
+  const ageHours = Math.floor(ageMin / 60);
+  return `${ageHours}h ago`;
+}
+
 export default function ActiveChannelScanner() {
-  const { channels, isConnected } = useMarketData();
+  const { channels, isConnected, prices, priceTimestamps } = useMarketData();
   const [selectedChart, setSelectedChart] = useState<{pair: string, tf: string, type: string} | null>(null);
 
   return (
     <>
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden flex flex-col h-fit">
+      <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden flex flex-col h-full">
         <div className="px-4 py-3 border-b border-zinc-800 flex items-center justify-between">
           <h3 className="text-sm font-medium text-zinc-200 uppercase tracking-wider">Active Channel Scanner</h3>
           <div className="flex items-center gap-2">
             <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`} />
-            <span className="text-xs font-mono text-zinc-500">{isConnected ? 'SCANNING 112 CHARTS' : 'DISCONNECTED'}</span>
+            <span className="text-xs font-mono text-zinc-500">{isConnected ? 'SCANNING 65 CHARTS' : 'DISCONNECTED'}</span>
           </div>
         </div>
-        <div className="overflow-x-auto">
+        <div className="flex-1 min-h-0 overflow-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-zinc-800 text-xs font-mono text-zinc-500 bg-zinc-900/80">
@@ -46,7 +62,17 @@ export default function ActiveChannelScanner() {
                     transition={{ duration: 0.3 }}
                     className="border-b border-zinc-800/50 hover:bg-zinc-800/30 transition-colors group"
                   >
-                    <td className="px-4 py-3 font-bold text-zinc-200">{channel.pair}</td>
+                    <td className="px-4 py-3">
+                      <div className="font-bold text-zinc-200">{channel.pair}</div>
+                      {prices[channel.pair] !== undefined && (
+                        <div className="text-xs font-mono text-emerald-400 mt-0.5 tabular-nums">
+                          {formatPrice(channel.pair, prices[channel.pair])}
+                        </div>
+                      )}
+                      <div className="text-[10px] text-zinc-500 mt-0.5">
+                        {formatQuoteAge(priceTimestamps[channel.pair])}
+                      </div>
+                    </td>
                     <td className="px-4 py-3 font-mono text-zinc-400">{channel.tf}</td>
                     <td className="px-4 py-3 text-zinc-300">{channel.type}</td>
                     <td className="px-4 py-3 font-mono text-zinc-400">{channel.touches}</td>

@@ -12,7 +12,7 @@ export default function BreakoutProbabilityTable() {
 
   return (
     <>
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden flex flex-col h-fit">
+      <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden flex flex-col h-full min-h-0">
         <div className="px-4 py-3 border-b border-zinc-800 flex items-center justify-between">
           <h3 className="text-sm font-medium text-zinc-200 uppercase tracking-wider">Breakout Engine</h3>
           <div className="flex items-center gap-2">
@@ -20,7 +20,7 @@ export default function BreakoutProbabilityTable() {
             <span className="text-xs font-mono text-zinc-500">{isConnected ? 'AI PROBABILITY' : 'DISCONNECTED'}</span>
           </div>
         </div>
-        <div className="p-4 flex-1 overflow-y-auto">
+        <div className="p-4 flex-1 min-h-0 overflow-y-auto">
           <div className="space-y-3">
             <AnimatePresence>
               {breakouts.length > 0 ? breakouts.map((bo, i) => (

@@ -1,7 +1,5 @@
 'use client';
 
-'use client';
-
 import React, { createContext, useContext, useEffect, useMemo, useState, useCallback } from 'react';
 import { io } from 'socket.io-client';
 
@@ -49,6 +47,8 @@ interface MarketDataContextType {
   currencies: CurrencyData[];
   channels: ChannelData[];
   breakouts: BreakoutData[];
+  prices: Record<string, number>;
+  priceTimestamps: Record<string, string>;
   isConnected: boolean;
   health: MarketDataHealth;
 }
@@ -57,6 +57,8 @@ const MarketDataContext = createContext<MarketDataContextType>({
   currencies: [],
   channels: [],
   breakouts: [],
+  prices: {},
+  priceTimestamps: {},
   isConnected: false,
   health: { status: 'offline', lastUpdate: null, latencyMs: null },
 });
@@ -68,6 +70,8 @@ export function MarketDataProvider({ children }: { children: React.ReactNode }) 
   const [currencies, setCurrencies] = useState<CurrencyData[]>([]);
   const [channels, setChannels] = useState<ChannelData[]>([]);
   const [breakouts, setBreakouts] = useState<BreakoutData[]>([]);
+  const [prices, setPrices] = useState<Record<string, number>>({});
+  const [priceTimestamps, setPriceTimestamps] = useState<Record<string, string>>({});
   const [lastUpdate, setLastUpdate] = useState<number | null>(null);
   const [latency, setLatency] = useState<number | null>(null);
   const [healthStatus, setHealthStatus] = useState<MarketHealthStatus>('offline');
@@ -110,6 +114,8 @@ export function MarketDataProvider({ children }: { children: React.ReactNode }) 
     socketInstance.on('currency_update', (payload) => handleUpdate(payload, setCurrencies));
     socketInstance.on('channel_update', (payload) => handleUpdate(payload, setChannels));
     socketInstance.on('breakout_update', (payload) => handleUpdate(payload, setBreakouts));
+    socketInstance.on('prices_update', (payload) => handleUpdate(payload, setPrices));
+    socketInstance.on('price_timestamps_update', (payload) => handleUpdate(payload, setPriceTimestamps));
 
     return () => {
       socketInstance.disconnect();
@@ -148,7 +154,7 @@ export function MarketDataProvider({ children }: { children: React.ReactNode }) 
   }), [isConnected, healthStatus, lastUpdate, latency]);
 
   return (
-    <MarketDataContext.Provider value={{ currencies, channels, breakouts, isConnected, health }}>
+    <MarketDataContext.Provider value={{ currencies, channels, breakouts, prices, priceTimestamps, isConnected, health }}>
       {children}
     </MarketDataContext.Provider>
   );
