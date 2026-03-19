@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { Check, Lock, Zap } from 'lucide-react';
+import { Check, Lock, Zap, ArrowRight } from 'lucide-react';
 import { useAuth } from '@/components/AuthProvider';
 import AuthModal from '@/components/AuthModal';
 import {
@@ -20,9 +20,10 @@ import { getPlanRank } from '@/lib/pricing/upgrade';
 
 type PricingPlansProps = {
   mode?: 'section' | 'page';
+  showTrustIndicators?: boolean;
 };
 
-const colorMap: Record<string, { badge: string; check: string; button: string; buttonOutline: string; ring: string; heading: string }> = {
+const colorMap: Record<string, { badge: string; check: string; button: string; buttonOutline: string; ring: string; heading: string; border?: string }> = {
   zinc: {
     badge: 'bg-zinc-100 text-zinc-600',
     check: 'text-zinc-400',
@@ -30,6 +31,7 @@ const colorMap: Record<string, { badge: string; check: string; button: string; b
     buttonOutline: 'border border-zinc-300 text-zinc-700 hover:bg-zinc-50',
     ring: 'border-zinc-200',
     heading: 'text-zinc-900',
+    border: 'border-zinc-200',
   },
   blue: {
     badge: 'bg-blue-50 text-blue-700',
@@ -38,14 +40,16 @@ const colorMap: Record<string, { badge: string; check: string; button: string; b
     buttonOutline: 'border border-blue-300 text-blue-700 hover:bg-blue-50',
     ring: 'border-blue-200',
     heading: 'text-blue-900',
+    border: 'border-blue-200',
   },
   emerald: {
     badge: 'bg-emerald-50 text-emerald-700',
     check: 'text-emerald-500',
     button: 'bg-emerald-600 hover:bg-emerald-700 text-white',
     buttonOutline: 'border border-emerald-300 text-emerald-700 hover:bg-emerald-50',
-    ring: 'border-emerald-500 shadow-emerald-100 shadow-xl',
+    ring: 'border-emerald-500 shadow-lg shadow-emerald-200/50',
     heading: 'text-emerald-900',
+    border: 'border-emerald-500',
   },
   violet: {
     badge: 'bg-violet-50 text-violet-700',
@@ -54,6 +58,7 @@ const colorMap: Record<string, { badge: string; check: string; button: string; b
     buttonOutline: 'border border-violet-300 text-violet-700 hover:bg-violet-50',
     ring: 'border-violet-200',
     heading: 'text-violet-900',
+    border: 'border-violet-200',
   },
   amber: {
     badge: 'bg-amber-50 text-amber-700',
@@ -62,10 +67,11 @@ const colorMap: Record<string, { badge: string; check: string; button: string; b
     buttonOutline: 'border border-amber-300 text-amber-700 hover:bg-amber-50',
     ring: 'border-amber-200',
     heading: 'text-amber-900',
+    border: 'border-amber-200',
   },
 };
 
-export default function PricingPlans({ mode = 'section' }: PricingPlansProps) {
+export default function PricingPlans({ mode = 'section', showTrustIndicators = true }: PricingPlansProps) {
   const { user } = useAuth();
   const [region, setRegion] = useState<Region>('international');
   const [billing, setBilling] = useState<BillingCycle>('monthly');
@@ -132,188 +138,192 @@ export default function PricingPlans({ mode = 'section' }: PricingPlansProps) {
     }
   };
 
+  const getCTALabel = (plan: PlanType, isBusy: boolean, isCurrentPlan: boolean, isLowerThanCurrent: boolean, isFree: boolean) => {
+    if (isCurrentPlan) return 'Current Plan';
+    if (isLowerThanCurrent) return 'Downgrade Unavailable';
+    if (isBusy) return 'Processing...';
+    if (isFree) return 'Get Started Free';
+    if (currentPlanRank >= 0) return 'Upgrade Plan';
+    return billing === 'annual' ? 'Subscribe Annually' : 'Subscribe Now';
+  };
+
   const content = (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <AuthModal
-        isOpen={authOpen}
-        onClose={() => setAuthOpen(false)}
-        mode="register"
-        defaultCountry={region === 'nigeria' ? 'Nigeria' : 'International'}
-      />
+    <div className="w-full px-3 sm:px-4 md:px-6 lg:px-8">
+      <div className="mx-auto" style={{ maxWidth: '1600px' }}>
+        <AuthModal
+          isOpen={authOpen}
+          onClose={() => setAuthOpen(false)}
+          mode="register"
+          defaultCountry={region === 'nigeria' ? 'Nigeria' : 'International'}
+        />
 
-      {/* Header */}
-      <div className="text-center max-w-3xl mx-auto mb-12">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold mb-4">
-          <Zap className="w-3.5 h-3.5" /> Institutional-Grade Intelligence
+        {mode === 'page' && showTrustIndicators && (
+          <div className="mb-12 text-center">
+            <div className="inline-flex items-center gap-4 rounded-full bg-gradient-to-r from-emerald-50 to-blue-50 border border-emerald-200/50 px-6 py-3 shadow-sm">
+              <div className="text-sm font-semibold text-zinc-900">✓ Trusted by 10,000+ traders</div>
+              <div className="w-px h-4 bg-zinc-200"></div>
+              <div className="text-sm font-semibold text-zinc-900">★ 4.9/5 from 500+ reviews</div>
+            </div>
+          </div>
+        )}
+
+        {/* Header */}
+        <div className="text-center max-w-4xl mx-auto mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold mb-6">
+            <Zap className="w-4 h-4" /> Institutional-Grade Intelligence
+          </div>
+          <h2 className="text-5xl sm:text-6xl font-extrabold text-zinc-900 mb-6 tracking-tight leading-tight">
+            Trade with Institutional-Grade Intelligence
+          </h2>
+          <p className="text-xl text-zinc-600 leading-8">
+            AI-powered channel analysis, liquidity insights, and real-time opportunities across global forex markets. Find your edge, wherever you are in your trading journey.
+          </p>
         </div>
-        <h2 className="text-4xl font-extrabold text-zinc-900 mb-4 tracking-tight">
-          Choose your trading edge
-        </h2>
-        <p className="text-lg text-zinc-500">
-          From free exploration to institutional-grade access — every tier built around real trader needs.
-        </p>
-      </div>
 
-      {/* Controls: billing cycle + region */}
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-        {/* Billing toggle */}
-        <div className="inline-flex items-center rounded-full border border-zinc-200 bg-white p-1 shadow-sm gap-1">
-          <button type="button" onClick={() => setBilling('monthly')}
-            className={`px-5 py-2 text-sm font-semibold rounded-full transition-colors ${billing === 'monthly' ? 'bg-zinc-900 text-white' : 'text-zinc-500 hover:text-zinc-900'}`}>
-            Monthly
-          </button>
-          <button type="button" onClick={() => setBilling('annual')}
-            className={`flex items-center gap-1.5 px-5 py-2 text-sm font-semibold rounded-full transition-colors ${billing === 'annual' ? 'bg-zinc-900 text-white' : 'text-zinc-500 hover:text-zinc-900'}`}>
-            Annual
-            <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${billing === 'annual' ? 'bg-emerald-500 text-white' : 'bg-emerald-100 text-emerald-700'}`}>-17%</span>
-          </button>
+        {/* Controls: billing cycle + region */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-16">
+          {/* Billing toggle */}
+          <div className="inline-flex items-center rounded-full border border-zinc-200 bg-white p-1.5 shadow-sm gap-1.5">
+            <button type="button" onClick={() => setBilling('monthly')}
+              className={`px-6 py-2.5 text-sm font-semibold rounded-full transition-all ${billing === 'monthly' ? 'bg-zinc-900 text-white shadow-md' : 'text-zinc-600 hover:text-zinc-900'}`}>
+              Monthly
+            </button>
+            <button type="button" onClick={() => setBilling('annual')}
+              className={`flex items-center gap-2 px-6 py-2.5 text-sm font-semibold rounded-full transition-all ${billing === 'annual' ? 'bg-zinc-900 text-white shadow-md' : 'text-zinc-600 hover:text-zinc-900'}`}>
+              Annual
+              <span className={`text-[11px] px-2 py-0.5 rounded-full font-bold ${billing === 'annual' ? 'bg-emerald-500 text-white' : 'bg-emerald-100 text-emerald-700'}`}>-17%</span>
+            </button>
+          </div>
+          {/* Region toggle */}
+          <div className="inline-flex items-center rounded-full border border-zinc-200 bg-white p-1.5 shadow-sm gap-1.5">
+            <button type="button" onClick={() => setRegion('international')}
+              className={`px-6 py-2.5 text-sm font-semibold rounded-full transition-all ${region === 'international' ? 'bg-zinc-900 text-white shadow-md' : 'text-zinc-600 hover:text-zinc-900'}`}>
+              International
+            </button>
+            <button type="button" onClick={() => setRegion('nigeria')}
+              className={`px-6 py-2.5 text-sm font-semibold rounded-full transition-all ${region === 'nigeria' ? 'bg-zinc-900 text-white shadow-md' : 'text-zinc-600 hover:text-zinc-900'}`}>
+              Nigeria 🇳🇬
+            </button>
+          </div>
         </div>
-        {/* Region toggle */}
-        <div className="inline-flex items-center rounded-full border border-zinc-200 bg-white p-1 shadow-sm gap-1">
-          <button type="button" onClick={() => setRegion('international')}
-            className={`px-5 py-2 text-sm font-semibold rounded-full transition-colors ${region === 'international' ? 'bg-zinc-900 text-white' : 'text-zinc-500 hover:text-zinc-900'}`}>
-            International
-          </button>
-          <button type="button" onClick={() => setRegion('nigeria')}
-            className={`px-5 py-2 text-sm font-semibold rounded-full transition-colors ${region === 'nigeria' ? 'bg-zinc-900 text-white' : 'text-zinc-500 hover:text-zinc-900'}`}>
-            Nigeria 🇳🇬
-          </button>
-        </div>
-      </div>
 
-      {/* Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
-        {plans.map((plan) => {
-          const colors = colorMap[plan.color] ?? colorMap.zinc;
-          const isCurrentPlan = user?.plan === plan.planType;
-          const isLowerThanCurrent = currentPlanRank >= 0 && getPlanRank(plan.planType) < currentPlanRank;
-          const isBusy = loading === plan.planType;
-          const isFree = plan.priceValue === 0;
-          const buttonDisabled = isBusy || isCurrentPlan || isLowerThanCurrent;
+        {/* Cards Grid - 5 columns with improved spacing */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-5">
+          {plans.map((plan) => {
+            const colors = colorMap[plan.color] ?? colorMap.zinc;
+            const isCurrentPlan = user?.plan === plan.planType;
+            const isLowerThanCurrent = currentPlanRank >= 0 && getPlanRank(plan.planType) < currentPlanRank;
+            const isBusy = loading === plan.planType;
+            const isFree = plan.priceValue === 0;
+            const buttonDisabled = isBusy || isCurrentPlan || isLowerThanCurrent;
 
-          return (
-            <div
-              key={plan.planType}
-              className={`relative flex flex-col rounded-2xl border bg-white p-6 transition-shadow ${
-                plan.popular ? `${colors.ring} shadow-xl scale-[1.02]` : `border-zinc-200 hover:shadow-md`
-              }`}
-            >
+            return (
+              <div
+                key={plan.planType}
+                className={`group relative flex flex-col rounded-2xl border bg-white p-6 sm:p-7 md:p-8 transition-all duration-300 hover:shadow-xl ${
+                  plan.popular 
+                    ? `${colors.border} border-2 shadow-lg scale-[1.02]` 
+                    : `border-zinc-200 hover:border-zinc-300`
+                }`}
+                style={{
+                  transitionProperty: 'all',
+                  transformOrigin: 'center'
+                }}
+              >
               {plan.popular && (
-                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-emerald-600 text-white text-xs font-bold shadow">
-                  Most Popular
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-5 py-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 text-white text-xs font-bold shadow-lg">
+                  ⭐ Most Popular
                 </div>
               )}
               {billing === 'annual' && plan.annualSaving && !isFree && (
-                <div className="absolute top-4 right-4 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-200">
+                <div className="absolute top-6 right-6 px-3 py-1 rounded-lg bg-emerald-50 text-emerald-700 text-[11px] font-bold border border-emerald-200">
                   {plan.annualSaving}
                 </div>
               )}
 
               {/* Plan name & tagline */}
-              <div className="mb-5">
-                <span className={`inline-block text-xs font-bold px-2.5 py-1 rounded-full mb-3 ${colors.badge}`}>
+              <div className="mb-7">
+                <span className={`inline-block text-[11px] font-extrabold px-3 py-1.5 rounded-full mb-4 ${colors.badge}`}>
                   {plan.title}
                 </span>
-                <div className="text-xs text-zinc-400 font-medium mb-3">{plan.tagline}</div>
+                <div className="text-sm text-zinc-500 font-semibold mb-4 h-5 flex items-center">{plan.tagline}</div>
 
                 {/* Price */}
-                <div className="flex items-end gap-1 mb-1">
+                <div className="flex items-baseline gap-0.5 flex-wrap mb-2">
                   {isFree ? (
-                    <span className="text-4xl font-extrabold text-zinc-900">Free</span>
+                    <span className="text-4xl sm:text-5xl font-extrabold text-zinc-900">Free</span>
                   ) : (
                     <>
-                      <span className="text-lg font-bold text-zinc-500 mb-1">{plan.currencySymbol}</span>
-                      <span className="text-4xl font-extrabold text-zinc-900">{plan.displayPrice}</span>
-                      <span className="text-sm text-zinc-400 mb-1">/mo</span>
+                      <span className="text-lg sm:text-2xl font-bold text-zinc-500">{plan.currencySymbol}</span>
+                      <span className="text-4xl sm:text-5xl font-extrabold text-zinc-900 break-words">{plan.displayPrice}</span>
+                      <span className="text-sm sm:text-base text-zinc-400 whitespace-nowrap">/mo</span>
                     </>
                   )}
                 </div>
                 {billing === 'annual' && plan.displayTotal && !isFree && (
-                  <p className="text-xs text-zinc-400">
+                  <p className="text-xs sm:text-sm text-zinc-500 font-medium">
                     {plan.currencySymbol}{plan.displayTotal} billed annually
                   </p>
                 )}
-                <p className="text-xs text-zinc-500 mt-3 leading-relaxed">{plan.description}</p>
+                <p className="text-sm text-zinc-600 mt-4 leading-relaxed">{plan.description}</p>
               </div>
 
-              {/* CTA Button */}
+              {/* CTA Button - Primary focus */}
               <button
                 type="button"
                 disabled={buttonDisabled}
                 onClick={() => onSelectPlan(plan.planType)}
-                className={`w-full py-2.5 px-4 rounded-xl text-sm font-bold transition-colors mb-5 ${
+                className={`w-full py-3.5 px-4 rounded-xl text-base font-bold transition-all duration-200 mb-6 flex items-center justify-center gap-2 group/btn ${
                   buttonDisabled
                     ? 'bg-zinc-100 text-zinc-400 cursor-not-allowed'
                     : plan.buttonVariant === 'solid'
-                    ? colors.button
-                    : colors.buttonOutline
+                    ? `${colors.button} hover:shadow-lg hover:scale-105 active:scale-95`
+                    : `${colors.buttonOutline} hover:shadow-md hover:bg-opacity-50`
                 }`}
               >
-                {isCurrentPlan
-                  ? 'Current Plan'
-                  : isLowerThanCurrent
-                  ? 'Downgrade Unavailable'
-                  : isBusy
-                  ? 'Processing...'
-                  : isFree
-                  ? 'Get Started Free'
-                  : currentPlanRank >= 0
-                  ? 'Upgrade Plan'
-                  : billing === 'annual'
-                  ? 'Subscribe Annually'
-                  : 'Subscribe Monthly'}
+                {getCTALabel(plan.planType, isBusy, isCurrentPlan, isLowerThanCurrent, isFree)}
+                {!buttonDisabled && <ArrowRight className="w-4 h-4 opacity-0 group-hover/btn:opacity-100 transition-opacity" />}
               </button>
 
               {user && !isCurrentPlan && !isLowerThanCurrent && currentPlanRank >= 0 && (
-                <p className="mb-4 text-center text-xs text-emerald-700">
-                  You will only be charged the difference from your current plan.
+                <p className="mb-6 text-center text-xs text-emerald-700 font-medium bg-emerald-50 rounded-lg py-2 px-3">
+                  ✓ Pay only the difference from your current plan
                 </p>
               )}
 
-              {/* Features */}
-              <div className="space-y-2.5 flex-1">
-                {plan.features.map((feature) => (
-                  <div key={feature} className="flex items-start gap-2 text-zinc-700">
-                    <Check className={`w-4 h-4 mt-0.5 flex-shrink-0 ${colors.check}`} />
-                    <span className="text-xs leading-relaxed">{feature}</span>
+              {/* Features - Enhanced spacing and typography */}
+              <div className="space-y-3.5 flex-1">
+                {plan.features.map((feature, idx) => (
+                  <div key={`${feature}-${idx}`} className="flex items-start gap-3">
+                    <Check className={`w-5 h-5 mt-0.5 flex-shrink-0 ${colors.check}`} />
+                    <span className="text-sm leading-relaxed text-zinc-700">{feature}</span>
                   </div>
                 ))}
-                {plan.lockedFeatures?.map((feature) => (
-                  <div key={feature} className="flex items-start gap-2 text-zinc-300">
-                    <Lock className="w-4 h-4 mt-0.5 flex-shrink-0 text-zinc-300" />
-                    <span className="text-xs leading-relaxed line-through">{feature}</span>
+                {plan.lockedFeatures?.map((feature, idx) => (
+                  <div key={`locked-${feature}-${idx}`} className="flex items-start gap-3 opacity-50">
+                    <Lock className="w-5 h-5 mt-0.5 flex-shrink-0 text-zinc-300" />
+                    <span className="text-sm leading-relaxed line-through text-zinc-400">{feature}</span>
                   </div>
                 ))}
               </div>
 
               {!user && !isCurrentPlan && (
-                <p className="mt-4 text-center text-xs text-zinc-400">
+                <p className="mt-6 text-center text-xs text-zinc-500 border-t border-zinc-200 pt-4">
                   Already have an account?{' '}
-                  <Link href="/login" className="text-zinc-700 hover:underline font-semibold">Login</Link>
+                  <Link href="/login" className="text-zinc-900 hover:text-emerald-600 font-semibold transition-colors">Sign in</Link>
                 </p>
               )}
             </div>
           );
         })}
-      </div>
-
-      {/* Trust signals */}
-      <div className="mt-12 text-center text-sm text-zinc-400 flex flex-wrap items-center justify-center gap-6">
-        <span>✓ Cancel anytime</span>
-        <span>✓ No hidden fees</span>
-        <span>✓ NGN pricing for Nigerian traders</span>
-        <span>✓ 14-day free trial on Trader</span>
-        <span>✓ Secure payment via Stripe</span>
+        </div>
       </div>
     </div>
   );
 
   if (mode === 'page') {
-    return <div className="min-h-screen bg-zinc-50 py-16">{content}</div>;
+    return <section className="py-20 bg-white">{content}</section>;
   }
-  return (
-    <section id="pricing" className="py-24 bg-zinc-50 border-y border-zinc-200">
-      {content}
-    </section>
-  );
+
+  return content;
 }
