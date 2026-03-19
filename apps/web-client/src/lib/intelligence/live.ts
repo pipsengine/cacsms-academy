@@ -1,6 +1,6 @@
-import { getLiquidityOverview } from '@/lib/market/liquidity';
-import { getMarketDataService } from '@/lib/market/service';
-import type { ForexCandle } from '@/lib/market/types';
+import { getLiquidityOverview } from '../market/liquidity.ts';
+import { getMarketDataService } from '../market/service.ts';
+import type { ForexCandle } from '../market/types.ts';
 import type { AssetCorrelation, ConfidenceClass, MarketRegime, RankedOpportunity } from './types';
 
 function clamp(value: number, min: number, max: number) {

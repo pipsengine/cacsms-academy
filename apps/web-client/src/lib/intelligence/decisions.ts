@@ -1,6 +1,6 @@
-import { getLiquidityOverview } from '@/lib/market/liquidity';
-import { getMarketDataService } from '@/lib/market/service';
-import type { BreakoutSignal, ChannelSignal, ForexCandle } from '@/lib/market/types';
+import { getLiquidityOverview } from '../market/liquidity.ts';
+import { getMarketDataService } from '../market/service.ts';
+import type { BreakoutSignal, ChannelSignal, ForexCandle } from '../market/types.ts';
 import type { MarketRegime } from './types';
 
 type DecisionHorizon = 'Daily' | 'Weekly' | 'Monthly';

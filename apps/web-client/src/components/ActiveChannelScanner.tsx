@@ -7,8 +7,14 @@ import ChartModal from './ChartModal';
 import { useMarketData } from './MarketDataProvider';
 
 function formatPrice(pair: string, price: number): string {
+  if (!Number.isFinite(price)) return '--';
   if (pair.endsWith('JPY')) return price.toFixed(3);
   return price.toFixed(5);
+}
+
+function formatPercent(value: number, digits = 2): string {
+  if (!Number.isFinite(value)) return '--';
+  return value.toFixed(digits);
 }
 
 function formatQuoteAge(timestamp?: string): string {
@@ -77,7 +83,7 @@ export default function ActiveChannelScanner() {
                     <td className="px-4 py-3 text-zinc-300">
                       <div>{channel.type}</div>
                       <div className={`mt-1 text-[10px] font-mono ${channel.stage === 'Confirmed' ? 'text-emerald-400' : 'text-amber-400'}`}>
-                        {channel.stage} · W {channel.widthPct.toFixed(2)}%
+                        {channel.stage} · W {formatPercent(channel.widthPct, 2)}%
                       </div>
                     </td>
                     <td className="px-4 py-3 font-mono text-zinc-400">{channel.touches}</td>
@@ -106,7 +112,7 @@ export default function ActiveChannelScanner() {
                     <td className="px-4 py-3 font-mono text-zinc-300 transition-all duration-500">
                       <div>{channel.prob}%</div>
                       <div className="mt-1 text-[10px] text-zinc-500">
-                        C {channel.containmentPct}%
+                        C {Number.isFinite(channel.containmentPct) ? channel.containmentPct : '--'}%
                       </div>
                     </td>
                     <td className="px-4 py-3 text-right">

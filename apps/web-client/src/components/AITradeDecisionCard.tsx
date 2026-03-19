@@ -34,7 +34,13 @@ type DecisionPayload = {
 };
 
 function formatPrice(pair: string, value: number): string {
+  if (!Number.isFinite(value)) return '--';
   return pair.endsWith('JPY') ? value.toFixed(3) : value.toFixed(5);
+}
+
+function formatMetric(value: number, digits = 2): string {
+  if (!Number.isFinite(value)) return '--';
+  return value.toFixed(digits);
 }
 
 function horizonIcon(horizon: HorizonDecision['horizon']) {
@@ -147,7 +153,7 @@ export default function AITradeDecisionCard() {
                             ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-300'
                             : 'border-red-500/20 bg-red-500/10 text-red-300'
                         }`}>
-                          RR {pick.riskReward.toFixed(2)} · Risk {pick.riskPct.toFixed(3)}%
+                          RR {formatMetric(pick.riskReward, 2)} · Risk {formatMetric(pick.riskPct, 3)}%
                         </div>
                       </div>
                     </div>

@@ -79,6 +79,36 @@ const MarketDataContext = createContext<MarketDataContextType>({
 
 export const useMarketData = () => useContext(MarketDataContext);
 
+function toFiniteNumber(value: unknown, fallback = Number.NaN) {
+  return typeof value === 'number' && Number.isFinite(value) ? value : fallback;
+}
+
+function normalizeChannelData(entries: ChannelData[]) {
+  return entries.map((entry) => ({
+    ...entry,
+    stage: entry.stage ?? 'Developing',
+    support: toFiniteNumber(entry.support),
+    resistance: toFiniteNumber(entry.resistance),
+    currentPrice: toFiniteNumber(entry.currentPrice),
+    widthPct: toFiniteNumber(entry.widthPct),
+    containmentPct: toFiniteNumber(entry.containmentPct),
+    breakoutBias: entry.breakoutBias ?? 'NEUTRAL',
+  }));
+}
+
+function normalizeBreakoutData(entries: BreakoutData[]) {
+  return entries.map((entry) => ({
+    ...entry,
+    boundary: entry.boundary ?? 'RESISTANCE',
+    triggerPrice: toFiniteNumber(entry.triggerPrice),
+    currentPrice: toFiniteNumber(entry.currentPrice),
+    distanceToTriggerPct: toFiniteNumber(entry.distanceToTriggerPct),
+    channelWidthPct: toFiniteNumber(entry.channelWidthPct),
+    breakoutType: entry.breakoutType ?? 'Continuation',
+    channelStage: entry.channelStage ?? 'Developing',
+  }));
+}
+
 export function MarketDataProvider({ children }: { children: React.ReactNode }) {
   const [isConnected, setIsConnected] = useState(false);
   const [currencies, setCurrencies] = useState<CurrencyData[]>([]);
@@ -126,8 +156,8 @@ export function MarketDataProvider({ children }: { children: React.ReactNode }) 
     });
 
     socketInstance.on('currency_update', (payload) => handleUpdate(payload, setCurrencies));
-    socketInstance.on('channel_update', (payload) => handleUpdate(payload, setChannels));
-    socketInstance.on('breakout_update', (payload) => handleUpdate(payload, setBreakouts));
+    socketInstance.on('channel_update', (payload) => handleUpdate(payload, (value) => setChannels(normalizeChannelData(value as ChannelData[]))));
+    socketInstance.on('breakout_update', (payload) => handleUpdate(payload, (value) => setBreakouts(normalizeBreakoutData(value as BreakoutData[]))));
     socketInstance.on('prices_update', (payload) => handleUpdate(payload, setPrices));
     socketInstance.on('price_timestamps_update', (payload) => handleUpdate(payload, setPriceTimestamps));
 

@@ -1,11 +1,11 @@
 import { Prisma } from '@prisma/client';
-import { prisma } from '@/lib/prisma';
-import { getAIDecisionSignals } from '@/lib/intelligence/decisions';
-import { getLiveRankedOpportunities } from '@/lib/intelligence/live';
-import { getLiquidityOverview } from '@/lib/market/liquidity';
-import { getMarketDataService } from '@/lib/market/service';
-import { isMailConfigured, sendEmail } from '@/lib/mail';
-import { usageDb } from '@/lib/usage/store';
+import { prisma } from '../prisma.ts';
+import { getAIDecisionSignals } from '../intelligence/decisions.ts';
+import { getLiveRankedOpportunities } from '../intelligence/live.ts';
+import { getLiquidityOverview } from '../market/liquidity.ts';
+import { getMarketDataService } from '../market/service.ts';
+import { isMailConfigured, sendEmail } from '../mail.ts';
+import { usageDb } from '../usage/store.ts';
 
 function getBucketKey() {
   const now = new Date();
