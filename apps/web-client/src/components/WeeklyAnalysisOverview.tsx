@@ -63,7 +63,19 @@ type ChartPoint = {
   price: number;
 };
 
-export default function WeeklyAnalysisOverview() {
+type WeeklyAnalysisOverviewProps = {
+  showMarketHealth?: boolean;
+  showTopOpportunities?: boolean;
+  maxVisiblePairs?: number;
+  compact?: boolean;
+};
+
+export default function WeeklyAnalysisOverview({
+  showMarketHealth = true,
+  showTopOpportunities = true,
+  maxVisiblePairs,
+  compact = false,
+}: WeeklyAnalysisOverviewProps) {
   const [status, setStatus] = useState<MarketStatus | null>(null);
   const [opps, setOpps] = useState<OpportunitiesPayload | null>(null);
   const [selectedPair, setSelectedPair] = useState<string>('');
@@ -134,6 +146,25 @@ export default function WeeklyAnalysisOverview() {
     [opps, selectedPair]
   );
 
+  const visibleOpportunities = useMemo(() => {
+    const opportunities = opps?.opportunities ?? [];
+    if (typeof maxVisiblePairs === 'number') {
+      return opportunities.slice(0, maxVisiblePairs);
+    }
+    return opportunities;
+  }, [maxVisiblePairs, opps]);
+
+  useEffect(() => {
+    if (!visibleOpportunities.length) {
+      return;
+    }
+
+    const selectedStillVisible = visibleOpportunities.some((item) => item.pair === selectedPair);
+    if (!selectedPair || !selectedStillVisible) {
+      setSelectedPair(visibleOpportunities[0].pair);
+    }
+  }, [selectedPair, visibleOpportunities]);
+
   if (loading) {
     return (
       <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-5 text-sm text-zinc-300">
@@ -144,25 +175,27 @@ export default function WeeklyAnalysisOverview() {
 
   return (
     <div className="space-y-5">
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-5">
-        <h3 className="text-sm font-semibold uppercase tracking-[0.22em] text-zinc-500">Market Health</h3>
-        {status ? (
-          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <Metric label="Mode" value={status.mode} />
-            <Metric label="Provider" value={status.snapshotProvider ?? status.provider} />
-            <Metric label="Tracked Pairs" value={String(status.trackedPairs)} />
-            <Metric label="Stale" value={status.stale ? 'Yes' : 'No'} />
-          </div>
-        ) : (
-          <p className="mt-3 text-sm text-zinc-400">Market status unavailable.</p>
-        )}
-      </div>
+      {showMarketHealth && (
+        <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-5">
+          <h3 className="text-sm font-semibold uppercase tracking-[0.22em] text-zinc-500">Market Health</h3>
+          {status ? (
+            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <Metric label="Mode" value={status.mode} />
+              <Metric label="Provider" value={status.snapshotProvider ?? status.provider} />
+              <Metric label="Tracked Pairs" value={String(status.trackedPairs)} />
+              <Metric label="Stale" value={status.stale ? 'Yes' : 'No'} />
+            </div>
+          ) : (
+            <p className="mt-3 text-sm text-zinc-400">Market status unavailable.</p>
+          )}
+        </div>
+      )}
 
       <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-5">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <h3 className="text-sm font-semibold uppercase tracking-[0.22em] text-zinc-500">Institutional Weekly Analysis</h3>
           <div className="flex flex-wrap gap-2">
-            {opps?.opportunities.map((opp) => (
+            {visibleOpportunities.map((opp) => (
               <button
                 key={opp.pair}
                 type="button"
@@ -178,7 +211,7 @@ export default function WeeklyAnalysisOverview() {
         {analysisLoading ? (
           <p className="mt-4 text-sm text-zinc-400">Loading pair-level weekly analysis...</p>
         ) : analysis ? (
-          <div className="mt-4 grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
+          <div className={`mt-4 grid gap-5 ${compact ? 'lg:grid-cols-[minmax(0,1fr)_300px]' : 'xl:grid-cols-[minmax(0,1fr)_360px]'}`}>
             <div className="space-y-5">
               <div className="rounded-lg border border-zinc-800 bg-zinc-950/70 p-4">
                 <div className="flex flex-wrap items-center gap-2">
@@ -190,42 +223,61 @@ export default function WeeklyAnalysisOverview() {
                   <span className="rounded-full bg-zinc-800 px-2.5 py-1 text-xs font-semibold text-zinc-300">{analysis.probability} Probability</span>
                 </div>
                 <p className="mt-3 text-sm leading-7 text-zinc-300">{analysis.summary}</p>
-                <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                <div className={`mt-4 grid grid-cols-1 gap-3 ${compact ? 'sm:grid-cols-2' : 'sm:grid-cols-3'}`}>
                   <Metric label="Score" value={String(analysis.score)} />
                   <Metric label="Probability" value={analysis.probability} />
-                  <Metric label="Chart Requirement" value={analysis.image_requirement} />
+                  {!compact && <Metric label="Chart Requirement" value={analysis.image_requirement} />}
                 </div>
               </div>
 
-              <div className="rounded-lg border border-zinc-800 bg-zinc-950/70 p-4">
-                <h4 className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-500">Detailed Analysis</h4>
-                <p className="mt-3 text-sm leading-7 text-zinc-300">{analysis.analysis}</p>
-              </div>
+              {compact ? (
+                <div className="rounded-lg border border-zinc-800 bg-zinc-950/70 p-4">
+                  <h4 className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-500">Preview Summary</h4>
+                  <p className="mt-3 text-sm leading-7 text-zinc-300">
+                    {buildPreviewNarrative(analysis)}
+                  </p>
+                  <div className="mt-3 rounded-md border border-zinc-800 bg-zinc-900/60 px-3 py-2">
+                    <p className="text-xs text-zinc-400">
+                      <span className="font-semibold text-zinc-200">Support:</span> {formatLevels(analysis.key_levels.support)}
+                    </p>
+                    <p className="mt-1 text-xs text-zinc-400">
+                      <span className="font-semibold text-zinc-200">Resistance:</span> {formatLevels(analysis.key_levels.resistance)}
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div className="rounded-lg border border-zinc-800 bg-zinc-950/70 p-4">
+                    <h4 className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-500">Detailed Analysis</h4>
+                    <p className="mt-3 text-sm leading-7 text-zinc-300">{analysis.analysis}</p>
+                  </div>
 
-              <div className="grid gap-4 md:grid-cols-2">
-                <LevelCard label="Support" levels={analysis.key_levels.support} accent="emerald" />
-                <LevelCard label="Resistance" levels={analysis.key_levels.resistance} accent="red" />
-              </div>
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <LevelCard label="Support" levels={analysis.key_levels.support} accent="emerald" />
+                    <LevelCard label="Resistance" levels={analysis.key_levels.resistance} accent="red" />
+                  </div>
 
-              <div className="rounded-lg border border-zinc-800 bg-zinc-950/70 p-4">
-                <h4 className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-500">Trade Focus</h4>
-                <p className="mt-3 text-sm leading-7 text-zinc-300">{analysis.trade_focus}</p>
-              </div>
+                  <div className="rounded-lg border border-zinc-800 bg-zinc-950/70 p-4">
+                    <h4 className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-500">Trade Focus</h4>
+                    <p className="mt-3 text-sm leading-7 text-zinc-300">{analysis.trade_focus}</p>
+                  </div>
+                </>
+              )}
             </div>
 
             <div className="space-y-4">
               <div className="rounded-lg border border-zinc-800 bg-zinc-950/70 p-4">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <h4 className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-500">Real Chart Data</h4>
-                    <p className="mt-1 text-xs text-zinc-400">Source: {chartProvider.toUpperCase()} API feed only</p>
+                    <h4 className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-500">Live Market Chart</h4>
+                    <p className="mt-1 text-xs text-zinc-400">Validated market stream for analysis and execution context.</p>
                   </div>
                   <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-300">
-                    NO FAKE CHARTS
+                    VERIFIED DATA
                   </span>
                 </div>
 
-                <div className="mt-4 h-72 w-full">
+                <div className={`mt-4 w-full ${compact ? 'h-44' : 'h-72'}`}>
                   {chartPoints.length > 0 ? (
                     <ResponsiveContainer width="100%" height="100%">
                       <AreaChart data={chartPoints} margin={{ top: 10, right: 12, left: 0, bottom: 0 }}>
@@ -240,7 +292,10 @@ export default function WeeklyAnalysisOverview() {
                         <YAxis stroke="#71717a" tick={{ fill: '#71717a', fontSize: 11 }} width={54} domain={['auto', 'auto']} />
                         <Tooltip
                           contentStyle={{ backgroundColor: '#18181b', borderColor: '#27272a', color: '#f4f4f5' }}
-                          formatter={(value: number) => [value.toFixed(selectedPair.includes('JPY') ? 2 : 4), 'Price']}
+                          formatter={(value) => {
+                            const numericValue = typeof value === 'number' ? value : Number(value ?? 0);
+                            return [numericValue.toFixed(selectedPair.includes('JPY') ? 2 : 4), 'Price'];
+                          }}
                         />
                         <Area type="monotone" dataKey="price" stroke="#10b981" fill="url(#weeklyChartFill)" strokeWidth={2} isAnimationActive={false} />
                       </AreaChart>
@@ -259,6 +314,7 @@ export default function WeeklyAnalysisOverview() {
                     <p>Opportunity score: {selectedOpportunity.compositeScore}</p>
                     <p>Confidence: {selectedOpportunity.confidenceClass}</p>
                     <p>Regime: {selectedOpportunity.regime}</p>
+                    {compact && <p>Trade focus remains available in the subscriber dashboard.</p>}
                   </div>
                 </div>
               )}
@@ -269,30 +325,52 @@ export default function WeeklyAnalysisOverview() {
         )}
       </div>
 
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-5">
-        <h3 className="text-sm font-semibold uppercase tracking-[0.22em] text-zinc-500">Top Opportunities This Week</h3>
-        {opps && opps.opportunities.length > 0 ? (
-          <div className="mt-4 space-y-3">
-            {opps.opportunities.map((opp) => (
-              <div key={`${opp.rank}-${opp.pair}`} className="rounded-lg border border-zinc-800 bg-zinc-950/70 p-3">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-semibold text-zinc-100">#{opp.rank} {opp.pair}</p>
-                  <span className={`text-xs font-semibold ${opp.direction === 'LONG' ? 'text-emerald-400' : 'text-red-400'}`}>
-                    {opp.direction}
-                  </span>
+      {showTopOpportunities && (
+        <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-5">
+          <h3 className="text-sm font-semibold uppercase tracking-[0.22em] text-zinc-500">Top Opportunities This Week</h3>
+          {opps && opps.opportunities.length > 0 ? (
+            <div className="mt-4 space-y-3">
+              {opps.opportunities.map((opp) => (
+                <div key={`${opp.rank}-${opp.pair}`} className="rounded-lg border border-zinc-800 bg-zinc-950/70 p-3">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-semibold text-zinc-100">#{opp.rank} {opp.pair}</p>
+                    <span className={`text-xs font-semibold ${opp.direction === 'LONG' ? 'text-emerald-400' : 'text-red-400'}`}>
+                      {opp.direction}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-xs text-zinc-400">
+                    Score {opp.compositeScore} · {opp.confidenceClass} · {opp.regime}
+                  </p>
                 </div>
-                <p className="mt-1 text-xs text-zinc-400">
-                  Score {opp.compositeScore} · {opp.confidenceClass} · {opp.regime}
-                </p>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="mt-3 text-sm text-zinc-400">No weekly opportunities available yet.</p>
-        )}
-      </div>
+              ))}
+            </div>
+          ) : (
+            <p className="mt-3 text-sm text-zinc-400">No weekly opportunities available yet.</p>
+          )}
+        </div>
+      )}
     </div>
   );
+}
+
+function formatLevels(levels: string[]): string {
+  if (!levels.length) return 'Not available';
+  if (levels.length === 1) return levels[0];
+  if (levels.length === 2) return `${levels[0]} and ${levels[1]}`;
+  return `${levels.slice(0, -1).join(', ')}, and ${levels[levels.length - 1]}`;
+}
+
+function buildPreviewNarrative(analysis: WeeklyAnalysisPayload): string {
+  const biasText = analysis.direction === 'NEUTRAL'
+    ? 'a neutral directional profile'
+    : `${analysis.direction.toLowerCase()} directional pressure`;
+  const continuationSide = analysis.direction === 'SHORT'
+    ? 'below nearby support'
+    : analysis.direction === 'LONG'
+      ? 'above nearby resistance'
+      : 'inside the current range boundaries';
+
+  return `${analysis.pair} is trading in a ${analysis.market_type.toLowerCase()} regime with ${biasText}. Current confidence is ${analysis.probability.toLowerCase()} and the composite score is ${analysis.score}/100, which suggests a selective execution environment rather than aggressive positioning. Structure remains valid while price holds ${continuationSide}; invalidation risk rises quickly if the opposite side of the range is reclaimed. Traders should prioritize confirmation at key levels before committing size and maintain disciplined risk around failed retests.`;
 }
 
 function Metric({ label, value }: { label: string; value: string }) {

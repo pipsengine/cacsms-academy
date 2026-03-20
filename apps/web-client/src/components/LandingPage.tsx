@@ -154,7 +154,7 @@ function getCurriculumDayFromDate(date: Date): CurriculumDay {
 }
 
 export default function LandingPage() {
-  const { user, logout, isLoading } = useAuth();
+  const { user, isLoading } = useAuth();
 
   const today = new Date();
   const calendarWeek = getIsoWeekNumber(today);
@@ -567,8 +567,8 @@ export default function LandingPage() {
 
         <section id="weekly-analysis" className="scroll-mt-28 py-24 bg-zinc-50 border-y border-zinc-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-[0.92fr_1.08fr] gap-10 items-start">
-              <div>
+            <div>
+              <div className="max-w-4xl">
                 <p className="text-sm font-semibold uppercase tracking-[0.35em] text-emerald-600">Weekly Analysis</p>
                 <h2 className="mt-3 text-3xl font-bold text-zinc-900">Weekly market review, opportunity ranking, and execution focus</h2>
                 <p className="mt-4 text-lg leading-8 text-zinc-600">
@@ -586,8 +586,13 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              <div>
-                <WeeklyAnalysisOverview />
+              <div className="mt-10">
+                <WeeklyAnalysisOverview
+                  showMarketHealth={false}
+                  showTopOpportunities={false}
+                  maxVisiblePairs={2}
+                  compact
+                />
               </div>
             </div>
           </div>
