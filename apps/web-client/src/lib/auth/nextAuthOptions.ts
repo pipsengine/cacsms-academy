@@ -12,18 +12,19 @@ if (!process.env.NEXTAUTH_URL) {
   (process.env as any).NEXTAUTH_URL = process.env.APP_URL || 'http://localhost:3000';
 }
 
-async function getPlanForUser(userId: string): Promise<'Scout' | 'Analyst' | 'Trader' | 'ProTrader' | 'Institutional'> {
+async function getPlanForUser(userId: string): Promise<'Scout' | 'Analyst' | 'Trader' | 'ProTrader'> {
   const sub = await prisma.subscription.findFirst({
     where: { userId, status: 'Active' },
     orderBy: { startDate: 'desc' },
   });
   if (!sub) return 'Scout';
-  const validPlans = ['Scout', 'Analyst', 'Trader', 'ProTrader', 'Institutional'] as const;
+  const validPlans = ['Scout', 'Analyst', 'Trader', 'ProTrader'] as const;
   if (validPlans.includes(sub.planType as any)) return sub.planType as typeof validPlans[number];
   // Legacy plan migration
   if (sub.planType === 'Free') return 'Scout';
   if (sub.planType === 'Professional') return 'Trader';
   if (sub.planType === 'Premium') return 'ProTrader';
+  if (sub.planType === 'Institutional') return 'ProTrader';
   return 'Scout';
 }
 
@@ -75,32 +76,20 @@ export const authOptions: NextAuthOptions = {
   ].filter(Boolean) as NextAuthOptions['providers'],
   callbacks: {
     async jwt({ token, user }) {
-      const userId = user?.id ?? token.id ?? token.sub;
-      if (!userId) return token;
-
-      token.id = userId;
-
-      // Keep session claims synced with the database so role/plan changes take effect
-      // without requiring a hard logout/login cycle.
-      if (hasDatabase) {
-        const dbUser = await prisma.user.findUnique({ where: { id: userId } });
-        if (dbUser) {
-          token.role = dbUser.role ?? 'User';
-          token.country = dbUser.country ?? 'International';
-          token.plan = await getPlanForUser(userId);
-          token.email = dbUser.email ?? token.email;
-          token.name = dbUser.name ?? token.name;
+      // On initial sign-in the `user` object is available; embed it into the token for future requests.
+      if (user) {
+        token.id = user.id;
+        if (hasDatabase) {
+          const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
+          token.role = dbUser?.role ?? 'User';
+          token.country = dbUser?.country ?? 'International';
+          token.plan = await getPlanForUser(user.id);
         } else {
           token.role = 'User';
           token.country = 'International';
           token.plan = 'Scout';
         }
-      } else {
-        token.role = 'User';
-        token.country = 'International';
-        token.plan = 'Scout';
       }
-
       return token;
     },
     async session({ session, token }) {

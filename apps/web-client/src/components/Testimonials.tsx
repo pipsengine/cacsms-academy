@@ -20,7 +20,7 @@ const testimonials: Testimonial[] = [
     name: 'Maria Rodriguez',
     title: 'Investment Manager • London',
     content:
-      'Using the Institutional plan with my team. The API integrations seamlessly connect to our existing systems. The liquidity intelligence alone has improved our entry accuracy by 23%.',
+      'Using the ProTrader plan with my team. The API integrations seamlessly connect to our existing systems. The liquidity intelligence alone has improved our entry accuracy by 23%.',
   },
   {
     name: 'James Wilson',

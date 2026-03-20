@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/nextAuthOptions';
 import { prisma } from '@/lib/prisma';
 
-const PLAN_OPTIONS = ['Scout', 'Analyst', 'Trader', 'ProTrader', 'Institutional'] as const;
+const PLAN_OPTIONS = ['Scout', 'Analyst', 'Trader', 'ProTrader'] as const;
 const ROLE_OPTIONS = ['User', 'Administrator', 'Super Admin'] as const;
 const STATUS_OPTIONS = ['Active', 'Expired', 'Cancelled', 'Pending'] as const;
 const COUNTRY_OPTIONS = ['Nigeria', 'International'] as const;
@@ -17,6 +17,7 @@ function mapPlan(planType: string | null | undefined) {
   if (planType === 'Free') return 'Scout';
   if (planType === 'Professional') return 'Trader';
   if (planType === 'Premium') return 'ProTrader';
+  if (planType === 'Institutional') return 'ProTrader';
   return planType;
 }
 

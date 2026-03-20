@@ -3,20 +3,19 @@ import Stripe from 'stripe';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/nextAuthOptions';
 import { prisma } from '@/lib/prisma';
-import { getPricingDetailFromMatrix, PlanType, resolveRegion } from '@/lib/pricing/catalog';
-import { getBillingPrice, getPricingMatrix } from '@/lib/pricing/store';
-import { calculateUpgradeCharge, getSubscriptionExpiryDate } from '@/lib/pricing/upgrade';
+import { getPricingDetail, PlanType, resolveRegion } from '@/lib/pricing/catalog';
 
 type PaidPlan = Exclude<PlanType, 'Scout'>;
 
 function getPaidPlan(input: unknown): PaidPlan | null {
   // Support new plan names
-  if (input === 'Analyst' || input === 'Trader' || input === 'ProTrader' || input === 'Institutional') {
+  if (input === 'Analyst' || input === 'Trader' || input === 'ProTrader') {
     return input as PaidPlan;
   }
   // Legacy migration: map old plan names to new ones
   if (input === 'Professional') return 'Trader' as PaidPlan;
   if (input === 'Premium') return 'ProTrader' as PaidPlan;
+  if (input === 'Institutional') return 'ProTrader' as PaidPlan;
   return null;
 }
 
@@ -33,32 +32,10 @@ export async function POST(req: Request) {
     const sessionId = typeof body?.sessionId === 'string' ? body.sessionId : null;
     const plan = getPaidPlan(body?.plan);
     const resolvedRegion = resolveRegion(body?.region, user.country);
-    const currentSubscription = await prisma.subscription.findFirst({
-      where: { userId: user.id, status: 'Active' },
-      orderBy: { createdAt: 'desc' },
-    }) as any;
 
     if (!process.env.STRIPE_SECRET_KEY) {
       if (!plan) return NextResponse.json({ error: 'Invalid plan' }, { status: 400 });
-      const { pricingMatrix } = await getPricingMatrix();
-      const billingCycle: 'monthly' | 'annual' = body?.billingCycle === 'annual' ? 'annual' : 'monthly';
-      let charge;
-      try {
-        charge = calculateUpgradeCharge({
-          pricingMatrix,
-          region: resolvedRegion,
-          targetPlan: plan,
-          billingCycle,
-          currentSubscription,
-        });
-      } catch (error) {
-        return NextResponse.json(
-          { error: error instanceof Error ? error.message : 'Unable to process subscription change' },
-          { status: 400 }
-        );
-      }
-
-      const pricing = getPricingDetailFromMatrix(pricingMatrix, plan, resolvedRegion);
+      const pricing = getPricingDetail(plan, resolvedRegion);
 
       await prisma.subscription.updateMany({
         where: { userId: user.id, status: 'Active' },
@@ -69,13 +46,12 @@ export async function POST(req: Request) {
         data: {
           userId: user.id,
           planType: plan,
-          billingCycle,
-          price: charge.chargeAmount,
+          price: pricing.priceValue,
           currency: pricing.currencySymbol,
-          expiryDate: getSubscriptionExpiryDate(billingCycle, currentSubscription),
+          expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
           paymentProvider: 'System',
           status: 'Active',
-        } as any,
+        },
       });
 
       return NextResponse.json({ success: true, plan });
@@ -101,24 +77,7 @@ export async function POST(req: Request) {
 
     if (!finalPlan) return NextResponse.json({ error: 'Invalid plan' }, { status: 400 });
 
-    const { pricingMatrix } = await getPricingMatrix();
-    const pricing = getPricingDetailFromMatrix(pricingMatrix, finalPlan, finalRegion);
-    const billingCycle = session.metadata?.billingCycle === 'annual' ? 'annual' : 'monthly';
-    let charge;
-    try {
-      charge = calculateUpgradeCharge({
-        pricingMatrix,
-        region: finalRegion,
-        targetPlan: finalPlan,
-        billingCycle,
-        currentSubscription,
-      });
-    } catch (error) {
-      return NextResponse.json(
-        { error: error instanceof Error ? error.message : 'Unable to process subscription change' },
-        { status: 400 }
-      );
-    }
+    const pricing = getPricingDetail(finalPlan, finalRegion);
 
     await prisma.subscription.updateMany({
       where: { userId: user.id, status: 'Active' },
@@ -129,13 +88,12 @@ export async function POST(req: Request) {
       data: {
         userId: user.id,
         planType: finalPlan,
-        billingCycle,
-        price: charge.chargeAmount,
+        price: pricing.priceValue,
         currency: pricing.currencySymbol,
-        expiryDate: getSubscriptionExpiryDate(billingCycle, currentSubscription),
+        expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         paymentProvider: 'Stripe',
         status: 'Active',
-      } as any,
+      },
     });
 
     return NextResponse.json({ success: true, plan: finalPlan });

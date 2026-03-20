@@ -1,7 +1,7 @@
 /**
  * Determines the correct dashboard route based on user's subscription plan
  */
-export function getDashboardForPlan(plan: 'Scout' | 'Analyst' | 'Trader' | 'ProTrader' | 'Institutional' | undefined): string {
+export function getDashboardForPlan(plan: 'Scout' | 'Analyst' | 'Trader' | 'ProTrader' | undefined): string {
   switch (plan) {
     case 'Scout':
       return '/currency-strength';
@@ -10,8 +10,6 @@ export function getDashboardForPlan(plan: 'Scout' | 'Analyst' | 'Trader' | 'ProT
     case 'Trader':
       return '/channel-scanner';
     case 'ProTrader':
-      return '/opportunities';
-    case 'Institutional':
       return '/opportunities';
     default:
       return '/currency-strength';

@@ -38,13 +38,6 @@ const DEFAULT_LIMITS: UsageLimit[] = [
   { planName: 'ProTrader', featureName: 'AI Probability Engine', hourlyLimit: 'Unlimited', dailyLimit: 'Unlimited' },
   { planName: 'ProTrader', featureName: 'Liquidity Intelligence', hourlyLimit: 'Unlimited', dailyLimit: 'Unlimited' },
   { planName: 'ProTrader', featureName: 'Opportunity Radar', hourlyLimit: 'Unlimited', dailyLimit: 'Unlimited' },
-  // Institutional
-  { planName: 'Institutional', featureName: 'Channel Scanner', hourlyLimit: 'Unlimited', dailyLimit: 'Unlimited' },
-  { planName: 'Institutional', featureName: 'Breakout Engine', hourlyLimit: 'Unlimited', dailyLimit: 'Unlimited' },
-  { planName: 'Institutional', featureName: 'Alert System', hourlyLimit: 'Unlimited', dailyLimit: 'Unlimited' },
-  { planName: 'Institutional', featureName: 'AI Probability Engine', hourlyLimit: 'Unlimited', dailyLimit: 'Unlimited' },
-  { planName: 'Institutional', featureName: 'Liquidity Intelligence', hourlyLimit: 'Unlimited', dailyLimit: 'Unlimited' },
-  { planName: 'Institutional', featureName: 'Opportunity Radar', hourlyLimit: 'Unlimited', dailyLimit: 'Unlimited' },
 ];
 
 type UsageLogEntry = {

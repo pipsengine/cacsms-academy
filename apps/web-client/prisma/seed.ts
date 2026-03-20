@@ -41,6 +41,37 @@ async function main() {
       })
     )
   );
+
+  const assets = [
+    { symbol: 'EURUSD', name: 'Euro vs US Dollar', assetClass: 'FOREX', baseCurrency: 'EUR', quoteCurrency: 'USD' },
+    { symbol: 'GBPUSD', name: 'British Pound vs US Dollar', assetClass: 'FOREX', baseCurrency: 'GBP', quoteCurrency: 'USD' },
+    { symbol: 'USDJPY', name: 'US Dollar vs Japanese Yen', assetClass: 'FOREX', baseCurrency: 'USD', quoteCurrency: 'JPY' },
+    { symbol: 'XAUUSD', name: 'Gold vs US Dollar', assetClass: 'COMMODITY', baseCurrency: 'XAU', quoteCurrency: 'USD' },
+    { symbol: 'BTCUSD', name: 'Bitcoin vs US Dollar', assetClass: 'CRYPTO', baseCurrency: 'BTC', quoteCurrency: 'USD' },
+  ] as const;
+
+  await Promise.all(
+    assets.map((asset) =>
+      prisma.asset.upsert({
+        where: { symbol: asset.symbol },
+        update: {
+          name: asset.name,
+          assetClass: asset.assetClass,
+          baseCurrency: asset.baseCurrency,
+          quoteCurrency: asset.quoteCurrency,
+          isActive: true,
+        },
+        create: {
+          symbol: asset.symbol,
+          name: asset.name,
+          assetClass: asset.assetClass,
+          baseCurrency: asset.baseCurrency,
+          quoteCurrency: asset.quoteCurrency,
+          isActive: true,
+        },
+      })
+    )
+  );
 }
 
 main()

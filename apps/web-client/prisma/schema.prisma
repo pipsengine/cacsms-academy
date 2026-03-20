@@ -30,6 +30,50 @@ model User {
   contactInquiries   ContactInquiry[]
   preference         UserPreference?
   learningEvents     LearningEvent[]
+  tradeSignals       TradeSignal[]
+  tradePlans         TradePlan[]
+  tradeExecutions    TradeExecution[]
+  positions          Position[]
+  journalEntries     JournalEntry[]
+}
+
+enum AssetClass {
+  FOREX
+  CRYPTO
+  COMMODITY
+  INDEX
+  EQUITY
+}
+
+enum TradeDirection {
+  LONG
+  SHORT
+}
+
+enum TradeSignalStatus {
+  OPEN
+  TRIGGERED
+  INVALIDATED
+  EXPIRED
+}
+
+enum TradePlanStatus {
+  DRAFT
+  ACTIVE
+  CANCELLED
+  EXECUTED
+}
+
+enum ExecutionStatus {
+  PENDING
+  OPEN
+  CLOSED
+  CANCELLED
+}
+
+enum PositionStatus {
+  OPEN
+  CLOSED
 }
 
 model Account {
@@ -200,4 +244,164 @@ model LearningEvent {
 
   @@index([eventType, createdAt])
   @@index([userId, createdAt])
+}
+
+model Asset {
+  id            String           @id @default(cuid())
+  symbol        String           @unique
+  name          String
+  assetClass    AssetClass
+  baseCurrency  String?
+  quoteCurrency String?
+  isActive      Boolean          @default(true)
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  candles       MarketCandle[]
+  signals       TradeSignal[]
+  plans         TradePlan[]
+  executions    TradeExecution[]
+  positions     Position[]
+}
+
+model MarketCandle {
+  id         String   @id @default(cuid())
+  assetId    String
+  timeframe  String
+  open       Float
+  high       Float
+  low        Float
+  close      Float
+  volume     Float?
+  timestamp  DateTime
+  createdAt  DateTime @default(now())
+
+  asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+  @@unique([assetId, timeframe, timestamp])
+  @@index([assetId, timeframe, timestamp])
+}
+
+model TradeSignal {
+  id            String            @id @default(cuid())
+  userId        String?
+  assetId       String
+  timeframe     String
+  direction     TradeDirection
+  confidence    Int
+  source        String
+  status        TradeSignalStatus @default(OPEN)
+  entryPrice    Float?
+  stopLoss      Float?
+  takeProfit    Float?
+  rationale     Json?
+  createdAt     DateTime          @default(now())
+  resolvedAt    DateTime?
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  executions TradeExecution[]
+
+  @@index([assetId, timeframe, createdAt])
+  @@index([userId, createdAt])
+  @@index([status, createdAt])
+}
+
+model TradePlan {
+  id             String          @id @default(cuid())
+  userId         String
+  assetId        String
+  timeframe      String
+  direction      TradeDirection
+  riskPercent    Float
+  entryPrice     Float
+  stopLoss       Float
+  takeProfit     Float
+  notes          String?
+  status         TradePlanStatus @default(DRAFT)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  executions TradeExecution[]
+
+  @@index([userId, status, createdAt])
+  @@index([assetId, createdAt])
+}
+
+model TradeExecution {
+  id              String          @id @default(cuid())
+  userId          String
+  assetId         String
+  signalId        String?
+  planId          String?
+  direction       TradeDirection
+  status          ExecutionStatus @default(PENDING)
+  quantity        Float
+  openPrice       Float?
+  closePrice      Float?
+  stopLoss        Float?
+  takeProfit      Float?
+  openedAt        DateTime?
+  closedAt        DateTime?
+  fees            Float           @default(0)
+  realizedPnl     Float?
+  metadata        Json?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  signal TradeSignal? @relation(fields: [signalId], references: [id], onDelete: SetNull)
+  plan TradePlan? @relation(fields: [planId], references: [id], onDelete: SetNull)
+  journalEntries JournalEntry[]
+
+  @@index([userId, status, createdAt])
+  @@index([assetId, createdAt])
+  @@index([signalId])
+  @@index([planId])
+}
+
+model Position {
+  id               String         @id @default(cuid())
+  userId           String
+  assetId          String
+  direction        TradeDirection
+  status           PositionStatus @default(OPEN)
+  quantity         Float
+  averageEntry     Float
+  stopLoss         Float?
+  takeProfit       Float?
+  openedAt         DateTime       @default(now())
+  closedAt         DateTime?
+  realizedPnl      Float?
+  unrealizedPnl    Float?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status, openedAt])
+  @@index([assetId, status])
+}
+
+model JournalEntry {
+  id               String    @id @default(cuid())
+  userId           String
+  tradeExecutionId String?
+  title            String
+  notes            String
+  emotions         String?
+  tags             Json?
+  rating           Int?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tradeExecution TradeExecution? @relation(fields: [tradeExecutionId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt])
+  @@index([tradeExecutionId])
 }

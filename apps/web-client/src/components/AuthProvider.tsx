@@ -11,7 +11,7 @@ export type User = {
   email: string;
   role: 'Super Admin' | 'Administrator' | 'User';
   country: string;
-  plan: 'Scout' | 'Analyst' | 'Trader' | 'ProTrader' | 'Institutional';
+  plan: 'Scout' | 'Analyst' | 'Trader' | 'ProTrader';
 };
 
 interface AuthContextType {
@@ -19,7 +19,7 @@ interface AuthContextType {
   isLoading: boolean;
   login: (user: User) => void;
   logout: () => void;
-  updatePlan: (plan: 'Scout' | 'Analyst' | 'Trader' | 'ProTrader' | 'Institutional') => void;
+  updatePlan: (plan: 'Scout' | 'Analyst' | 'Trader' | 'ProTrader') => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -35,7 +35,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         const res = await fetch('/api/auth/me');
         const data = await res.json().catch(() => null);
-        setUser((data && 'user' in data ? (data as any).user : null) ?? null);
+        const rawUser = (data && 'user' in data ? (data as any).user : null) ?? null;
+        const normalizedUser = rawUser
+          ? {
+              ...rawUser,
+              plan: rawUser.plan === 'Institutional' ? 'ProTrader' : rawUser.plan,
+            }
+          : null;
+        setUser(normalizedUser);
       } catch (error) {
         setUser(null);
       } finally {
@@ -75,7 +82,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await signOut({ redirect: true, callbackUrl: '/' });
   };
 
-  const updatePlan = (plan: 'Scout' | 'Analyst' | 'Trader' | 'ProTrader' | 'Institutional') => {
+  const updatePlan = (plan: 'Scout' | 'Analyst' | 'Trader' | 'ProTrader') => {
     if (user) {
       setUser({ ...user, plan });
       const correctDashboard = getDashboardForPlan(plan as any);

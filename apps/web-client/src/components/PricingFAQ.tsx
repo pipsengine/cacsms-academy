@@ -30,14 +30,14 @@ const faqItems: FAQItem[] = [
       'You can cancel your subscription anytime with no penalties. If you request a refund within 14 days of your first payment and the platform did not meet your expectations, we will refund you in full. Just contact support@inteltrader.com.',
   },
   {
-    question: 'What is included in the Institutional plan?',
+    question: 'What is included in the Elite (ProTrader) plan?',
     answer:
-      'The Institutional plan includes everything in Elite, plus 5 team seats, unlimited API calls, white-label report generation, custom integrations, dedicated account manager, and 99.9% uptime SLA. It is built for professional teams and trading firms.',
+      'The Elite (ProTrader) plan includes everything in Trader, plus advanced liquidity intelligence, custom opportunity radar alerts, SMS and Telegram notifications, API access, and priority support. It is designed for serious traders running daily operations.',
   },
   {
     question: 'How does the API work and what are the rate limits?',
     answer:
-      'The API provides programmatic access to all Intel Trader data and analyses. Growth allows basic API access, Elite includes 1,000 calls/day, and Institutional has unlimited calls with priority queue. Full API documentation is available in your dashboard.',
+      'The API provides programmatic access to Intel Trader data and analyses. Growth supports basic API access, while Elite (ProTrader) unlocks expanded API usage for integrations. Full API documentation is available in your dashboard.',
   },
   {
     question: 'Do you offer custom pricing for teams or enterprises?',

@@ -28,7 +28,7 @@ const FEATURES = [
   'Liquidity Intelligence',
 ] as const;
 
-const PLANS: PlanType[] = ['Scout', 'Analyst', 'Trader', 'ProTrader', 'Institutional'];
+const PLANS: PlanType[] = ['Scout', 'Analyst', 'Trader', 'ProTrader'];
 
 type UsdBasePricingMatrix = Record<PlanType, PricingDetail>;
 

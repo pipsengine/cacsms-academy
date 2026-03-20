@@ -22,11 +22,11 @@ describe('pricing catalog', () => {
     expect(pricing.priceValue).toBe(19);
   });
 
-  it('returns NGN Institutional pricing', () => {
-    const pricing = getPricingDetail('Institutional', 'nigeria');
+  it('returns NGN ProTrader pricing', () => {
+    const pricing = getPricingDetail('ProTrader', 'nigeria');
     expect(pricing.currencyCode).toBe('ngn');
-    expect(pricing.priceValue).toBe(149999);
-    expect(pricing.priceLabel).toBe('149,999');
+    expect(pricing.priceValue).toBe(49999);
+    expect(pricing.priceLabel).toBe('49,999');
   });
 
   it('returns annual pricing lower than 12x monthly', () => {

@@ -11,17 +11,13 @@ type PaidPlan = Exclude<PlanType, "Scout">;
 
 function getPaidPlan(input: unknown): PaidPlan | null {
   // Support new plan names
-  if (
-    input === "Analyst" ||
-    input === "Trader" ||
-    input === "ProTrader" ||
-    input === "Institutional"
-  ) {
+  if (input === "Analyst" || input === "Trader" || input === "ProTrader") {
     return input as PaidPlan;
   }
   // Legacy migration: map old plan names to new ones
   if (input === "Professional") return "Trader" as PaidPlan;
   if (input === "Premium") return "ProTrader" as PaidPlan;
+  if (input === "Institutional") return "ProTrader" as PaidPlan;
   return null;
 }
 

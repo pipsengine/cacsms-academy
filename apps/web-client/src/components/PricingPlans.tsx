@@ -149,7 +149,7 @@ export default function PricingPlans({ mode = 'section', showTrustIndicators = t
 
   const content = (
     <div className="w-full px-3 sm:px-4 md:px-6 lg:px-8">
-      <div className="mx-auto" style={{ maxWidth: '1600px' }}>
+      <div className="mx-auto max-w-7xl">
         <AuthModal
           isOpen={authOpen}
           onClose={() => setAuthOpen(false)}
@@ -207,8 +207,8 @@ export default function PricingPlans({ mode = 'section', showTrustIndicators = t
           </div>
         </div>
 
-        {/* Cards Grid - 5 columns with improved spacing */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-5">
+        {/* Cards Grid - responsive four-plan layout */}
+        <div className="grid grid-cols-1 items-stretch gap-5 md:grid-cols-2 lg:grid-cols-4 lg:gap-6">
           {plans.map((plan) => {
             const colors = colorMap[plan.color] ?? colorMap.zinc;
             const isCurrentPlan = user?.plan === plan.planType;
@@ -220,7 +220,7 @@ export default function PricingPlans({ mode = 'section', showTrustIndicators = t
             return (
               <div
                 key={plan.planType}
-                className={`group relative flex flex-col rounded-2xl border bg-white p-6 sm:p-7 md:p-8 transition-all duration-300 hover:shadow-xl ${
+                className={`group relative flex h-full min-w-0 flex-col rounded-2xl border bg-white p-6 sm:p-7 md:p-8 transition-all duration-300 hover:shadow-xl ${
                   plan.popular 
                     ? `${colors.border} border-2 shadow-lg scale-[1.02]` 
                     : `border-zinc-200 hover:border-zinc-300`

@@ -41,8 +41,6 @@ const variantStyles = {
 
 function getPlanBadgeClasses(plan: string) {
   switch (plan) {
-    case 'Institutional':
-      return 'text-amber-400 bg-amber-400/10 border-amber-400/20';
     case 'ProTrader':
       return 'text-violet-400 bg-violet-400/10 border-violet-400/20';
     case 'Trader':

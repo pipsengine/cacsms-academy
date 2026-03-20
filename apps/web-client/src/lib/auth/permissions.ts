@@ -6,7 +6,7 @@
 
 import type { User } from '@/components/AuthProvider';
 
-export type AccessLevel = 'scout' | 'analyst' | 'trader' | 'protrader' | 'institutional';
+export type AccessLevel = 'scout' | 'analyst' | 'trader' | 'protrader';
 
 /**
  * Convert subscription plan to access level (0-4)
@@ -17,7 +17,7 @@ export function getPlanAccessLevel(plan?: string): number {
     case 'Analyst': return 1;
     case 'Trader': return 2;
     case 'ProTrader': return 3;
-    case 'Institutional': return 4;
+    case 'Institutional': return 3;
     default: return -1;
   }
 }
@@ -50,7 +50,7 @@ export function canAccessFeature(
 
 /**
  * Check if usage limits apply to user
- * Super Admin/Administrator and ProTrader/Institutional have unlimited usage
+ * Super Admin/Administrator and ProTrader have unlimited usage
  */
 export function shouldCheckUsageLimits(user: User | null): boolean {
   if (!user) return true;
@@ -58,8 +58,8 @@ export function shouldCheckUsageLimits(user: User | null): boolean {
   // Super Admin and Administrator bypass limits
   if (isSuperAdmin(user)) return false;
   
-  // ProTrader and Institutional have unlimited features
-  if (user.plan === 'ProTrader' || user.plan === 'Institutional') return false;
+  // ProTrader has unlimited features (legacy Institutional is normalized to ProTrader)
+  if (user.plan === 'ProTrader') return false;
   
   return true;
 }

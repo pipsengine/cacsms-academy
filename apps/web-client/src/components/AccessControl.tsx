@@ -7,7 +7,7 @@ import { isSuperAdmin } from '@/lib/auth/permissions';
 
 interface AccessControlProps {
   children: React.ReactNode;
-  requiredPlan: 'Scout' | 'Analyst' | 'Trader' | 'ProTrader' | 'Institutional';
+  requiredPlan: 'Scout' | 'Analyst' | 'Trader' | 'ProTrader';
   moduleName: string;
 }
 
@@ -21,7 +21,6 @@ export default function AccessControl({ children, requiredPlan, moduleName }: Ac
     'Analyst': 1,
     'Trader': 2,
     'ProTrader': 3,
-    'Institutional': 4,
   };
 
   // Super Admin / Administrator always get access

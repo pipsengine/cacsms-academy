@@ -16,8 +16,8 @@ export default function UsageLimiter({ children, featureName }: UsageLimiterProp
   const [errorData, setErrorData] = useState<{ message: string, resetTime: string, upgradeSuggestion: string } | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // Auto-allow Institutional, ProTrader, Super Admin, and Administrator
-  const isPremiumOrAdmin = user?.plan === 'Institutional' || user?.plan === 'ProTrader' || user?.role === 'Super Admin' || user?.role === 'Administrator';
+  // Auto-allow ProTrader, Super Admin, and Administrator (legacy Institutional maps to ProTrader upstream)
+  const isPremiumOrAdmin = user?.plan === 'ProTrader' || user?.role === 'Super Admin' || user?.role === 'Administrator';
 
   if (isLoading) return null;
 

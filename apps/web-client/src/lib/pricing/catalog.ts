@@ -1,4 +1,4 @@
-﻿export type PlanType = 'Scout' | 'Analyst' | 'Trader' | 'ProTrader' | 'Institutional';
+﻿export type PlanType = 'Scout' | 'Analyst' | 'Trader' | 'ProTrader';
 export type BillingCycle = 'monthly' | 'annual';
 export type Region = 'international' | 'nigeria';
 
@@ -30,7 +30,7 @@ export interface PricingDetail {
 
 export type PricingMatrix = Record<Region, Record<PlanType, PricingDetail>>;
 
-export const planOrder: PlanType[] = ['Scout', 'Analyst', 'Trader', 'ProTrader', 'Institutional'];
+export const planOrder: PlanType[] = ['Scout', 'Analyst', 'Trader', 'ProTrader'];
 
 export function getPlanDisplayName(plan?: string) {
   if (plan === 'Scout') return 'Free Plan';
@@ -130,28 +130,6 @@ export const planDefinitions: Record<PlanType, PlanDefinition> = {
       'Advanced webhook integration for custom workflows',
     ],
   },
-  Institutional: {
-    planType: 'Institutional',
-    title: 'Institutional',
-    tagline: 'Professional teams & funds',
-    description: 'Enterprise-grade market intelligence platform built for prop firms, funds, and professional teams. Unlimited everything with white-label options.',
-    buttonVariant: 'outline',
-    color: 'amber',
-    annualSaving: 'Save $598/yr',
-    features: [
-      'Everything in Elite plan',
-      '5 team seats included (add more seats if needed)',
-      'Unlimited API calls with priority queue',
-      'White-label PDF intelligence reports for clients',
-      'Custom webhook integrations and API documentation',
-      'Complete historical data exports (CSV, JSON, SQL)',
-      'Dedicated account manager and technical support',
-      'SLA-backed 99.9% uptime guarantee',
-      'Custom data retention policies',
-      'Multi-office single sign-on (SSO) support',
-      'Quarterly business reviews and optimization sessions',
-    ],
-  },
 };
 
 export const defaultPricingMatrix: PricingMatrix = {
@@ -176,11 +154,6 @@ export const defaultPricingMatrix: PricingMatrix = {
       unitAmountCents: 9900, priceValue: 99, priceLabel: '99', period: '/month',
       annualUnitAmountCents: 99000, annualPriceValue: 990, annualPriceLabel: '990', annualMonthlyEquivalent: '82.50',
     },
-    Institutional: {
-      currencyCode: 'usd', currencySymbol: '$',
-      unitAmountCents: 29900, priceValue: 299, priceLabel: '299', period: '/month',
-      annualUnitAmountCents: 299000, annualPriceValue: 2990, annualPriceLabel: '2,990', annualMonthlyEquivalent: '249.17',
-    },
   },
   nigeria: {
     Scout: {
@@ -202,11 +175,6 @@ export const defaultPricingMatrix: PricingMatrix = {
       currencyCode: 'ngn', currencySymbol: 'N',
       unitAmountCents: 4999900, priceValue: 49999, priceLabel: '49,999', period: '/month',
       annualUnitAmountCents: 49999000, annualPriceValue: 499990, annualPriceLabel: '499,990', annualMonthlyEquivalent: '41,666',
-    },
-    Institutional: {
-      currencyCode: 'ngn', currencySymbol: 'N',
-      unitAmountCents: 14999900, priceValue: 149999, priceLabel: '149,999', period: '/month',
-      annualUnitAmountCents: 149999000, annualPriceValue: 1499990, annualPriceLabel: '1,499,990', annualMonthlyEquivalent: '124,999',
     },
   },
 };
