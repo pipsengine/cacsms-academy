@@ -702,6 +702,13 @@ export function getDayLessons(week: number, day: CurriculumDay): LessonRecord[] 
   return getAllLessons().filter((l) => l.week === week && l.day === day);
 }
 
+/** Return the day topic set metadata (theme + lessons) for a given week/day */
+export function getDayTopicSet(week: number, day: CurriculumDay): DailyTopicSet | null {
+  const weekRecord = courseCurriculum.find((item) => item.week === week);
+  if (!weekRecord) return null;
+  return weekRecord.days.find((item) => item.day === day) ?? null;
+}
+
 /** Return all lessons for a specific module (week) */
 export function getModuleLessons(week: number): LessonRecord[] {
   return getAllLessons().filter((l) => l.week === week);

@@ -8,12 +8,14 @@ import { useMarketData } from './MarketDataProvider';
 
 function formatPrice(pair: string, value?: number | null) {
   if (!Number.isFinite(value)) return '--';
-  return pair.endsWith('JPY') ? value.toFixed(3) : value.toFixed(5);
+  const numericValue = value as number;
+  return pair.endsWith('JPY') ? numericValue.toFixed(3) : numericValue.toFixed(5);
 }
 
 function formatPercent(value?: number | null, digits = 2) {
   if (!Number.isFinite(value)) return '--';
-  return value.toFixed(digits);
+  const numericValue = value as number;
+  return numericValue.toFixed(digits);
 }
 
 export default function BreakoutProbabilityTable() {

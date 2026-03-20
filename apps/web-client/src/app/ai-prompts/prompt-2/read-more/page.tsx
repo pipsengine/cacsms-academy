@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import ForexCourseUnitReadMore from '@/components/ForexCourseUnitReadMore';
 
@@ -12,7 +13,15 @@ export default function Prompt2ReadMorePage() {
           </p>
         </div>
 
-        <ForexCourseUnitReadMore />
+        <Suspense
+          fallback={
+            <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-5 text-sm text-zinc-400">
+              Loading lesson details...
+            </div>
+          }
+        >
+          <ForexCourseUnitReadMore />
+        </Suspense>
       </div>
     </DashboardLayout>
   );

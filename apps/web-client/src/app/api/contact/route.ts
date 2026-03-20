@@ -162,8 +162,6 @@ export async function POST(request: Request) {
     await prisma.contactInquiry.update({
       where: { id: inquiry.id },
       data: {
-        thankYouSentAt,
-        adminNotifiedAt,
         status: finalStatus,
       },
     });

@@ -11,7 +11,14 @@ type ChatRequest = {
   history?: Array<{ role: 'user' | 'assistant'; content: string }>;
 };
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY ?? '' });
+function getAiClient() {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    return null;
+  }
+
+  return new GoogleGenAI({ apiKey });
+}
 
 function buildSystemContext(lessonSlug: string): string {
   const lesson = getLessonBySlug(lessonSlug);
@@ -64,7 +71,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid message' }, { status: 400 });
     }
 
-    if (!process.env.GEMINI_API_KEY) {
+    const ai = getAiClient();
+    if (!ai) {
       return NextResponse.json({
         reply: buildFallbackReply(message, lessonSlug),
       });

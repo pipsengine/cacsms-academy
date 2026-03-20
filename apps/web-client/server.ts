@@ -3,6 +3,7 @@ import { parse } from 'url';
 import next from 'next';
 import { Server } from 'socket.io';
 import type { Socket } from 'socket.io';
+import type { AddressInfo } from 'node:net';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { getMarketDataService } from './src/lib/market/service.ts';
@@ -77,8 +78,8 @@ app.prepare().then(() => {
     });
   });
 
-  server.listen(port, () => {
-    console.log(`> Ready on http://localhost:${port}`);
+  void listenWithFallback(server, port).then((activePort) => {
+    console.log(`> Ready on http://localhost:${activePort}`);
   });
 });
 
@@ -86,4 +87,34 @@ function createMarketPayload(timestamp = new Date().toISOString()) {
   return {
     timestamp,
   };
+}
+
+function listenWithFallback(server: ReturnType<typeof createServer>, startPort: number): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const tryPort = (candidatePort: number) => {
+      const onError = (error: NodeJS.ErrnoException) => {
+        server.off('listening', onListening);
+
+        if (error.code === 'EADDRINUSE') {
+          console.warn(`Port ${candidatePort} is in use, trying ${candidatePort + 1}...`);
+          setImmediate(() => tryPort(candidatePort + 1));
+          return;
+        }
+
+        reject(error);
+      };
+
+      const onListening = () => {
+        server.off('error', onError);
+        const address = server.address() as AddressInfo | null;
+        resolve(address?.port ?? candidatePort);
+      };
+
+      server.once('error', onError);
+      server.once('listening', onListening);
+      server.listen(candidatePort);
+    };
+
+    tryPort(startPort);
+  });
 }

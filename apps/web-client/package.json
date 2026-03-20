@@ -2,6 +2,7 @@
   "name": "@intel-trader/web-client",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "node --experimental-strip-types server.ts",
     "build": "next build",
