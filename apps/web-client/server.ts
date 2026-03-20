@@ -3,9 +3,7 @@ import { parse } from 'url';
 import next from 'next';
 import { Server } from 'socket.io';
 import type { Socket } from 'socket.io';
-import { existsSync } from 'node:fs';
 import path from 'node:path';
-import { setTimeout as delay } from 'node:timers/promises';
 import { fileURLToPath } from 'node:url';
 import { getMarketDataService } from './src/lib/market/service.ts';
 import { syncDerivedAlerts } from './src/lib/alerts/service.ts';
@@ -24,26 +22,6 @@ const handle = app.getRequestHandler();
 app.prepare().then(() => {
   const server = createServer((req, res) => {
     try {
-      const pathname = parse(req.url || '/', true).pathname || '/';
-      if (dev && pathname.startsWith('/_next/static/')) {
-        const relativePath = pathname.replace('/_next/static/', '');
-        const staticPath = path.join(__dirname, '.next', 'static', relativePath);
-        if (!existsSync(staticPath)) {
-          (async () => {
-            for (let i = 0; i < 200; i++) {
-              if (existsSync(staticPath)) break;
-              await delay(50);
-            }
-            handle(req, res);
-          })().catch((err) => {
-            console.error('Error occurred handling', req.url, err);
-            res.statusCode = 500;
-            res.end('internal server error');
-          });
-          return;
-        }
-      }
-
       handle(req, res);
     } catch (err) {
       console.error('Error occurred handling', req.url, err);

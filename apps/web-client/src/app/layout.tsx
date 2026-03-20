@@ -1,5 +1,6 @@
 import type {Metadata} from 'next';
 import { Inter, JetBrains_Mono } from 'next/font/google';
+import AppChrome from '@/components/AppChrome';
 import { AuthProvider } from '@/components/AuthProvider';
 import { NotificationProvider } from '@/components/NotificationProvider';
 import { MarketDataProvider } from '@/components/MarketDataProvider';
@@ -27,7 +28,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
         <AuthProvider>
           <NotificationProvider>
             <MarketDataProvider>
-              {children}
+              <AppChrome>{children}</AppChrome>
             </MarketDataProvider>
           </NotificationProvider>
         </AuthProvider>

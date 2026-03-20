@@ -1,26 +1,33 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { getProviders, signIn } from 'next-auth/react';
-import Link from 'next/link';
-import { X } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { getProviders, signIn } from "next-auth/react";
+import Link from "next/link";
+import { X } from "lucide-react";
 
-type AuthMode = 'login' | 'register';
+type AuthMode = "login" | "register";
 
 type AuthModalProps = {
   isOpen: boolean;
   onClose: () => void;
   mode: AuthMode;
-  defaultCountry?: 'Nigeria' | 'International';
+  defaultCountry?: "Nigeria" | "International";
 };
 
-export default function AuthModal({ isOpen, onClose, mode, defaultCountry = 'International' }: AuthModalProps) {
+export default function AuthModal({
+  isOpen,
+  onClose,
+  mode,
+  defaultCountry = "International",
+}: AuthModalProps) {
   const [activeMode, setActiveMode] = useState<AuthMode>(mode);
-  const title = activeMode === 'register' ? 'Create your account' : 'Sign in';
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
-  const [country, setCountry] = useState<'Nigeria' | 'International'>(defaultCountry);
+  const title = activeMode === "register" ? "Create your account" : "Sign in";
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [country, setCountry] = useState<"Nigeria" | "International">(
+    defaultCountry,
+  );
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -35,14 +42,16 @@ export default function AuthModal({ isOpen, onClose, mode, defaultCountry = 'Int
     }
   }, [isOpen, mode]);
 
-  const [oauthProviders, setOauthProviders] = useState<Array<{ id: string; label: string }>>([]);
+  const [oauthProviders, setOauthProviders] = useState<
+    Array<{ id: string; label: string }>
+  >([]);
 
   useEffect(() => {
     const load = async () => {
       const p = await getProviders().catch(() => null);
       const list = Object.values(p || {})
-        .filter(x => x && x.id !== 'credentials')
-        .map(x => ({ id: x.id, label: `Continue with ${x.name}` }));
+        .filter((x) => x && x.id !== "credentials")
+        .map((x) => ({ id: x.id, label: `Continue with ${x.name}` }));
       setOauthProviders(list);
     };
     if (isOpen) {
@@ -60,15 +69,15 @@ export default function AuthModal({ isOpen, onClose, mode, defaultCountry = 'Int
     try {
       const normalizedEmail = email.toLowerCase().trim();
       if (!normalizedEmail || !password) {
-        setError('Email and password are required.');
+        setError("Email and password are required.");
         setBusy(false);
         return;
       }
 
-      if (activeMode === 'register') {
-        const res = await fetch('/api/auth/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+      if (activeMode === "register") {
+        const res = await fetch("/api/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             name,
             email: normalizedEmail,
@@ -79,36 +88,45 @@ export default function AuthModal({ isOpen, onClose, mode, defaultCountry = 'Int
 
         const data = await res.json().catch(() => null);
         if (!res.ok) {
-          setError(data?.error || 'Registration failed.');
+          setError(data?.error || "Registration failed.");
           setBusy(false);
           return;
         }
       }
 
-      const result = await signIn('credentials', {
+      const result = await signIn("credentials", {
         email: normalizedEmail,
         password,
         redirect: true,
-        callbackUrl: '/currency-strength',
+        callbackUrl: "/",
       });
 
       if (result && (result as any).error) {
-        setError('Invalid credentials.');
+        setError("Invalid credentials.");
         setBusy(false);
       }
     } catch (err) {
-      setError('Something went wrong. Please try again.');
+      setError("Something went wrong. Please try again.");
       setBusy(false);
     }
   };
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <button type="button" onClick={onClose} className="absolute inset-0 bg-black/40" aria-label="Close auth modal" />
+      <button
+        type="button"
+        onClick={onClose}
+        className="absolute inset-0 bg-black/40"
+        aria-label="Close auth modal"
+      />
       <div className="relative w-full max-w-md rounded-2xl border border-zinc-200 bg-white text-zinc-900 shadow-2xl">
         <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-200">
           <div className="text-sm font-semibold">{title}</div>
-          <button type="button" onClick={onClose} className="p-2 rounded hover:bg-zinc-100">
+          <button
+            type="button"
+            onClick={onClose}
+            className="p-2 rounded hover:bg-zinc-100"
+          >
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -119,7 +137,7 @@ export default function AuthModal({ isOpen, onClose, mode, defaultCountry = 'Int
               <button
                 key={p.id}
                 type="button"
-                onClick={() => signIn(p.id, { callbackUrl: '/currency-strength' })}
+                onClick={() => signIn(p.id, { callbackUrl: "/" })}
                 className="w-full py-3 px-4 rounded-xl border border-zinc-200 bg-white hover:bg-zinc-50 text-sm font-semibold transition-colors"
               >
                 {p.label}
@@ -140,10 +158,12 @@ export default function AuthModal({ isOpen, onClose, mode, defaultCountry = 'Int
               </div>
             )}
 
-            {activeMode === 'register' && (
+            {activeMode === "register" && (
               <>
                 <div>
-                  <label className="block text-xs font-mono text-zinc-400 uppercase tracking-wider mb-1">Full name</label>
+                  <label className="block text-xs font-mono text-zinc-400 uppercase tracking-wider mb-1">
+                    Full name
+                  </label>
                   <input
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -152,10 +172,18 @@ export default function AuthModal({ isOpen, onClose, mode, defaultCountry = 'Int
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-mono text-zinc-400 uppercase tracking-wider mb-1">Country</label>
+                  <label className="block text-xs font-mono text-zinc-400 uppercase tracking-wider mb-1">
+                    Country
+                  </label>
                   <select
                     value={country}
-                    onChange={(e) => setCountry(e.target.value === 'Nigeria' ? 'Nigeria' : 'International')}
+                    onChange={(e) =>
+                      setCountry(
+                        e.target.value === "Nigeria"
+                          ? "Nigeria"
+                          : "International",
+                      )
+                    }
                     className="w-full bg-white border border-zinc-300 rounded px-3 py-2 text-zinc-900 focus:outline-none focus:border-emerald-500/60 transition-colors"
                   >
                     <option value="International">International</option>
@@ -166,7 +194,9 @@ export default function AuthModal({ isOpen, onClose, mode, defaultCountry = 'Int
             )}
 
             <div>
-              <label className="block text-xs font-mono text-zinc-400 uppercase tracking-wider mb-1">Email</label>
+              <label className="block text-xs font-mono text-zinc-400 uppercase tracking-wider mb-1">
+                Email
+              </label>
               <input
                 type="email"
                 value={email}
@@ -177,7 +207,9 @@ export default function AuthModal({ isOpen, onClose, mode, defaultCountry = 'Int
             </div>
 
             <div>
-              <label className="block text-xs font-mono text-zinc-400 uppercase tracking-wider mb-1">Password</label>
+              <label className="block text-xs font-mono text-zinc-400 uppercase tracking-wider mb-1">
+                Password
+              </label>
               <input
                 type="password"
                 value={password}
@@ -192,17 +224,21 @@ export default function AuthModal({ isOpen, onClose, mode, defaultCountry = 'Int
               disabled={busy}
               className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded transition-colors disabled:opacity-50"
             >
-              {busy ? 'Please wait...' : activeMode === 'register' ? 'Create account' : 'Sign in'}
+              {busy
+                ? "Please wait..."
+                : activeMode === "register"
+                  ? "Create account"
+                  : "Sign in"}
             </button>
           </form>
 
           <div className="text-center text-sm text-zinc-600">
-            {activeMode === 'register' ? (
+            {activeMode === "register" ? (
               <button
                 type="button"
                 onClick={() => {
                   setError(null);
-                  setActiveMode('login');
+                  setActiveMode("login");
                 }}
                 className="text-emerald-700 hover:underline"
               >
@@ -213,7 +249,7 @@ export default function AuthModal({ isOpen, onClose, mode, defaultCountry = 'Int
                 type="button"
                 onClick={() => {
                   setError(null);
-                  setActiveMode('register');
+                  setActiveMode("register");
                 }}
                 className="text-emerald-700 hover:underline"
               >

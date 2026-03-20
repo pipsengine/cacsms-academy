@@ -4,17 +4,17 @@
 export function getDashboardForPlan(plan: 'Scout' | 'Analyst' | 'Trader' | 'ProTrader' | 'Institutional' | undefined): string {
   switch (plan) {
     case 'Scout':
-      return '/command-center';
+      return '/currency-strength';
     case 'Analyst':
-      return '/command-center';
+      return '/channel-scanner';
     case 'Trader':
-      return '/command-center';
+      return '/channel-scanner';
     case 'ProTrader':
-      return '/command-center';
+      return '/opportunities';
     case 'Institutional':
-      return '/command-center';
+      return '/opportunities';
     default:
-      return '/command-center';
+      return '/currency-strength';
   }
 }
 
@@ -29,6 +29,7 @@ export const DASHBOARD_ROUTES = [
   '/liquidity-intel',
   '/opportunities',
   '/configuration',
+  '/profile',
   '/alert-history',
   '/admin',
 ] as const;
@@ -39,16 +40,8 @@ export const DASHBOARD_ROUTES = [
 export const PUBLIC_ROUTES = [
   '/login',
   '/register',
+  '/landing',
   '/pricing',
-  '/about',
-  '/contact',
-  '/careers',
-  '/platform',
-  '/features',
-  '/technology',
-  '/help-center',
-  '/account-support',
-  '/faq',
   '/',
 ] as const;
 
@@ -77,5 +70,5 @@ export function isDashboardRoute(path: string): boolean {
  * Check if a route is an auth route (login/register)
  */
 export function isAuthRoute(path: string): boolean {
-  return ['/login', '/register', '/'].includes(path);
+  return ['/login', '/register'].includes(path);
 }

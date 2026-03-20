@@ -3,7 +3,6 @@
 import React from 'react';
 import Link from 'next/link';
 import {
-  Cpu,
   Globe,
   Activity,
   Zap,
@@ -17,8 +16,8 @@ import {
   Database,
   CheckCircle2,
   ChevronRight,
-  Menu,
 } from 'lucide-react';
+import { useAuth } from '@/components/AuthProvider';
 import PricingPlans from '@/components/PricingPlans';
 import DailyTradingTipPreview from '@/components/DailyTradingTipPreview';
 import WeeklyAnalysisOverview from '@/components/WeeklyAnalysisOverview';
@@ -155,19 +154,25 @@ function getCurriculumDayFromDate(date: Date): CurriculumDay {
 }
 
 export default function LandingPage() {
-  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+  const { user, logout, isLoading } = useAuth();
 
   const today = new Date();
   const calendarWeek = getIsoWeekNumber(today);
   const currentDay = getCurriculumDayFromDate(today);
   const curriculumWeekNumber = ((calendarWeek - 1) % forexCourseCurriculum.length) + 1;
   const currentDayIndex = lessonDays.indexOf(currentDay);
-  const visibleCourseTopics = courseTopicCards.filter((topic) => (
+  const currentWeekTopics = courseTopicCards.filter((topic) =>
     topic.week === curriculumWeekNumber &&
-    lessonDays.indexOf(topic.day) >= currentDayIndex &&
-    lessonDays.indexOf(topic.day) <= currentDayIndex + 2
-  ));
+    lessonDays.indexOf(topic.day) >= currentDayIndex
+  );
+  const nextWeekNumber = (curriculumWeekNumber % forexCourseCurriculum.length) + 1;
+  const nextWeekTopics = courseTopicCards.filter((topic) =>
+    topic.week === nextWeekNumber &&
+    lessonDays.indexOf(topic.day) >= 0
+  );
+  const visibleCourseTopics = [...currentWeekTopics, ...nextWeekTopics].slice(0, 3);
   const currentWeekMeta = forexCourseCurriculum.find((week) => week.week === curriculumWeekNumber);
+  const isAuthenticated = !isLoading && Boolean(user);
 
   const faqSchema = {
     '@context': 'https://schema.org',
@@ -185,61 +190,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-white text-zinc-900 font-sans selection:bg-emerald-500/30">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
-
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-zinc-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
-            <Link href="/" className="flex items-center gap-2 text-emerald-600">
-              <Cpu className="w-8 h-8" />
-              <span className="font-mono font-bold tracking-wider text-xl text-zinc-900">INTEL TRADER</span>
-            </Link>
-
-            <nav className="hidden md:flex items-center gap-8">
-              <Link href="/#platform" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors">Platform</Link>
-              <Link href="/#how-it-works" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors">How It Works</Link>
-              <Link href="/#daily-trading-tips" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors">Daily Trading Tips</Link>
-              <Link href="/#our-courses" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors">Our Courses</Link>
-              <Link href="/#weekly-analysis" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors">Weekly Analysis</Link>
-              <Link href="/#pricing" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors">Pricing</Link>
-              <Link href="/#faq" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors">FAQ</Link>
-            </nav>
-
-            <div className="hidden md:flex items-center gap-4">
-              <Link href="/login" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors">Login</Link>
-              <Link href="/register" className="text-sm font-bold bg-zinc-900 text-white px-5 py-2.5 rounded-lg hover:bg-zinc-800 transition-colors">Sign Up</Link>
-            </div>
-
-            <button
-              className="md:hidden p-2 text-zinc-600"
-              aria-label="Open menu"
-              onClick={() => setMobileMenuOpen((open) => !open)}
-            >
-              <Menu className="w-6 h-6" />
-            </button>
-          </div>
-
-          {mobileMenuOpen && (
-            <div className="md:hidden border-t border-zinc-200 bg-white px-4 py-4">
-              <nav className="flex flex-col gap-3">
-                <Link href="/#platform" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-zinc-700 hover:text-zinc-900 transition-colors">Platform</Link>
-                <Link href="/#how-it-works" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-zinc-700 hover:text-zinc-900 transition-colors">How It Works</Link>
-                <Link href="/#daily-trading-tips" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-zinc-700 hover:text-zinc-900 transition-colors">Daily Trading Tips</Link>
-                <Link href="/#our-courses" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-zinc-700 hover:text-zinc-900 transition-colors">Our Courses</Link>
-                <Link href="/#weekly-analysis" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-zinc-700 hover:text-zinc-900 transition-colors">Weekly Analysis</Link>
-                <Link href="/#pricing" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-zinc-700 hover:text-zinc-900 transition-colors">Pricing</Link>
-                <Link href="/#faq" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-zinc-700 hover:text-zinc-900 transition-colors">FAQ</Link>
-              </nav>
-
-              <div className="mt-4 flex flex-col gap-3 border-t border-zinc-200 pt-4">
-                <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-zinc-700 hover:text-zinc-900 transition-colors">Login</Link>
-                <Link href="/register" onClick={() => setMobileMenuOpen(false)} className="inline-flex justify-center items-center rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-bold text-white hover:bg-zinc-800 transition-colors">Sign Up</Link>
-              </div>
-            </div>
-          )}
-        </div>
-      </header>
-
-      <main className="pt-20">
+      <main>
         <section className="relative pt-24 pb-32 overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -258,13 +209,27 @@ export default function LandingPage() {
                   The platform combines currency strength analysis, structural channel detection, breakout monitoring, liquidity context, AI-assisted probability scoring, and ranked opportunity discovery so traders can spend less time searching and more time acting with intention. It is designed for ambitious retail traders, serious professionals, and institutional teams that want a cleaner operating picture of the forex market.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <Link href="/register" className="inline-flex justify-center items-center gap-2 bg-emerald-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-emerald-700 transition-colors text-lg">
-                    Create Free Account
-                    <ChevronRight className="w-5 h-5" />
-                  </Link>
-                  <Link href="/login" className="inline-flex justify-center items-center gap-2 bg-white text-zinc-900 border-2 border-zinc-200 px-8 py-4 rounded-xl font-bold hover:border-zinc-300 hover:bg-zinc-50 transition-colors text-lg">
-                    Login to Dashboard
-                  </Link>
+                  {isAuthenticated ? (
+                    <>
+                      <Link href="/command-center" className="inline-flex justify-center items-center gap-2 bg-emerald-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-emerald-700 transition-colors text-lg">
+                        Open Dashboard
+                        <ChevronRight className="w-5 h-5" />
+                      </Link>
+                      <Link href="/profile" className="inline-flex justify-center items-center gap-2 bg-white text-zinc-900 border-2 border-zinc-200 px-8 py-4 rounded-xl font-bold hover:border-zinc-300 hover:bg-zinc-50 transition-colors text-lg">
+                        Manage Your Account
+                      </Link>
+                    </>
+                  ) : (
+                    <>
+                      <Link href="/register" className="inline-flex justify-center items-center gap-2 bg-emerald-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-emerald-700 transition-colors text-lg">
+                        Create Free Account
+                        <ChevronRight className="w-5 h-5" />
+                      </Link>
+                      <Link href="/login" className="inline-flex justify-center items-center gap-2 bg-white text-zinc-900 border-2 border-zinc-200 px-8 py-4 rounded-xl font-bold hover:border-zinc-300 hover:bg-zinc-50 transition-colors text-lg">
+                        Login to Dashboard
+                      </Link>
+                    </>
+                  )}
                 </div>
                 <div className="mt-8 grid gap-3 sm:grid-cols-3">
                   <div className="rounded-2xl border border-zinc-200 bg-white/70 px-4 py-3 text-center shadow-sm">
@@ -674,84 +639,29 @@ export default function LandingPage() {
               Whether you are evaluating the market as a solo trader, building a more disciplined daily workflow, or scaling intelligence across a team, Intel Trader gives you a more deliberate way to monitor, interpret, and rank the forex market.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Link href="/register" className="inline-flex justify-center items-center gap-2 bg-emerald-500 text-zinc-900 px-8 py-4 rounded-xl font-bold hover:bg-emerald-400 transition-colors text-lg">
-                Create Free Account
-              </Link>
-              <Link href="/login" className="inline-flex justify-center items-center gap-2 bg-zinc-800 text-white border border-zinc-700 px-8 py-4 rounded-xl font-bold hover:bg-zinc-700 transition-colors text-lg">
-                Login to Dashboard
-              </Link>
+              {isAuthenticated ? (
+                <>
+                  <Link href="/command-center" className="inline-flex justify-center items-center gap-2 bg-emerald-500 text-zinc-900 px-8 py-4 rounded-xl font-bold hover:bg-emerald-400 transition-colors text-lg">
+                    Open Dashboard
+                  </Link>
+                  <Link href="/profile" className="inline-flex justify-center items-center gap-2 bg-zinc-800 text-white border border-zinc-700 px-8 py-4 rounded-xl font-bold hover:bg-zinc-700 transition-colors text-lg">
+                    Review Account
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link href="/register" className="inline-flex justify-center items-center gap-2 bg-emerald-500 text-zinc-900 px-8 py-4 rounded-xl font-bold hover:bg-emerald-400 transition-colors text-lg">
+                    Create Free Account
+                  </Link>
+                  <Link href="/login" className="inline-flex justify-center items-center gap-2 bg-zinc-800 text-white border border-zinc-700 px-8 py-4 rounded-xl font-bold hover:bg-zinc-700 transition-colors text-lg">
+                    Login to Dashboard
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </section>
       </main>
-
-      <footer className="bg-zinc-950 text-zinc-400 py-16 border-t border-zinc-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-16">
-            <div className="col-span-2 lg:col-span-2">
-              <div className="flex items-center gap-2 text-emerald-500 mb-6">
-                <Cpu className="w-6 h-6" />
-                <span className="font-mono font-bold tracking-wider text-lg text-white">INTEL TRADER</span>
-              </div>
-              <p className="text-sm text-zinc-500 max-w-sm">
-                A forex market intelligence platform built to help traders move from fragmented chart watching to clearer, more disciplined market interpretation.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="text-white font-bold mb-4">Company</h4>
-              <ul className="space-y-2 text-sm">
-                <li><Link href="/about" className="hover:text-emerald-400 transition-colors">About</Link></li>
-                <li><Link href="/contact" className="hover:text-emerald-400 transition-colors">Contact</Link></li>
-                <li><Link href="/careers" className="hover:text-emerald-400 transition-colors">Careers</Link></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="text-white font-bold mb-4">Platform</h4>
-              <ul className="space-y-2 text-sm">
-                <li><Link href="/features" className="hover:text-emerald-400 transition-colors">Features</Link></li>
-                <li><Link href="/technology" className="hover:text-emerald-400 transition-colors">Technology</Link></li>
-                <li><Link href="/pricing" className="hover:text-emerald-400 transition-colors">Pricing</Link></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="text-white font-bold mb-4">Support</h4>
-              <ul className="space-y-2 text-sm">
-                <li><Link href="/help-center" className="hover:text-emerald-400 transition-colors">Help Center</Link></li>
-                <li><Link href="/account-support" className="hover:text-emerald-400 transition-colors">Account Support</Link></li>
-                <li><Link href="/faq" className="hover:text-emerald-400 transition-colors">FAQ</Link></li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-zinc-900 pt-8 space-y-8 text-xs text-zinc-500">
-            <div className="flex flex-wrap gap-4">
-              <Link href="/legal/terms" className="hover:text-zinc-300">Terms and Conditions</Link>
-              <Link href="/legal/privacy" className="hover:text-zinc-300">Privacy Policy</Link>
-              <Link href="/legal/risk-disclosure" className="hover:text-zinc-300">Risk Disclosure</Link>
-              <Link href="/legal/disclaimer" className="hover:text-zinc-300">Disclaimer</Link>
-              <Link href="/legal/cookie-policy" className="hover:text-zinc-300">Cookie Policy</Link>
-            </div>
-
-            <div className="space-y-4">
-              <div>
-                <strong className="text-zinc-400 block mb-1">Legal Disclaimer</strong>
-                <p>Intel Trader provides analytical tools and market intelligence designed to assist traders in evaluating financial markets. The platform does not provide financial advice, investment recommendations, or guarantees of trading performance. All trading decisions remain the sole responsibility of the user. Trading foreign exchange markets involves substantial risk and may not be suitable for all investors.</p>
-              </div>
-              <div>
-                <strong className="text-zinc-400 block mb-1">Nigeria Regulatory Notice</strong>
-                <p>Intel Trader operates as a financial technology platform providing analytical tools and market intelligence. The platform does not operate as a brokerage, financial advisory service, or investment management company. Users remain responsible for ensuring compliance with applicable Nigerian laws and regulations governing financial trading activities.</p>
-              </div>
-            </div>
-
-            <div className="flex justify-between items-center pt-4 border-t border-zinc-900">
-              <p>© {new Date().getFullYear()} Intel Trader. All rights reserved.</p>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

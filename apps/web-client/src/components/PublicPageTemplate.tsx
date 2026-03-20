@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ChevronRight, Cpu } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 
 type Stat = {
   label: string;
@@ -57,28 +57,6 @@ export default function PublicPageTemplate({
 }) {
   return (
     <div className="min-h-screen bg-white text-zinc-900">
-      <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white/90 backdrop-blur-md">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-          <Link href="/" className="flex items-center gap-2 text-emerald-600">
-            <Cpu className="h-7 w-7" />
-            <span className="font-mono text-lg font-bold tracking-wider text-zinc-900">INTEL TRADER</span>
-          </Link>
-          <nav className="hidden items-center gap-6 text-sm font-medium text-zinc-600 md:flex">
-            <Link href="/platform" className="transition-colors hover:text-zinc-900">Platform</Link>
-            <Link href="/features" className="transition-colors hover:text-zinc-900">Features</Link>
-            <Link href="/technology" className="transition-colors hover:text-zinc-900">Technology</Link>
-            <Link href="/pricing" className="transition-colors hover:text-zinc-900">Pricing</Link>
-            <Link href="/faq" className="transition-colors hover:text-zinc-900">FAQ</Link>
-          </nav>
-          <div className="flex items-center gap-3">
-            <Link href="/login" className="text-sm font-medium text-zinc-600 transition-colors hover:text-zinc-900">Login</Link>
-            <Link href="/register" className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-zinc-800">
-              Sign Up
-            </Link>
-          </div>
-        </div>
-      </header>
-
       <main>
         <section className="border-b border-zinc-200 bg-[radial-gradient(circle_at_top_left,_rgba(16,185,129,0.12),_transparent_35%),radial-gradient(circle_at_bottom_right,_rgba(59,130,246,0.10),_transparent_30%),white]">
           <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">

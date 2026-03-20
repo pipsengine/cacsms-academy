@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useMemo, useState, useEffect, useRef } from 'react';
-import { Activity, Clock, Cpu, Globe, LayoutDashboard, Settings, ShieldAlert, Zap, Target, LogOut, User as UserIcon, Shield, ChevronDown, CreditCard, Lightbulb, BookOpen, LineChart } from 'lucide-react';
+import React, { useMemo, useState, useEffect } from 'react';
+import { Activity, Clock, Cpu, Globe, LayoutDashboard, Settings, ShieldAlert, Zap, Target, Shield, Lightbulb, BookOpen, LineChart } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
 import AIAssistant from '@/components/AIAssistant';
 import { useMarketData } from '@/components/MarketDataProvider';
+import UserAccountMenu from '@/components/UserAccountMenu';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [time, setTime] = useState<string>('');
@@ -15,19 +16,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const { user, logout } = useAuth();
   const { health } = useMarketData();
   const [tick, setTick] = useState(() => Date.now());
-  const [profileOpen, setProfileOpen] = useState(false);
-  const profileRef = useRef<HTMLDivElement>(null);
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
-        setProfileOpen(false);
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
 
   const userInitials = useMemo(() => {
     if (!user?.name) return user?.email?.[0]?.toUpperCase() ?? 'U';
@@ -58,7 +46,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const getPageTitle = () => {
     switch (effectivePathname) {
-      case '/': return 'Command Center';
+      case '/command-center': return 'Command Center';
       case '/currency-strength': return 'Currency Strength';
       case '/channel-scanner': return 'Channel Scanner';
       case '/breakout-engine': return 'Breakout Engine';
@@ -67,6 +55,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       case '/daily-tips': return 'Daily Tips';
       case '/our-courses': return 'Our Courses';
       case '/weekly-analysis': return 'Weekly Analysis';
+      case '/profile': return 'Profile';
       case '/alert-history': return 'Alert History';
       case '/configuration': return 'Configuration';
       default: return 'Command Center';
@@ -115,7 +104,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="flex-1 overflow-y-auto py-6 px-4 space-y-1">
           <div className="text-xs font-mono text-zinc-500 mb-4 px-2 uppercase tracking-widest">Core Engines</div>
           
-          <NavItem href="/" icon={<LayoutDashboard />} label="Command Center" active={effectivePathname === '/'} />
+          <NavItem href="/command-center" icon={<LayoutDashboard />} label="Command Center" active={effectivePathname === '/command-center'} />
           <NavItem href="/currency-strength" icon={<Globe />} label="Currency Strength" active={effectivePathname === '/currency-strength'} />
           <NavItem href="/channel-scanner" icon={<Activity />} label="Channel Scanner" active={effectivePathname === '/channel-scanner'} />
           <NavItem href="/breakout-engine" icon={<Zap />} label="Breakout Engine" active={effectivePathname === '/breakout-engine'} />
@@ -173,11 +162,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Header */}
         <header className="h-16 flex-shrink-0 border-b border-zinc-800/50 bg-zinc-950/50 backdrop-blur-md flex items-center justify-between px-6">
           <div className="flex items-center gap-4">
-            <h1 className="text-lg font-medium text-zinc-100">{getPageTitle()}</h1>
-          <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-            <span className="text-xs font-mono text-zinc-400">Monitoring 28 Pairs</span>
-          </div>
+            <Link href="/" className="text-lg font-medium text-zinc-100 transition-colors hover:text-emerald-400">
+              {getPageTitle()}
+            </Link>
+            <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+              <span className="text-xs font-mono text-zinc-400">Monitoring 28 Pairs</span>
+            </div>
             <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800">
               <span
                 className={`w-1.5 h-1.5 rounded-full ${
@@ -202,89 +193,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </div>
             </div>
 
-            {/* User Profile Dropdown */}
-            {user && (
-              <div className="relative" ref={profileRef}>
-                <button
-                  onClick={() => setProfileOpen((v) => !v)}
-                  className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-zinc-800/70 border border-transparent hover:border-zinc-700/50 transition-all"
-                >
-                  <div className="w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center">
-                    <span className="text-xs font-bold text-emerald-400 font-mono">{userInitials}</span>
-                  </div>
-                  <div className="hidden md:block text-left">
-                    <div className="text-xs font-semibold text-zinc-200 leading-tight truncate max-w-[120px]">
-                      {user.name || user.email}
-                    </div>
-                    <div className={`text-[10px] font-mono ${planColor.split(' ')[0]}`}>{user.plan} Plan</div>
-                  </div>
-                  <ChevronDown className={`w-3.5 h-3.5 text-zinc-500 transition-transform hidden md:block ${profileOpen ? 'rotate-180' : ''}`} />
-                </button>
-
-                {profileOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-64 rounded-xl border border-zinc-700/60 bg-zinc-900 shadow-2xl shadow-black/40 z-50 overflow-hidden">
-                    {/* Profile Header */}
-                    <div className="px-4 py-4 border-b border-zinc-800">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
-                          <span className="text-sm font-bold text-emerald-400 font-mono">{userInitials}</span>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="text-sm font-semibold text-zinc-100 truncate">{user.name || 'User'}</div>
-                          <div className="text-xs text-zinc-400 truncate">{user.email}</div>
-                        </div>
-                      </div>
-                      <div className="mt-3 flex items-center justify-between">
-                        <span className={`text-xs font-mono px-2 py-0.5 rounded border ${planColor}`}>
-                          {user.plan} Plan
-                        </span>
-                        <span className="text-[10px] font-mono text-zinc-500 uppercase">{user.role}</span>
-                      </div>
-                    </div>
-
-                    {/* Menu Items */}
-                    <div className="py-1.5">
-                      <Link
-                        href="/configuration"
-                        onClick={() => setProfileOpen(false)}
-                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:text-zinc-100 hover:bg-zinc-800/60 transition-colors"
-                      >
-                        <Settings className="w-4 h-4 text-zinc-500" />
-                        Settings
-                      </Link>
-                      <Link
-                        href="/pricing"
-                        onClick={() => setProfileOpen(false)}
-                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:text-zinc-100 hover:bg-zinc-800/60 transition-colors"
-                      >
-                        <CreditCard className="w-4 h-4 text-zinc-500" />
-                        Manage Subscription
-                      </Link>
-                      {(user.role === 'Super Admin' || user.role === 'Administrator') && (
-                        <Link
-                          href="/admin"
-                          onClick={() => setProfileOpen(false)}
-                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:text-zinc-100 hover:bg-zinc-800/60 transition-colors"
-                        >
-                          <Shield className="w-4 h-4 text-zinc-500" />
-                          Administration
-                        </Link>
-                      )}
-                    </div>
-
-                    <div className="border-t border-zinc-800 py-1.5">
-                      <button
-                        onClick={() => { setProfileOpen(false); logout(); }}
-                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        Sign Out
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
+            {user && <UserAccountMenu variant="dark" />}
           </div>
         </header>
 
