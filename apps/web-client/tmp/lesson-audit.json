@@ -1,0 +1,595 @@
+{
+  "lessonsTotal": 756,
+  "unitsOk": 103,
+  "statusCounts": {
+    "200": 103,
+    "404": 653
+  },
+  "errors": [
+    {
+      "slug": "w1-dmon-l1-macroeconomic-drivers-of-currency-value",
+      "status": 404
+    },
+    {
+      "slug": "w1-dmon-l2-central-banks-interest-rates-and-forex-impact",
+      "status": 404
+    },
+    {
+      "slug": "w1-dmon-l3-sentiment-risk-events-and-short-term-price-moves",
+      "status": 404
+    },
+    {
+      "slug": "w1-dtue-l1-major-minor-and-exotic-currency-pair-classifications",
+      "status": 404
+    },
+    {
+      "slug": "w1-dtue-l2-reading-a-forex-quote-bid-ask-and-spread",
+      "status": 404
+    },
+    {
+      "slug": "w1-dtue-l3-base-currency-quote-currency-and-cross-rate-mechanics",
+      "status": 404
+    },
+    {
+      "slug": "w1-dwed-l1-the-four-major-trading-sessions-asia-london-new-york-pacific",
+      "status": 404
+    },
+    {
+      "slug": "w1-dwed-l2-session-overlaps-and-peak-volatility-windows",
+      "status": 404
+    },
+    {
+      "slug": "w1-dwed-l3-why-forex-volume-and-range-patterns-vary-by-time-of-day",
+      "status": 404
+    },
+    {
+      "slug": "w1-dthu-l1-what-a-pip-represents-on-different-pairs",
+      "status": 404
+    },
+    {
+      "slug": "w1-dthu-l2-standard-mini-and-micro-lot-sizing-mechanics",
+      "status": 404
+    },
+    {
+      "slug": "w1-dthu-l3-calculating-dollar-value-per-pip-and-real-risk-per-trade",
+      "status": 404
+    },
+    {
+      "slug": "w1-dfri-l1-anatomy-of-a-candlestick-body-wicks-and-close-location",
+      "status": 404
+    },
+    {
+      "slug": "w1-dfri-l2-high-probability-reversal-and-continuation-candles",
+      "status": 404
+    },
+    {
+      "slug": "w1-dfri-l3-session-context-and-timeframe-alignment-for-candle-reliability",
+      "status": 404
+    },
+    {
+      "slug": "w1-dsat-l1-assignment-overview-your-market-observation-journal",
+      "status": 404
+    },
+    {
+      "slug": "w1-dsat-l2-step-by-step-setup-what-to-record-each-day",
+      "status": 404
+    },
+    {
+      "slug": "w1-dsat-l3-review-criteria-and-weekly-journal-evaluation-checklist",
+      "status": 404
+    },
+    {
+      "slug": "w2-dmon-l1-what-makes-a-level-of-support-or-resistance-valid",
+      "status": 404
+    },
+    {
+      "slug": "w2-dmon-l2-fresh-vs-tested-levels-and-how-strength-declines-after-each-touch",
+      "status": 404
+    },
+    {
+      "slug": "w2-dmon-l3-static-vs-dynamic-support-and-resistance-which-to-trust",
+      "status": 404
+    },
+    {
+      "slug": "w2-dtue-l1-defining-trend-the-sequence-of-highs-and-lows-in-practice",
+      "status": 404
+    },
+    {
+      "slug": "w2-dtue-l2-range-markets-how-to-identify-and-exploit-boundary-behavior",
+      "status": 404
+    },
+    {
+      "slug": "w2-dtue-l3-transition-zones-when-trend-converts-to-range-and-back",
+      "status": 404
+    },
+    {
+      "slug": "w2-dwed-l1-what-a-genuine-breakout-looks-like-before-and-after-confirmation",
+      "status": 404
+    },
+    {
+      "slug": "w2-dwed-l2-false-breakout-patterns-entry-traps-professional-traders-set",
+      "status": 404
+    },
+    {
+      "slug": "w2-dwed-l3-post-breakout-behavior-retest-follow-through-or-failure",
+      "status": 404
+    },
+    {
+      "slug": "w2-dthu-l1-identifying-swing-highs-and-swing-lows-on-a-clean-chart",
+      "status": 404
+    },
+    {
+      "slug": "w2-dthu-l2-trend-confirmation-using-multiple-timeframe-swing-structure",
+      "status": 404
+    },
+    {
+      "slug": "w2-dthu-l3-structure-breaks-as-entry-and-exit-signals",
+      "status": 404
+    },
+    {
+      "slug": "w2-dfri-l1-why-timeframe-alignment-matters-in-level-selection",
+      "status": 404
+    },
+    {
+      "slug": "w2-dfri-l2-a-top-down-mapping-approach-monthly-down-to-h1",
+      "status": 404
+    },
+    {
+      "slug": "w2-dfri-l3-confluent-levels-when-multiple-timeframes-agree-on-a-zone",
+      "status": 404
+    },
+    {
+      "slug": "w2-dsat-l1-assignment-overview-multi-pair-structure-study",
+      "status": 404
+    },
+    {
+      "slug": "w2-dsat-l2-instructions-structure-mapping-on-eur-usd-gbp-usd-and-usd-jpy",
+      "status": 404
+    },
+    {
+      "slug": "w2-dsat-l3-grading-your-analysis-structure-evaluation-and-scoring-guide",
+      "status": 404
+    },
+    {
+      "slug": "w3-dmon-l1-why-candle-close-confirmation-reduces-low-quality-entries",
+      "status": 404
+    },
+    {
+      "slug": "w3-dmon-l2-three-entry-trigger-types-retest-rejection-and-momentum-close",
+      "status": 404
+    },
+    {
+      "slug": "w3-dmon-l3-building-a-pre-entry-decision-framework-as-a-trader-checklist",
+      "status": 404
+    },
+    {
+      "slug": "w3-dtue-l1-the-invalidation-concept-market-structure-defines-your-stop",
+      "status": 404
+    },
+    {
+      "slug": "w3-dtue-l2-stop-placement-mistakes-that-get-traders-stopped-out-prematurely",
+      "status": 404
+    },
+    {
+      "slug": "w3-dtue-l3-adjusting-stop-width-for-pair-volatility-and-session-timing",
+      "status": 404
+    },
+    {
+      "slug": "w3-dwed-l1-the-one-percent-rule-and-why-it-compounds-into-trading-survival",
+      "status": 404
+    },
+    {
+      "slug": "w3-dwed-l2-position-sizing-formula-every-active-trader-must-know",
+      "status": 404
+    },
+    {
+      "slug": "w3-dwed-l3-scaling-risk-based-on-confidence-level-and-setup-grade",
+      "status": 404
+    },
+    {
+      "slug": "w3-dthu-l1-what-reward-to-risk-ratio-actually-means-in-live-trading",
+      "status": 404
+    },
+    {
+      "slug": "w3-dthu-l2-setting-targets-at-logical-structure-levels-not-fixed-multiples",
+      "status": 404
+    },
+    {
+      "slug": "w3-dthu-l3-win-rate-and-r-r-interaction-expectancy-calculation-for-traders",
+      "status": 404
+    },
+    {
+      "slug": "w3-dfri-l1-when-to-hold-full-size-partial-exit-or-close-a-trade-early",
+      "status": 404
+    },
+    {
+      "slug": "w3-dfri-l2-trailing-stops-and-breakeven-moves-when-they-help-vs-hurt",
+      "status": 404
+    },
+    {
+      "slug": "w3-dfri-l3-reading-momentum-during-a-trade-continuation-vs-exhaustion-signals",
+      "status": 404
+    },
+    {
+      "slug": "w3-dsat-l1-assignment-overview-your-personal-trade-execution-checklist",
+      "status": 404
+    },
+    {
+      "slug": "w3-dsat-l2-designing-your-checklist-pre-entry-execution-and-post-trade-sections",
+      "status": 404
+    },
+    {
+      "slug": "w3-dsat-l3-testing-your-checklist-against-5-recent-or-historical-setups",
+      "status": 404
+    },
+    {
+      "slug": "w4-dmon-l1-what-confluence-means-and-why-single-reason-entries-fail",
+      "status": 404
+    },
+    {
+      "slug": "w4-dmon-l2-building-a-confluence-stack-structure-momentum-session-and-level",
+      "status": 404
+    },
+    {
+      "slug": "w4-dmon-l3-scoring-confluence-rating-setup-quality-before-risk-is-placed",
+      "status": 404
+    },
+    {
+      "slug": "w4-dtue-l1-immediate-breakout-entries-when-speed-has-a-structural-edge",
+      "status": 404
+    },
+    {
+      "slug": "w4-dtue-l2-retest-entries-patient-approach-for-superior-risk-management",
+      "status": 404
+    },
+    {
+      "slug": "w4-dtue-l3-failed-retest-recognition-when-a-retest-becomes-a-rollback",
+      "status": 404
+    },
+    {
+      "slug": "w4-dwed-l1-top-down-bias-definition-monthly-context-to-entry-timeframe",
+      "status": 404
+    },
+    {
+      "slug": "w4-dwed-l2-how-higher-timeframe-bias-filters-lower-timeframe-entries",
+      "status": 404
+    },
+    {
+      "slug": "w4-dwed-l3-timeframe-conflict-resolution-when-timeframes-disagree",
+      "status": 404
+    },
+    {
+      "slug": "w4-dthu-l1-defining-a-low-quality-setup-the-five-failure-patterns",
+      "status": 404
+    },
+    {
+      "slug": "w4-dthu-l2-the-no-reason-not-to-trap-overtrading-from-market-boredom",
+      "status": 404
+    },
+    {
+      "slug": "w4-dthu-l3-creating-a-minimum-entry-condition-filter-for-consistency",
+      "status": 404
+    },
+    {
+      "slug": "w4-dfri-l1-designing-a-setup-scoring-matrix-across-4-to-6-criteria",
+      "status": 404
+    },
+    {
+      "slug": "w4-dfri-l2-live-application-scoring-3-setups-using-the-framework",
+      "status": 404
+    },
+    {
+      "slug": "w4-dfri-l3-score-calibration-over-time-improving-your-filter-accuracy",
+      "status": 404
+    },
+    {
+      "slug": "w4-dsat-l1-assignment-overview-setup-grading-practice-with-your-matrix",
+      "status": 404
+    },
+    {
+      "slug": "w4-dsat-l2-scoring-5-setups-criteria-application-worksheet",
+      "status": 404
+    },
+    {
+      "slug": "w4-dsat-l3-reflection-report-what-your-scores-reveal-about-your-decisions",
+      "status": 404
+    },
+    {
+      "slug": "w5-dmon-l1-where-retail-stop-orders-accumulate-in-the-market",
+      "status": 404
+    },
+    {
+      "slug": "w5-dmon-l2-equal-highs-equal-lows-and-round-numbers-as-stop-attractors",
+      "status": 404
+    },
+    {
+      "slug": "w5-dmon-l3-why-price-must-clear-liquidity-before-reversing-or-sustaining",
+      "status": 404
+    },
+    {
+      "slug": "w5-dtue-l1-what-a-liquidity-sweep-looks-like-the-long-wick-candle",
+      "status": 404
+    },
+    {
+      "slug": "w5-dtue-l2-trading-the-sweep-entry-timing-after-a-liquidity-grab",
+      "status": 404
+    },
+    {
+      "slug": "w5-dtue-l3-failed-sweep-follow-through-when-rejection-turns-into-extension",
+      "status": 404
+    },
+    {
+      "slug": "w5-dwed-l1-impulsive-vs-corrective-price-moves-and-institutional-intent",
+      "status": 404
+    },
+    {
+      "slug": "w5-dwed-l2-imbalance-displacement-and-fair-value-gaps-in-price-structure",
+      "status": 404
+    }
+  ],
+  "highSimilarityPairsCount": 372,
+  "highSimilarityPairsTop": [
+    {
+      "score": 0.9656862745098039,
+      "a": "w42-dsat-l2-deliverable-master-portfolio-scorecards-and-governance-artifacts",
+      "b": "w42-dsat-l3-certification-archive-and-long-horizon-operating-plan"
+    },
+    {
+      "score": 0.9609756097560975,
+      "a": "w39-dsat-l1-assignment-overview-compile-residency-i-artifacts",
+      "b": "w39-dsat-l3-progression-decision-residency-ii-eligibility"
+    },
+    {
+      "score": 0.9609756097560975,
+      "a": "w39-dsat-l2-deliverable-compliance-report-and-upgrade-backlog",
+      "b": "w39-dsat-l3-progression-decision-residency-ii-eligibility"
+    },
+    {
+      "score": 0.9516908212560387,
+      "a": "w39-dsat-l1-assignment-overview-compile-residency-i-artifacts",
+      "b": "w39-dsat-l2-deliverable-compliance-report-and-upgrade-backlog"
+    },
+    {
+      "score": 0.9428571428571428,
+      "a": "w40-dsat-l1-assignment-overview-build-stress-test-portfolio",
+      "b": "w40-dsat-l2-deliverable-incident-logs-decisions-and-controls-audit"
+    },
+    {
+      "score": 0.9386792452830188,
+      "a": "w38-dsat-l1-assignment-overview-compile-elite-graduation-submission",
+      "b": "w38-dsat-l3-graduation-decision-and-professional-accreditation-record"
+    },
+    {
+      "score": 0.9095238095238095,
+      "a": "w42-dsat-l1-assignment-overview-build-final-accreditation-archive",
+      "b": "w42-dsat-l2-deliverable-master-portfolio-scorecards-and-governance-artifacts"
+    },
+    {
+      "score": 0.892018779342723,
+      "a": "w39-dsat-l2-deliverable-compliance-report-and-upgrade-backlog",
+      "b": "w41-dsat-l1-assignment-overview-compile-placement-dossier"
+    },
+    {
+      "score": 0.8909952606635071,
+      "a": "w41-dsat-l3-placement-feedback-integration-plan",
+      "b": "w42-dsat-l3-certification-archive-and-long-horizon-operating-plan"
+    },
+    {
+      "score": 0.8867924528301887,
+      "a": "w41-dsat-l3-placement-feedback-integration-plan",
+      "b": "w42-dsat-l2-deliverable-master-portfolio-scorecards-and-governance-artifacts"
+    },
+    {
+      "score": 0.8867924528301887,
+      "a": "w42-dsat-l1-assignment-overview-build-final-accreditation-archive",
+      "b": "w42-dsat-l3-certification-archive-and-long-horizon-operating-plan"
+    },
+    {
+      "score": 0.8857142857142857,
+      "a": "w41-dsat-l2-deliverable-reports-scorecards-and-governance-records",
+      "b": "w41-dsat-l3-placement-feedback-integration-plan"
+    },
+    {
+      "score": 0.883177570093458,
+      "a": "w39-dsat-l1-assignment-overview-compile-residency-i-artifacts",
+      "b": "w41-dsat-l1-assignment-overview-compile-placement-dossier"
+    },
+    {
+      "score": 0.8738317757009346,
+      "a": "w39-dsat-l3-progression-decision-residency-ii-eligibility",
+      "b": "w41-dsat-l1-assignment-overview-compile-placement-dossier"
+    },
+    {
+      "score": 0.8709677419354839,
+      "a": "w38-dsat-l1-assignment-overview-compile-elite-graduation-submission",
+      "b": "w41-dsat-l1-assignment-overview-compile-placement-dossier"
+    },
+    {
+      "score": 0.8685446009389671,
+      "a": "w37-dsat-l2-deliverable-risk-budgets-milestones-and-committee-calendar",
+      "b": "w37-dsat-l3-review-capacity-limits-and-growth-readiness-score"
+    },
+    {
+      "score": 0.8685446009389671,
+      "a": "w38-dfri-l2-elite-track-qualification-criteria-review",
+      "b": "w42-dfri-l2-professional-placement-path-and-career-track-mapping"
+    },
+    {
+      "score": 0.8623853211009175,
+      "a": "w38-dsat-l2-deliverable-scorecards-reports-and-12-month-action-plan",
+      "b": "w38-dsat-l3-graduation-decision-and-professional-accreditation-record"
+    },
+    {
+      "score": 0.8623853211009175,
+      "a": "w40-dsat-l1-assignment-overview-build-stress-test-portfolio",
+      "b": "w42-dsat-l2-deliverable-master-portfolio-scorecards-and-governance-artifacts"
+    },
+    {
+      "score": 0.8617511520737328,
+      "a": "w40-dsat-l1-assignment-overview-build-stress-test-portfolio",
+      "b": "w41-dsat-l3-placement-feedback-integration-plan"
+    },
+    {
+      "score": 0.8584474885844748,
+      "a": "w38-dsat-l1-assignment-overview-compile-elite-graduation-submission",
+      "b": "w39-dsat-l1-assignment-overview-compile-residency-i-artifacts"
+    },
+    {
+      "score": 0.8578199052132701,
+      "a": "w39-dwed-l2-execution-quality-logging-in-real-time",
+      "b": "w39-dwed-l3-decision-escalation-and-override-procedures"
+    },
+    {
+      "score": 0.8577981651376146,
+      "a": "w38-dsat-l1-assignment-overview-compile-elite-graduation-submission",
+      "b": "w38-dsat-l2-deliverable-scorecards-reports-and-12-month-action-plan"
+    },
+    {
+      "score": 0.8577981651376146,
+      "a": "w40-dsat-l1-assignment-overview-build-stress-test-portfolio",
+      "b": "w42-dsat-l3-certification-archive-and-long-horizon-operating-plan"
+    },
+    {
+      "score": 0.8571428571428571,
+      "a": "w39-dthu-l3-process-upgrade-sprint-planning",
+      "b": "w42-dthu-l2-risk-and-compliance-record-verification"
+    },
+    {
+      "score": 0.8552036199095022,
+      "a": "w40-dsat-l2-deliverable-incident-logs-decisions-and-controls-audit",
+      "b": "w40-dsat-l3-readiness-statement-for-final-residency"
+    },
+    {
+      "score": 0.8545454545454545,
+      "a": "w40-dsat-l3-readiness-statement-for-final-residency",
+      "b": "w41-dsat-l1-assignment-overview-compile-placement-dossier"
+    },
+    {
+      "score": 0.8536585365853658,
+      "a": "w39-dtue-l3-mid-session-debrief-and-tactical-adjustments",
+      "b": "w40-dtue-l1-volatility-shock-entry-control-drill"
+    },
+    {
+      "score": 0.8532110091743119,
+      "a": "w40-dsat-l2-deliverable-incident-logs-decisions-and-controls-audit",
+      "b": "w42-dsat-l2-deliverable-master-portfolio-scorecards-and-governance-artifacts"
+    },
+    {
+      "score": 0.8525345622119815,
+      "a": "w40-dwed-l1-fallback-decision-trees-for-data-instability",
+      "b": "w40-dwed-l2-execution-degradation-controls-and-trade-gating"
+    },
+    {
+      "score": 0.8525345622119815,
+      "a": "w40-dsat-l2-deliverable-incident-logs-decisions-and-controls-audit",
+      "b": "w41-dsat-l3-placement-feedback-integration-plan"
+    },
+    {
+      "score": 0.8518518518518519,
+      "a": "w39-dfri-l3-residency-i-pass-fail-criteria-review",
+      "b": "w40-dfri-l2-performance-review-panel-and-gap-prioritization"
+    },
+    {
+      "score": 0.8518518518518519,
+      "a": "w41-dsat-l1-assignment-overview-compile-placement-dossier",
+      "b": "w41-dsat-l3-placement-feedback-integration-plan"
+    },
+    {
+      "score": 0.8511627906976744,
+      "a": "w41-dsat-l1-assignment-overview-compile-placement-dossier",
+      "b": "w41-dsat-l2-deliverable-reports-scorecards-and-governance-records"
+    },
+    {
+      "score": 0.8506787330316742,
+      "a": "w39-dsat-l2-deliverable-compliance-report-and-upgrade-backlog",
+      "b": "w40-dsat-l3-readiness-statement-for-final-residency"
+    },
+    {
+      "score": 0.85,
+      "a": "w38-dsat-l3-graduation-decision-and-professional-accreditation-record",
+      "b": "w41-dsat-l1-assignment-overview-compile-placement-dossier"
+    },
+    {
+      "score": 0.8486238532110092,
+      "a": "w40-dsat-l2-deliverable-incident-logs-decisions-and-controls-audit",
+      "b": "w42-dsat-l3-certification-archive-and-long-horizon-operating-plan"
+    },
+    {
+      "score": 0.8447488584474886,
+      "a": "w37-dsat-l1-assignment-overview-build-a-12-month-scaling-plan",
+      "b": "w39-dsat-l3-progression-decision-residency-ii-eligibility"
+    },
+    {
+      "score": 0.8418604651162791,
+      "a": "w37-dsat-l2-deliverable-risk-budgets-milestones-and-committee-calendar",
+      "b": "w41-dsat-l2-deliverable-reports-scorecards-and-governance-records"
+    },
+    {
+      "score": 0.8409090909090909,
+      "a": "w37-dsat-l1-assignment-overview-build-a-12-month-scaling-plan",
+      "b": "w41-dsat-l1-assignment-overview-compile-placement-dossier"
+    }
+  ],
+  "repeatedLines": [
+    {
+      "count": 85,
+      "line": "3. Set stop at invalidation level beyond structure, not arbitrary distance."
+    },
+    {
+      "count": 85,
+      "line": "- Process quality is the main edge in discretionary forex execution."
+    },
+    {
+      "count": 59,
+      "line": "4. Document execution quality, rule adherence, and emotional state after close."
+    },
+    {
+      "count": 47,
+      "line": "- A valid setup is one that matches the written process, not one that simply wins."
+    },
+    {
+      "count": 46,
+      "line": "- The lesson is complete only when the rule can be executed and reviewed objectively."
+    },
+    {
+      "count": 39,
+      "line": "- Your edge is preserved by filtering and discipline, not by adding more indicators."
+    },
+    {
+      "count": 38,
+      "line": "- Process adherence is the metric that compounds over many trades."
+    },
+    {
+      "count": 36,
+      "line": "- chasing price after missing the planned trigger."
+    },
+    {
+      "count": 33,
+      "line": "- ignoring multi-timeframe context before entry."
+    },
+    {
+      "count": 32,
+      "line": "Consistency comes from sequence discipline. First locate the structural condition, then verify trigger quality, then anchor stop and target to invalidation and liquidity."
+    },
+    {
+      "count": 31,
+      "line": "Execution quality improves when each decision is sequenced: map structure, confirm participation, and define risk before clicking. This keeps the process objective under pressure."
+    },
+    {
+      "count": 29,
+      "line": "- skipping post-trade review when the outcome is positive."
+    },
+    {
+      "count": 27,
+      "line": "- taking partial profits without a predefined rule."
+    },
+    {
+      "count": 26,
+      "line": "4. Document execution quality, rule adherence, and emotional state in a undefined."
+    },
+    {
+      "count": 22,
+      "line": "The workflow is context first, then trigger validation, then risk framing. If context is weak, you skip. If trigger is missing, you wait. If invalidation is unclear, you do not enter."
+    }
+  ]
+}

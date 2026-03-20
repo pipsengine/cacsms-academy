@@ -109,11 +109,37 @@ const TAKEAWAY_VARIANTS = [
   'The lesson is complete only when the rule can be executed and reviewed objectively.',
 ];
 
+const CONTEXT_BULLET_PREFIXES = [
+  'Day Theme Context',
+  'Session Focus',
+  'Execution Lens',
+  'Primary Context',
+];
+
+const CONSISTENCY_VARIANTS = [
+  'At this level, consistency beats complexity. One precise model repeated with discipline outperforms strategy-hopping.',
+  'Execution consistency is the edge multiplier here. Keep one model, one rule-set, and one review loop.',
+  'Progress comes from repeatability: apply the same decision sequence until it is stable under pressure.',
+];
+
+const PRACTICAL_PREFIXES = [
+  'Execution drill',
+  'Desk routine',
+  'Live-practice sequence',
+  'Application workflow',
+];
+
+const PROCESS_EDGE_VARIANTS = [
+  'Your process is the edge container; outcomes fluctuate, process quality compounds.',
+  'The repeatable edge is procedural: context, trigger, and risk discipline in order.',
+  'Long-term performance is built by rule adherence, not isolated winning trades.',
+];
+
 type RecentUnitEntry = { lessonKey: string; corpus: string };
 
 const RECENT_UNIT_TEXTS: RecentUnitEntry[] = [];
 const RECENT_UNIT_CAP = 80;
-const DUPLICATE_SIMILARITY_THRESHOLD = 0.72;
+const DUPLICATE_SIMILARITY_THRESHOLD = 0.62;
 
 function sentenceCount(text: string): number {
   return text
@@ -257,7 +283,7 @@ function ensureUnitUniqueness(unit: ForexCourseUnitOutput, input: ForexCourseUni
   }
 
   // If too similar to recently generated units, regenerate deterministic variants.
-  for (let attempt = 1; attempt <= 4; attempt += 1) {
+  for (let attempt = 1; attempt <= 8; attempt += 1) {
     const alternative = buildFallbackUnit(input, attempt);
     if (!isNearRecentDuplicate(alternative, input)) {
       return rememberUnit(alternative, input);
@@ -333,21 +359,24 @@ function buildRelatedTopicText(context: LessonContext): string {
   return `This lesson connects directly to: ${related.join(' and ')}.`;
 }
 
-function buildExecutionChecklist(context: LessonContext): string[] {
+function buildExecutionChecklist(context: LessonContext, seed: number): string[] {
+  const entryLabel = pickBySeed(['trigger', 'entry condition', 'confirmation event', 'execution signal'], seed, 10);
+  const reviewLabel = pickBySeed(['review note', 'post-trade audit note', 'improvement note', 'reflection note'], seed, 12);
+
   if (!context.lesson) {
     return [
       'Confirm market state before choosing any setup model.',
-      'Define entry trigger, invalidation, and target before execution.',
+      `Define ${entryLabel}, invalidation, and target before execution.`,
       'Size position from fixed percentage risk, not emotion.',
-      'Record outcome and one improvement note in your journal.',
+      `Record outcome and one ${reviewLabel} in your journal.`,
     ];
   }
 
   return [
     `Confirm bias for Week ${context.lesson.week} ${context.lesson.day} theme: ${context.lesson.dayTheme}.`,
-    `Wait for trigger aligned with lesson objective: ${context.lesson.title}.`,
+    `Wait for ${entryLabel} aligned with lesson objective: ${context.lesson.title}.`,
     'Set stop at invalidation level beyond structure, not arbitrary distance.',
-    'Document execution quality, rule adherence, and emotional state after close.',
+    `Document execution quality, rule adherence, and emotional state in a ${reviewLabel}.`,
   ];
 }
 
@@ -363,7 +392,7 @@ function buildLessonMarkdown(
   const dayTheme = context.lesson?.dayTheme ?? input.topic_title;
   const concepts = extractConceptBullets(context, input);
   const scenario = buildUniqueExample(context, input, seed);
-  const checklist = buildExecutionChecklist(context);
+  const checklist = buildExecutionChecklist(context, seed);
   const relatedTopicText = buildRelatedTopicText(context);
   const chapterContext = `Chapter ${input.week_number} - ${module} | Topic ${context.lesson?.dayIndex ?? '?'} (${input.day_of_week}) - ${dayTheme} | Subtopic ${context.lesson?.lessonNumber ?? '?'} - ${context.lesson?.title ?? input.topic_title}`;
   const mistakeBullets = buildMistakeBullets(seed);
@@ -371,6 +400,10 @@ function buildLessonMarkdown(
   const detailVariant = pickBySeed(DETAIL_VARIANTS, seed, 1);
   const takeawayA = pickBySeed(TAKEAWAY_VARIANTS, seed, 2);
   const takeawayB = pickBySeed(TAKEAWAY_VARIANTS, seed, 3);
+  const contextPrefix = pickBySeed(CONTEXT_BULLET_PREFIXES, seed, 4);
+  const consistencyVariant = pickBySeed(CONSISTENCY_VARIANTS, seed, 5);
+  const practicalPrefix = pickBySeed(PRACTICAL_PREFIXES, seed, 6);
+  const processEdgeVariant = pickBySeed(PROCESS_EDGE_VARIANTS, seed, 7);
 
   return [
     header,
@@ -381,7 +414,7 @@ function buildLessonMarkdown(
     `${relatedTopicText}`,
     '',
     '## Key Concepts',
-    `- Day Theme Context: ${dayTheme}.`,
+    `- ${contextPrefix}: ${dayTheme}.`,
     `- ${concepts[0]}`,
     `- ${concepts[1]}`,
     `- ${concepts[2]}`,
@@ -390,7 +423,7 @@ function buildLessonMarkdown(
     `In week ${input.week_number}, this lesson is applied through a three-step workflow: context, trigger, and risk framing. First, map structure and identify where order flow is likely to react for this exact subtopic. Second, wait for confirmation behavior that directly matches ${context.lesson?.title ?? input.topic_title}. Third, commit to invalidation-based risk so quality is measured by process, not by any single outcome.`,
     detailVariant,
     '',
-    `At ${difficulty.toLowerCase()} level, consistency beats complexity. One precise model for ${dayTheme.toLowerCase()} executed repeatedly will outperform model-switching over time.`,
+    `${consistencyVariant} In this lesson, the focal execution context is ${dayTheme.toLowerCase()}.`,
     '',
     '### Common Mistakes to Avoid',
     ...mistakeBullets,
@@ -399,11 +432,11 @@ function buildLessonMarkdown(
     scenario,
     '',
     '## Practical Application',
-    `1. Write your chapter-topic-subtopic objective in one line: ${chapterContext}.`,
+    `1. ${practicalPrefix}: write your chapter-topic-subtopic objective in one line -> ${chapterContext}.`,
     ...checklist.map((step, index) => `${index + 1}. ${step}`),
     '',
     '## Key Takeaways',
-    '- Process quality is the main edge in discretionary forex execution.',
+    `- ${processEdgeVariant}`,
     `- ${context.lesson?.title ?? input.topic_title} should be evaluated with rule adherence first and P/L second.`,
     `- ${takeawayA}`,
     `- ${takeawayB}`,
