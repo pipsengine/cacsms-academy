@@ -261,7 +261,7 @@ export default function LessonPage() {
             <>
               <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
                 <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-500">Detailed Lesson</h2>
-                <div className="prose prose-zinc mt-4 max-w-none prose-headings:text-zinc-900 prose-p:text-zinc-700 prose-strong:text-zinc-900 prose-li:text-zinc-700 prose-code:text-emerald-700 prose-pre:bg-zinc-100">
+                <div className="prose prose-zinc mt-4 max-w-none prose-headings:font-bold prose-headings:text-zinc-900 prose-p:text-zinc-700 prose-strong:text-zinc-900 prose-li:text-zinc-700 prose-code:text-emerald-700 prose-pre:bg-zinc-100">
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>{unit.content}</ReactMarkdown>
                 </div>
               </div>

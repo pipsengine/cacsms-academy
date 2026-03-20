@@ -1,5 +1,12 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 html {
 	scroll-behavior: smooth;
+}
+
+@layer base {
+	p {
+		text-align: justify;
+	}
 }

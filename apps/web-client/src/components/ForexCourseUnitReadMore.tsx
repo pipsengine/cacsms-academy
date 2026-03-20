@@ -152,7 +152,7 @@ export default function ForexCourseUnitReadMore() {
 
             <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
               <h4 className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-500">Detailed Lesson</h4>
-              <div className="prose prose-zinc mt-4 max-w-none prose-headings:text-zinc-900 prose-p:text-zinc-700 prose-strong:text-zinc-900 prose-li:text-zinc-700">
+              <div className="prose prose-zinc mt-4 max-w-none prose-headings:font-bold prose-headings:text-zinc-900 prose-p:text-zinc-700 prose-strong:text-zinc-900 prose-li:text-zinc-700">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{unit.content}</ReactMarkdown>
               </div>
             </div>

@@ -536,7 +536,14 @@ export default function LandingPage() {
                   <h3 className="mt-2 text-xl font-bold text-zinc-900">{topic.title}</h3>
                   <p className="mt-3 flex-1 text-sm leading-7 text-zinc-600">{topic.summary}</p>
                   <div className="mt-5">
-                    <Link href={`/our-courses/lesson/${encodeURIComponent(topic.slug)}`} className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 hover:text-emerald-800">
+                    <Link
+                      href={
+                        isAuthenticated
+                          ? `/our-courses/lesson/${encodeURIComponent(topic.slug)}`
+                          : `/login?callbackUrl=${encodeURIComponent(`/our-courses/lesson/${encodeURIComponent(topic.slug)}`)}`
+                      }
+                      className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 hover:text-emerald-800"
+                    >
                       Read More
                       <ChevronRight className="h-4 w-4" />
                     </Link>
@@ -546,7 +553,14 @@ export default function LandingPage() {
             </div>
 
             <div className="mt-10 text-center">
-              <Link href="/our-courses" className="inline-flex items-center gap-2 rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-zinc-800 transition-colors">
+              <Link
+                href={
+                  isAuthenticated
+                    ? '/our-courses'
+                    : `/login?callbackUrl=${encodeURIComponent('/our-courses')}`
+                }
+                className="inline-flex items-center gap-2 rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-zinc-800 transition-colors"
+              >
                 Open Our Courses Section
                 <ChevronRight className="w-4 h-4" />
               </Link>
