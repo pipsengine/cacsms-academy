@@ -23,7 +23,7 @@ import DailyTradingTipPreview from '@/components/DailyTradingTipPreview';
 import WeeklyAnalysisOverview from '@/components/WeeklyAnalysisOverview';
 import {
   forexCourseCurriculum,
-  getAllCurriculumTopics,
+  getDayLessons,
   type CurriculumDay,
 } from '@/lib/learning/curriculum';
 
@@ -133,7 +133,6 @@ const faqItems = [
   },
 ];
 
-const courseTopicCards = getAllCurriculumTopics();
 const lessonDays: CurriculumDay[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
 function getIsoWeekNumber(date: Date) {
@@ -160,17 +159,7 @@ export default function LandingPage() {
   const calendarWeek = getIsoWeekNumber(today);
   const currentDay = getCurriculumDayFromDate(today);
   const curriculumWeekNumber = ((calendarWeek - 1) % forexCourseCurriculum.length) + 1;
-  const currentDayIndex = lessonDays.indexOf(currentDay);
-  const currentWeekTopics = courseTopicCards.filter((topic) =>
-    topic.week === curriculumWeekNumber &&
-    lessonDays.indexOf(topic.day) >= currentDayIndex
-  );
-  const nextWeekNumber = (curriculumWeekNumber % forexCourseCurriculum.length) + 1;
-  const nextWeekTopics = courseTopicCards.filter((topic) =>
-    topic.week === nextWeekNumber &&
-    lessonDays.indexOf(topic.day) >= 0
-  );
-  const visibleCourseTopics = [...currentWeekTopics, ...nextWeekTopics].slice(0, 3);
+  const visibleCourseTopics = getDayLessons(curriculumWeekNumber, currentDay);
   const currentWeekMeta = forexCourseCurriculum.find((week) => week.week === curriculumWeekNumber);
   const isAuthenticated = !isLoading && Boolean(user);
 
@@ -547,7 +536,7 @@ export default function LandingPage() {
                   <h3 className="mt-2 text-xl font-bold text-zinc-900">{topic.title}</h3>
                   <p className="mt-3 flex-1 text-sm leading-7 text-zinc-600">{topic.summary}</p>
                   <div className="mt-5">
-                    <Link href={`/our-courses/topic?slug=${encodeURIComponent(topic.slug)}`} className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 hover:text-emerald-800">
+                    <Link href={`/our-courses/lesson/${encodeURIComponent(topic.slug)}`} className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 hover:text-emerald-800">
                       Read More
                       <ChevronRight className="h-4 w-4" />
                     </Link>
