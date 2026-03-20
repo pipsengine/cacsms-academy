@@ -1,7 +1,20 @@
+import { redirect } from 'next/navigation';
 import DashboardLayout from '@/components/DashboardLayout';
 import ForexCourseUnitReadMore from '@/components/ForexCourseUnitReadMore';
 
-export default function CourseTopicPage() {
+type CourseTopicPageProps = {
+  searchParams?: {
+    slug?: string;
+  };
+};
+
+export default function CourseTopicPage({ searchParams }: CourseTopicPageProps) {
+  const slug = searchParams?.slug ? decodeURIComponent(searchParams.slug) : null;
+
+  if (slug) {
+    redirect(`/our-courses/lesson/${encodeURIComponent(slug)}`);
+  }
+
   return (
     <DashboardLayout>
       <div className="max-w-6xl space-y-6">

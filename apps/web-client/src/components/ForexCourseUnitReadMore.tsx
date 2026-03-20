@@ -188,7 +188,7 @@ export default function ForexCourseUnitReadMore() {
           <div className="mt-4 space-y-3">
             {adjacentTopics.previous ? (
               <Link
-                href={`/our-courses/topic?slug=${encodeURIComponent(adjacentTopics.previous.slug)}`}
+                href={`/our-courses/lesson/${encodeURIComponent(adjacentTopics.previous.slug)}`}
                 className="block rounded-lg border border-zinc-800 bg-zinc-950/70 p-3 hover:border-zinc-700 hover:bg-zinc-900"
               >
                 <p className="text-[11px] uppercase tracking-[0.2em] text-zinc-500">Previous Topic</p>
@@ -203,7 +203,7 @@ export default function ForexCourseUnitReadMore() {
 
             {adjacentTopics.next ? (
               <Link
-                href={`/our-courses/topic?slug=${encodeURIComponent(adjacentTopics.next.slug)}`}
+                href={`/our-courses/lesson/${encodeURIComponent(adjacentTopics.next.slug)}`}
                 className="block rounded-lg border border-zinc-800 bg-zinc-950/70 p-3 hover:border-zinc-700 hover:bg-zinc-900"
               >
                 <p className="text-[11px] uppercase tracking-[0.2em] text-zinc-500">Next Topic</p>
@@ -233,7 +233,7 @@ export default function ForexCourseUnitReadMore() {
               {relatedTopics.map((topic) => (
                 <Link
                   key={topic.slug}
-                  href={`/our-courses/topic?slug=${encodeURIComponent(topic.slug)}`}
+                  href={`/our-courses/lesson/${encodeURIComponent(topic.slug)}`}
                   className="block rounded-lg border border-zinc-800 bg-zinc-950/70 p-3 hover:border-zinc-700 hover:bg-zinc-900"
                 >
                   <p className="text-sm font-semibold text-zinc-100">{topic.title}</p>

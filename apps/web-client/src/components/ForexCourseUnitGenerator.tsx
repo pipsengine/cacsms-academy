@@ -180,7 +180,9 @@ export default function ForexCourseUnitGenerator() {
             <p className="mt-2 text-sm leading-relaxed text-zinc-300">{unit.summary}</p>
             <div className="mt-4">
               <Link
-                href={`/our-courses/topic?slug=${encodeURIComponent(selectedTopicRecord?.slug ?? '')}&topic_title=${encodeURIComponent(topicTitle)}&week_number=${weekNumber}&day_of_week=${encodeURIComponent(dayOfWeek)}&topic_type=${encodeURIComponent(effectiveTopicType)}`}
+                href={selectedTopicRecord?.slug
+                  ? `/our-courses/lesson/${encodeURIComponent(selectedTopicRecord.slug)}`
+                  : `/our-courses/topic?topic_title=${encodeURIComponent(topicTitle)}&week_number=${weekNumber}&day_of_week=${encodeURIComponent(dayOfWeek)}&topic_type=${encodeURIComponent(effectiveTopicType)}`}
                 className="inline-flex items-center rounded-lg bg-emerald-600 px-3.5 py-2 text-sm font-semibold text-white hover:bg-emerald-500"
               >
                 Read More
