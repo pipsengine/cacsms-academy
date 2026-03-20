@@ -10,3 +10,26 @@ html {
 		text-align: justify;
 	}
 }
+
+@keyframes publicReveal {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@layer utilities {
+	.public-reveal {
+		animation: publicReveal 420ms ease-out both;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.public-reveal {
+		animation: none !important;
+	}
+}

@@ -1,48 +1,33 @@
 import { withAuth } from 'next-auth/middleware';
 import { NextRequest, NextResponse } from 'next/server';
-
-const PUBLIC_ROUTES = [
-  '/login',
-  '/register',
-  '/pricing',
-  '/about',
-  '/contact',
-  '/careers',
-  '/platform',
-  '/features',
-  '/technology',
-  '/help-center',
-  '/account-support',
-  '/faq',
-  '/',
-] as const;
-
-function isPublicPath(pathname: string) {
-  return (
-    PUBLIC_ROUTES.some((route) => route === '/' ? pathname === '/' : pathname === route || pathname.startsWith(`${route}/`)) ||
-    pathname.startsWith('/legal')
-  );
-}
+import { isPublicRoute } from './src/lib/auth/redirects';
 
 export const middleware = withAuth(
   function middleware(request: NextRequest & any) {
     const token = request.nextauth.token;
     const pathname = request.nextUrl.pathname;
 
-    if (isPublicPath(pathname)) {
+    if (isPublicRoute(pathname)) {
       return NextResponse.next();
     }
 
+    // If accessing a protected route without authentication, redirect to login
     if (!token) {
-      return NextResponse.redirect(new URL('/', request.url));
+      const loginUrl = new URL('/login', request.url);
+      loginUrl.searchParams.set('callbackUrl', pathname);
+      return NextResponse.redirect(loginUrl);
     }
 
+    // All protected routes are accessible
     return NextResponse.next();
   },
   {
     callbacks: {
       authorized: ({ token, req }) => {
-        if (isPublicPath(req.nextUrl.pathname)) return true;
+        // Always allow public routes
+        if (isPublicRoute(req.nextUrl.pathname)) return true;
+
+        // For protected routes, require token
         return !!token;
       },
     },
@@ -50,5 +35,5 @@ export const middleware = withAuth(
 );
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 };

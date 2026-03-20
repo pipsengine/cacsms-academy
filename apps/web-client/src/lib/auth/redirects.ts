@@ -40,7 +40,22 @@ export const PUBLIC_ROUTES = [
   '/register',
   '/landing',
   '/pricing',
+  '/about',
+  '/contact',
+  '/careers',
+  '/features',
+  '/technology',
+  '/platform',
+  '/help-center',
+  '/account-support',
+  '/faq',
+  '/payment-success',
   '/',
+] as const;
+
+export const PUBLIC_ROUTE_PREFIXES = [
+  '/legal',
+  '/api/auth',
 ] as const;
 
 /**
@@ -54,7 +69,10 @@ export function isLegalRoute(path: string): boolean {
  * Check if a route is public
  */
 export function isPublicRoute(path: string): boolean {
-  return PUBLIC_ROUTES.includes(path as any) || isLegalRoute(path);
+  return (
+    PUBLIC_ROUTES.includes(path as (typeof PUBLIC_ROUTES)[number]) ||
+    PUBLIC_ROUTE_PREFIXES.some((prefix) => path === prefix || path.startsWith(`${prefix}/`))
+  );
 }
 
 /**
