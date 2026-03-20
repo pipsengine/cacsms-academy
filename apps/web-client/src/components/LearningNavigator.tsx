@@ -1,20 +1,12 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
-import { courseCurriculum, getAllLessons, type CurriculumDay, type LessonRecord } from '@/lib/learning/curriculum';
-
-type ProgressEntry = { lessonSlug: string; status: string };
-type ProgressData = {
-  enrolled: boolean;
-  currentLessonIndex: number;
-  currentLesson: LessonRecord | null;
-  completedCount: number;
-  totalLessons: number;
-  progress: ProgressEntry[];
-};
+import { useLearningProgress } from '@/hooks/useLearningProgress';
+import { trackLearningEvent } from '@/lib/learning/analytics';
+import { courseCurriculum, getAllLessons } from '@/lib/learning/curriculum';
 
 const ALL_LESSONS = getAllLessons();
 
@@ -44,33 +36,7 @@ function parseActiveContext(pathname: string) {
 export default function LearningNavigator() {
   const pathname = usePathname() ?? '';
   const { user } = useAuth();
-  const [progressData, setProgressData] = useState<ProgressData | null>(null);
-
-  useEffect(() => {
-    if (!user) {
-      setProgressData(null);
-      return;
-    }
-
-    let mounted = true;
-    fetch('/api/learning/progress')
-      .then(async (res) => {
-        if (!res.ok || !mounted) return;
-        const payload = (await res.json()) as ProgressData;
-        setProgressData(payload);
-      })
-      .catch(() => undefined);
-
-    return () => {
-      mounted = false;
-    };
-  }, [user]);
-
-  const progressMap = useMemo(() => {
-    const map = new Map<string, string>();
-    progressData?.progress.forEach((entry) => map.set(entry.lessonSlug, entry.status));
-    return map;
-  }, [progressData]);
+  const { progressData, progressMap } = useLearningProgress();
 
   const { activeSlug, activeWeek, activeDay } = useMemo(() => parseActiveContext(pathname), [pathname]);
 
@@ -88,6 +54,15 @@ export default function LearningNavigator() {
           {progressData?.enrolled && progressData.currentLesson ? (
             <Link
               href={`/our-courses/lesson/${encodeURIComponent(progressData.currentLesson.slug)}`}
+              onClick={() => {
+                void trackLearningEvent({
+                  eventType: 'resume_clicked',
+                  route: pathname,
+                  lessonSlug: progressData.currentLesson?.slug,
+                  week: progressData.currentLesson?.week,
+                  day: progressData.currentLesson?.day,
+                });
+              }}
               className="block rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-800 hover:bg-emerald-100"
             >
               Resume: {progressData.currentLesson.title}

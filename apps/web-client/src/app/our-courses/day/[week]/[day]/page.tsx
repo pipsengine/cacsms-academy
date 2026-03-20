@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import LearningProgressChips from '@/components/LearningProgressChips';
+import LearningTopicOpenedTracker from '@/components/LearningTopicOpenedTracker';
 import { courseCurriculum, getDayLessons, getDayTopicSet, type CurriculumDay } from '@/lib/learning/curriculum';
 
 type DayTopicPageProps = {
@@ -70,6 +72,7 @@ export default async function DayTopicPage({ params }: DayTopicPageProps) {
 
   return (
     <div className="max-w-6xl space-y-6">
+      <LearningTopicOpenedTracker week={week} day={day} />
       <nav className="flex items-center gap-2 text-xs text-zinc-500">
         <Link href="/our-courses" className="hover:text-zinc-700">Learning Home</Link>
         <span>/</span>
@@ -83,6 +86,7 @@ export default async function DayTopicPage({ params }: DayTopicPageProps) {
         <h1 className="mt-2 text-2xl font-bold text-zinc-900">Chapter {week} · Topic {day} · {topic.dayTheme}</h1>
         <p className="mt-3 text-sm leading-relaxed text-zinc-700">Module: {chapter.module} · Level: {chapter.level}</p>
         <p className="mt-2 text-sm leading-relaxed text-zinc-600">{dayMotivation(day)}</p>
+        <LearningProgressChips week={week} day={day} />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">

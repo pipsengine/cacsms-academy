@@ -6,6 +6,8 @@ import { useParams, useRouter } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useAuth } from '@/components/AuthProvider';
+import LearningProgressChips from '@/components/LearningProgressChips';
+import { trackLearningEvent } from '@/lib/learning/analytics';
 import { getAdjacentLessons, getLessonBySlug, getModuleLessons } from '@/lib/learning/curriculum';
 
 type CourseUnit = {
@@ -70,6 +72,14 @@ export default function LessonPage() {
   useEffect(() => {
     if (!user || !lesson) return;
 
+    void trackLearningEvent({
+      eventType: 'lesson_opened',
+      route: `/our-courses/lesson/${encodeURIComponent(lesson.slug)}`,
+      lessonSlug: lesson.slug,
+      week: lesson.week,
+      day: lesson.day,
+    });
+
     fetch('/api/learning/progress')
       .then(async (res) => {
         if (!res.ok) return;
@@ -96,6 +106,13 @@ export default function LessonPage() {
         body: JSON.stringify({ lessonSlug: lesson.slug, status: 'completed' }),
       });
       if (!res.ok) return;
+      void trackLearningEvent({
+        eventType: 'lesson_completed',
+        route: `/our-courses/lesson/${encodeURIComponent(lesson.slug)}`,
+        lessonSlug: lesson.slug,
+        week: lesson.week,
+        day: lesson.day,
+      });
       setLessonStatus('completed');
       if (adjacent.next) {
         setTimeout(() => {
@@ -136,6 +153,47 @@ export default function LessonPage() {
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatMessages]);
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+
+      const target = event.target as HTMLElement | null;
+      const isTypingContext = target && (
+        target.tagName === 'INPUT' ||
+        target.tagName === 'TEXTAREA' ||
+        target.isContentEditable
+      );
+      if (isTypingContext) return;
+
+      if (event.key === 'ArrowLeft' && adjacent.previous) {
+        void trackLearningEvent({
+          eventType: 'keyboard_navigation_used',
+          route: `/our-courses/lesson/${encodeURIComponent(lesson?.slug ?? '')}`,
+          lessonSlug: lesson?.slug,
+          week: lesson?.week,
+          day: lesson?.day,
+          metadata: { direction: 'previous' },
+        });
+        router.push(`/our-courses/lesson/${encodeURIComponent(adjacent.previous.slug)}`);
+      }
+
+      if (event.key === 'ArrowRight' && adjacent.next) {
+        void trackLearningEvent({
+          eventType: 'keyboard_navigation_used',
+          route: `/our-courses/lesson/${encodeURIComponent(lesson?.slug ?? '')}`,
+          lessonSlug: lesson?.slug,
+          week: lesson?.week,
+          day: lesson?.day,
+          metadata: { direction: 'next' },
+        });
+        router.push(`/our-courses/lesson/${encodeURIComponent(adjacent.next.slug)}`);
+      }
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [adjacent.next, adjacent.previous, router]);
 
   if (!lesson) {
     return (
@@ -184,6 +242,7 @@ export default function LessonPage() {
             <h1 className="mt-3 text-xl font-bold text-zinc-900">{lesson.title}</h1>
             <p className="mt-2 text-sm leading-relaxed text-zinc-700">{lesson.summary}</p>
             <p className="mt-2 text-xs text-zinc-500">Topic Theme: {lesson.dayTheme}</p>
+            <LearningProgressChips week={lesson.week} day={lesson.day} currentLessonSlug={lesson.slug} />
           </div>
 
           {unitLoading && (
@@ -251,6 +310,7 @@ export default function LessonPage() {
         <aside className="space-y-4">
           <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
             <p className="text-xs uppercase tracking-[0.25em] text-zinc-500">Navigation</p>
+            <p className="mt-2 text-[11px] text-zinc-500">Keyboard: <span className="font-semibold">←</span> previous, <span className="font-semibold">→</span> next</p>
             <div className="mt-3 space-y-2.5">
               {adjacent.previous ? (
                 <Link href={`/our-courses/lesson/${encodeURIComponent(adjacent.previous.slug)}`} className="block rounded-lg border border-zinc-200 bg-zinc-50 p-3 hover:border-zinc-300 hover:bg-white">

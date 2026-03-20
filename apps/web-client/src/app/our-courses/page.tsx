@@ -1,20 +1,10 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/components/AuthProvider';
+import { useLearningProgress } from '@/hooks/useLearningProgress';
 import { courseCurriculum, getAllLessons, type LessonRecord } from '@/lib/learning/curriculum';
-
-type ProgressEntry = { lessonSlug: string; status: string };
-type ProgressData = {
-  enrolled: boolean;
-  currentLessonIndex: number;
-  currentLesson: LessonRecord | null;
-  completedCount: number;
-  totalLessons: number;
-  enrolledAt?: string;
-  progress: ProgressEntry[];
-};
 
 const LEVEL_COLORS: Record<string, string> = {
   Beginner: 'text-emerald-700 border-emerald-200 bg-emerald-50',
@@ -23,39 +13,19 @@ const LEVEL_COLORS: Record<string, string> = {
 
 export default function OurCoursesPage() {
   const { user, isLoading: authLoading } = useAuth();
-  const [progressData, setProgressData] = useState<ProgressData | null>(null);
   const [enrolling, setEnrolling] = useState(false);
-  const [progressLoading, setProgressLoading] = useState(false);
+  const { progressData, progressMap, momentum, isLoading: progressLoading, refresh } = useLearningProgress();
   const allLessons = useMemo(() => getAllLessons(), []);
-
-  const loadProgress = useCallback(async () => {
-    if (!user) return;
-    setProgressLoading(true);
-    try {
-      const res = await fetch('/api/learning/progress');
-      if (res.ok) setProgressData(await res.json() as ProgressData);
-    } finally {
-      setProgressLoading(false);
-    }
-  }, [user]);
-
-  useEffect(() => { void loadProgress(); }, [loadProgress]);
 
   async function enroll() {
     setEnrolling(true);
     try {
       const res = await fetch('/api/learning/enroll', { method: 'POST' });
-      if (res.ok) await loadProgress();
+      if (res.ok) await refresh();
     } finally {
       setEnrolling(false);
     }
   }
-
-  const progressMap = useMemo(() => {
-    const map = new Map<string, string>();
-    progressData?.progress.forEach((p) => map.set(p.lessonSlug, p.status));
-    return map;
-  }, [progressData]);
 
   function getWeekProgress(weekNum: number) {
     const weekLessons = allLessons.filter((l) => l.week === weekNum);
@@ -77,6 +47,7 @@ export default function OurCoursesPage() {
   const overallPct = progressData?.enrolled
     ? Math.round(((progressData.completedCount ?? 0) / (progressData.totalLessons ?? 108)) * 100)
     : 0;
+
 
   const chapterCount = courseCurriculum.length;
   const topicCount = courseCurriculum.reduce((sum, chapter) => sum + chapter.days.length, 0);
@@ -126,6 +97,14 @@ export default function OurCoursesPage() {
                     <p className="mt-1 text-xs text-zinc-500">
                       {progressData.completedCount} / {progressData.totalLessons} lessons completed
                     </p>
+                    <div className="mt-2 flex items-center justify-end gap-2 text-[11px]">
+                      <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-1 text-emerald-700">
+                        Streak: {momentum.streakDays} day{momentum.streakDays === 1 ? '' : 's'}
+                      </span>
+                      <span className="rounded-full border border-zinc-200 bg-zinc-50 px-2 py-1 text-zinc-600">
+                        Last activity: {momentum.lastActivityLabel}
+                      </span>
+                    </div>
                   </div>
                 ) : (
                   <button

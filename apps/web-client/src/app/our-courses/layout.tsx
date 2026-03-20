@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
+import AcademyAuthGuard from '@/components/AcademyAuthGuard';
 import LearningNavigator from '@/components/LearningNavigator';
+import LearningProgressProvider from '@/components/LearningProgressProvider';
 
 type OurCoursesLayoutProps = {
   children: ReactNode;
@@ -34,28 +36,32 @@ export default function OurCoursesLayout({ children }: OurCoursesLayoutProps) {
       </header>
 
       <main className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <section className="mb-6 rounded-2xl border border-emerald-200 bg-gradient-to-r from-emerald-50 via-cyan-50 to-white p-5 shadow-sm">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-emerald-700">Future Learning Environment</p>
-              <p className="mt-1 text-sm text-zinc-700">
-                Learn daily with a structured path: Chapters, Topics, Subtopics, and Lessons designed for long-term consistency.
-              </p>
+        <AcademyAuthGuard>
+          <section className="mb-6 rounded-2xl border border-emerald-200 bg-gradient-to-r from-emerald-50 via-cyan-50 to-white p-5 shadow-sm">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.28em] text-emerald-700">Future Learning Environment</p>
+                <p className="mt-1 text-sm text-zinc-700">
+                  Learn daily with a structured path: Chapters, Topics, Subtopics, and Lessons designed for long-term consistency.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2 text-xs">
+                <span className="rounded-full border border-zinc-200 bg-white px-2.5 py-1 text-zinc-700">Chapter-led Flow</span>
+                <span className="rounded-full border border-zinc-200 bg-white px-2.5 py-1 text-zinc-700">Topic Context</span>
+                <span className="rounded-full border border-zinc-200 bg-white px-2.5 py-1 text-zinc-700">Lesson Mastery</span>
+              </div>
             </div>
-            <div className="flex flex-wrap gap-2 text-xs">
-              <span className="rounded-full border border-zinc-200 bg-white px-2.5 py-1 text-zinc-700">Chapter-led Flow</span>
-              <span className="rounded-full border border-zinc-200 bg-white px-2.5 py-1 text-zinc-700">Topic Context</span>
-              <span className="rounded-full border border-zinc-200 bg-white px-2.5 py-1 text-zinc-700">Lesson Mastery</span>
-            </div>
-          </div>
-        </section>
+          </section>
 
-        <div className="grid gap-6 lg:grid-cols-[320px_minmax(0,1fr)]">
-          <LearningNavigator />
-          <div className="min-w-0">
-            {children}
-          </div>
-        </div>
+          <LearningProgressProvider>
+            <div className="grid gap-6 lg:grid-cols-[320px_minmax(0,1fr)]">
+              <LearningNavigator />
+              <div className="min-w-0">
+                {children}
+              </div>
+            </div>
+          </LearningProgressProvider>
+        </AcademyAuthGuard>
       </main>
     </div>
   );

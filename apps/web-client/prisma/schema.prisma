@@ -29,6 +29,7 @@ model User {
   lessonProgress     LessonProgress[]
   contactInquiries   ContactInquiry[]
   preference         UserPreference?
+  learningEvents     LearningEvent[]
 }
 
 model Account {
@@ -182,4 +183,21 @@ model ContactInquiry {
   user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@index([email, status])
+}
+
+model LearningEvent {
+  id         String   @id @default(cuid())
+  userId     String?
+  eventType  String
+  route      String
+  lessonSlug String?
+  week       Int?
+  day        String?
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([eventType, createdAt])
+  @@index([userId, createdAt])
 }

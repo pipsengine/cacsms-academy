@@ -56,7 +56,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const isAuth = isAuthRoute(pathname);
 
     if (!user && !isPublic) {
-      router.push('/landing');
+      router.replace(`/login?callbackUrl=${encodeURIComponent(pathname)}`);
       return;
     }
 
