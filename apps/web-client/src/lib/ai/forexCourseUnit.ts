@@ -1,5 +1,6 @@
 import { GoogleGenAI } from '@google/genai';
 import { getDayLessons, type LessonRecord } from '@/lib/learning/curriculum';
+import { getStaticLessonContent } from './lessonContentRegistry';
 
 export type DayOfWeek = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday';
 export type TopicType = 'lesson' | 'assignment';
@@ -144,6 +145,14 @@ const DUPLICATE_SIMILARITY_THRESHOLD = 0.62;
 function sentenceCount(text: string): number {
   return text
     .split(/(?<=[.!?])\s+/)
+    .map((part) => part.trim())
+    .filter(Boolean).length;
+}
+
+function wordCount(text: string): number {
+  return text
+    .replace(/[^\w\s'-]/g, ' ')
+    .split(/\s+/)
     .map((part) => part.trim())
     .filter(Boolean).length;
 }
@@ -315,6 +324,28 @@ function hasSufficientSpecificity(unit: ForexCourseUnitOutput, input: ForexCours
   const dayMarker = combined.includes(input.day_of_week);
   const hasDifferentExample = !/EUR\/USD approaches a key structural zone|disciplined trader waits for confirmation/i.test(combined);
   return topicHits >= Math.min(2, Math.max(1, keywords.length)) && weekMarker && dayMarker && hasDifferentExample;
+}
+
+function hasDetailedExpansionStandard(unit: ForexCourseUnitOutput, input: ForexCourseUnitInput): boolean {
+  const content = unit.content;
+  const contentWords = wordCount(content);
+
+  const hasRequiredHeadings =
+    content.includes('## Introduction') &&
+    content.includes('## Key Concepts') &&
+    content.includes('## Detailed Explanation') &&
+    content.includes('## Example') &&
+    content.includes('## Practical Application') &&
+    content.includes('## Key Takeaways');
+
+  const detailSubsections = (content.match(/^###\s+/gm) ?? []).length;
+  const keyTakeawayBullets = (content.match(/^-\s+/gm) ?? []).length;
+
+  if (input.topic_type === 'assignment' || unit.is_assignment) {
+    return hasRequiredHeadings && contentWords >= 420;
+  }
+
+  return hasRequiredHeadings && contentWords >= 650 && detailSubsections >= 3 && keyTakeawayBullets >= 4;
 }
 
 function normalizeDay(input: string): DayOfWeek {
@@ -632,6 +663,10 @@ function normalizeOutput(raw: Partial<ForexCourseUnitOutput>, input: ForexCourse
     return fallback;
   }
 
+  if (!hasDetailedExpansionStandard(normalized, input)) {
+    return fallback;
+  }
+
   return normalized;
 }
 
@@ -662,6 +697,12 @@ STRICT RULES:
 7. Lessons must teach both concept + application
 8. This lesson must be unique to its chapter, topic, and subtopic (do not reuse generic paragraphs from other lessons)
 9. Example must be specific to this topic title and not a reusable boilerplate scenario
+10. Match the platform's detailed expansion standard: fully elaborated wording, explicit logic, and practical execution framing
+11. For non-assignment lessons, Detailed Explanation must include at least 3 level-3 subsections (### headings)
+12. Non-assignment lesson content length target: 700-1200 words
+13. Assignment content length target: 450-900 words
+14. Key Takeaways section must include at least 4 bullet points
+15. Practical Application must be step-by-step and actionable (minimum 5 numbered steps)
 
 OUTPUT FORMAT (STRICT JSON):
 {
@@ -687,7 +728,7 @@ CONTENT STRUCTURE REQUIREMENTS:
 FOR LESSON:
 - Introduction -> What and why
 - Key Concepts -> Definitions
-- Detailed Explanation -> Deep dive
+- Detailed Explanation -> Deep dive with layered reasoning and practical nuance
 - Example -> Real market scenario
 - Practical Application -> How trader uses it
 - Key Takeaways -> Bullet points
@@ -729,6 +770,15 @@ export async function generateForexCourseUnit(inputRaw: {
   if (input.day_of_week === 'Saturday') {
     input.topic_type = 'assignment';
   }
+
+  // ── Static content registry: highest-priority lookup ──────────────────────
+  // Check for hand-crafted lesson content before calling AI or the fallback.
+  const staticContext = resolveLessonContext(input);
+  if (staticContext.lesson?.slug) {
+    const staticContent = getStaticLessonContent(staticContext.lesson.slug);
+    if (staticContent) return staticContent;
+  }
+  // ─────────────────────────────────────────────────────────────────────────
 
   const apiKey = process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY;
   if (!apiKey) {

@@ -7,38 +7,19 @@ import { useAuth } from '@/components/AuthProvider';
 import { useLearningProgress } from '@/hooks/useLearningProgress';
 import { trackLearningEvent } from '@/lib/learning/analytics';
 import { courseCurriculum, getAllLessons } from '@/lib/learning/curriculum';
+import { parseActiveLearningContext } from '@/lib/learning/navigatorContext';
 
 const ALL_LESSONS = getAllLessons();
-
-function parseActiveContext(pathname: string) {
-  const parts = pathname.split('/').filter(Boolean);
-  const activeSlug = parts[2] === 'lesson' ? decodeURIComponent(parts[3] ?? '') : '';
-  const activeWeek = parts[2] === 'day' ? Number(parts[3]) : NaN;
-  const activeDay = parts[2] === 'day' ? (parts[4] ?? '').toLowerCase() : '';
-
-  if (activeSlug) {
-    const lesson = ALL_LESSONS.find((entry) => entry.slug === activeSlug);
-    if (!lesson) return { activeSlug: '', activeWeek: NaN, activeDay: '' };
-    return {
-      activeSlug,
-      activeWeek: lesson.week,
-      activeDay: lesson.day.toLowerCase(),
-    };
-  }
-
-  if (Number.isFinite(activeWeek)) {
-    return { activeSlug: '', activeWeek, activeDay };
-  }
-
-  return { activeSlug: '', activeWeek: NaN, activeDay: '' };
-}
 
 export default function LearningNavigator() {
   const pathname = usePathname() ?? '';
   const { user } = useAuth();
   const { progressData, progressMap } = useLearningProgress();
 
-  const { activeSlug, activeWeek, activeDay } = useMemo(() => parseActiveContext(pathname), [pathname]);
+  const { activeSlug, activeWeek, activeDay } = useMemo(
+    () => parseActiveLearningContext(pathname, ALL_LESSONS),
+    [pathname]
+  );
 
   const overallPct = progressData?.enrolled
     ? Math.round((progressData.completedCount / Math.max(progressData.totalLessons, 1)) * 100)

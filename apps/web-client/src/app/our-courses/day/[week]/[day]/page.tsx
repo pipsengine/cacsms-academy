@@ -2,6 +2,7 @@ import Link from 'next/link';
 import LearningProgressChips from '@/components/LearningProgressChips';
 import LearningTopicOpenedTracker from '@/components/LearningTopicOpenedTracker';
 import { courseCurriculum, getDayLessons, getDayTopicSet, type CurriculumDay } from '@/lib/learning/curriculum';
+import { getChapterQuiz } from '@/lib/learning/chapterQuizRegistry';
 
 type DayTopicPageProps = {
   params: Promise<{
@@ -57,6 +58,8 @@ export default async function DayTopicPage({ params }: DayTopicPageProps) {
   const chapter = courseCurriculum.find((item) => item.week === week);
   const topic = getDayTopicSet(week, day);
   const lessons = getDayLessons(week, day);
+  const quiz = getChapterQuiz(week);
+  const isSaturday = day === 'Saturday';
 
   if (!chapter || !topic || lessons.length === 0) {
     return (
@@ -119,6 +122,37 @@ export default async function DayTopicPage({ params }: DayTopicPageProps) {
               ))}
             </div>
           </div>
+
+          {isSaturday && quiz && (
+            <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-5 shadow-sm">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-600">Chapter Quiz</p>
+                  <h2 className="mt-1 text-base font-bold text-zinc-900">
+                    Chapter {week} · {quiz.chapterTitle}
+                  </h2>
+                  <p className="mt-2 text-sm leading-relaxed text-zinc-700">{quiz.description}</p>
+                  <div className="mt-3 flex flex-wrap gap-3 text-xs text-zinc-600">
+                    <span className="rounded-full border border-emerald-200 bg-white px-2.5 py-0.5 text-emerald-700">
+                      20 Multiple Choice
+                    </span>
+                    <span className="rounded-full border border-emerald-200 bg-white px-2.5 py-0.5 text-emerald-700">
+                      5 Fill in the Gap
+                    </span>
+                    <span className="rounded-full border border-zinc-200 bg-white px-2.5 py-0.5 text-zinc-600">
+                      ~{quiz.estimatedMinutes} min
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <Link
+                href={`/our-courses/quiz/${week}`}
+                className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500"
+              >
+                Take Chapter Quiz →
+              </Link>
+            </div>
+          )}
         </div>
 
         <aside className="space-y-4">
@@ -140,6 +174,11 @@ export default async function DayTopicPage({ params }: DayTopicPageProps) {
               <Link href={`/our-courses/lesson/${encodeURIComponent(lessons[0]!.slug)}`} className="block rounded-lg border border-zinc-200 bg-zinc-50 p-3 text-sm text-zinc-700 hover:bg-white">
                 Start Topic Lesson 1
               </Link>
+              {quiz && (
+                <Link href={`/our-courses/quiz/${week}`} className="block rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm font-semibold text-emerald-700 hover:bg-emerald-100">
+                  Chapter {week} Quiz →
+                </Link>
+              )}
             </div>
           </div>
         </aside>

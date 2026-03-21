@@ -1,14 +1,16 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, usePathname, useRouter } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useAuth } from '@/components/AuthProvider';
 import LearningProgressChips from '@/components/LearningProgressChips';
 import { trackLearningEvent } from '@/lib/learning/analytics';
 import { getAdjacentLessons, getLessonBySlug, getModuleLessons } from '@/lib/learning/curriculum';
+import { deriveActiveLessonSlug, isActiveLessonSidebarItem } from '@/lib/learning/lessonSidebarActive';
+import { getChapterQuiz } from '@/lib/learning/chapterQuizRegistry';
 
 type CourseUnit = {
   title: string;
@@ -24,18 +26,100 @@ type CourseUnit = {
 
 type ChatMessage = { role: 'user' | 'assistant'; content: string };
 
+type LessonHeading = {
+  id: string;
+  title: string;
+  level: 2 | 3;
+};
+
+function CandlestickVisualDiagram() {
+  return (
+    <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white">
+      <div className="border-b border-zinc-200 bg-zinc-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
+        Candle Anatomy Diagram
+      </div>
+      <div className="p-4">
+        <svg viewBox="0 0 720 220" role="img" aria-label="Candlestick anatomy diagram" className="h-auto w-full">
+          <rect x="0" y="0" width="720" height="220" fill="#ffffff" />
+
+          <line x1="70" y1="25" x2="70" y2="195" stroke="#9ca3af" strokeWidth="2" />
+          <rect x="48" y="78" width="44" height="70" fill="#22c55e" stroke="#15803d" strokeWidth="2" rx="4" />
+          <line x1="48" y1="78" x2="48" y2="78" stroke="#15803d" />
+
+          <line x1="220" y1="35" x2="220" y2="198" stroke="#9ca3af" strokeWidth="2" />
+          <rect x="198" y="62" width="44" height="92" fill="#ef4444" stroke="#b91c1c" strokeWidth="2" rx="4" />
+
+          <line x1="370" y1="45" x2="370" y2="190" stroke="#9ca3af" strokeWidth="2" />
+          <rect x="348" y="92" width="44" height="48" fill="#22c55e" stroke="#15803d" strokeWidth="2" rx="4" />
+
+          <line x1="520" y1="30" x2="520" y2="185" stroke="#9ca3af" strokeWidth="2" />
+          <rect x="498" y="82" width="44" height="54" fill="#ef4444" stroke="#b91c1c" strokeWidth="2" rx="4" />
+
+          <text x="42" y="210" fill="#334155" fontSize="12">Bullish</text>
+          <text x="197" y="210" fill="#334155" fontSize="12">Bearish</text>
+          <text x="322" y="210" fill="#334155" fontSize="12">Long Lower Wick</text>
+          <text x="470" y="210" fill="#334155" fontSize="12">Long Upper Wick</text>
+
+          <line x1="90" y1="78" x2="150" y2="60" stroke="#0f766e" strokeWidth="2" />
+          <text x="154" y="58" fill="#0f766e" fontSize="12">Body</text>
+
+          <line x1="70" y1="25" x2="150" y2="24" stroke="#0f766e" strokeWidth="2" />
+          <text x="154" y="28" fill="#0f766e" fontSize="12">Upper Wick (rejection)</text>
+
+          <line x1="70" y1="195" x2="150" y2="182" stroke="#0f766e" strokeWidth="2" />
+          <text x="154" y="186" fill="#0f766e" fontSize="12">Lower Wick (rejection)</text>
+
+          <line x1="242" y1="154" x2="340" y2="166" stroke="#0f766e" strokeWidth="2" />
+          <text x="344" y="170" fill="#0f766e" fontSize="12">Close Location</text>
+        </svg>
+      </div>
+    </div>
+  );
+}
+
+function headingSlug(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-');
+}
+
+function childrenToText(children: ReactNode): string {
+  if (typeof children === 'string') return children;
+  if (typeof children === 'number') return String(children);
+  if (!children) return '';
+  if (Array.isArray(children)) {
+    return children.map((child) => childrenToText(child)).join('');
+  }
+  if (typeof children === 'object' && 'props' in children) {
+    return childrenToText((children as { props?: { children?: ReactNode } }).props?.children ?? '');
+  }
+  return '';
+}
+
 export default function LessonPage() {
   const params = useParams<{ slug?: string | string[] }>();
+  const pathname = usePathname();
   const router = useRouter();
   const { user, isLoading: authLoading } = useAuth();
 
   const slugParam = params?.slug;
   const rawSlug = Array.isArray(slugParam) ? slugParam[0] : slugParam;
   const slug = rawSlug ? decodeURIComponent(rawSlug) : '';
+  const activeSidebarSlug = useMemo(() => deriveActiveLessonSlug(pathname, slug), [pathname, slug]);
 
   const lesson = useMemo(() => getLessonBySlug(slug), [slug]);
   const adjacent = useMemo(() => (lesson ? getAdjacentLessons(lesson.slug) : { previous: null, next: null }), [lesson]);
   const moduleTopics = useMemo(() => (lesson ? getModuleLessons(lesson.week) : []), [lesson]);
+
+  // Show the chapter quiz prompt when on the last lesson of a chapter (Saturday L3)
+  const isLastLessonOfChapter = lesson?.day === 'Saturday' && lesson.lessonNumber === 3;
+  const chapterQuiz = useMemo(
+    () => (lesson && isLastLessonOfChapter ? getChapterQuiz(lesson.week) : null),
+    [lesson, isLastLessonOfChapter]
+  );
 
   const [unit, setUnit] = useState<CourseUnit | null>(null);
   const [unitLoading, setUnitLoading] = useState(true);
@@ -46,7 +130,46 @@ export default function LessonPage() {
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [chatInput, setChatInput] = useState('');
   const [chatLoading, setChatLoading] = useState(false);
+  const [activeHeadingId, setActiveHeadingId] = useState<string>('');
+
+  const lessonContentRef = useRef<HTMLDivElement>(null);
+  const topicListContainerRef = useRef<HTMLUListElement>(null);
+  const activeTopicLinkRef = useRef<HTMLAnchorElement | null>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
+
+  const lessonHeadings = useMemo<LessonHeading[]>(() => {
+    if (!unit?.content) return [];
+
+    const lines = unit.content.split('\n');
+    const slugCount = new Map<string, number>();
+    const headings: LessonHeading[] = [];
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+      const match = /^(##|###)\s+(.+)$/.exec(trimmed);
+      if (!match) continue;
+
+      const level = match[1] === '###' ? 3 : 2;
+      const rawTitle = match[2].trim();
+      const baseSlug = headingSlug(rawTitle);
+      if (!baseSlug) continue;
+
+      const count = slugCount.get(baseSlug) ?? 0;
+      slugCount.set(baseSlug, count + 1);
+      const id = count === 0 ? baseSlug : `${baseSlug}-${count + 1}`;
+
+      headings.push({ id, title: rawTitle, level });
+    }
+
+    return headings;
+  }, [unit?.content]);
+
+  const isCandlestickLesson = useMemo(() => {
+    const haystack = [lesson?.title, unit?.title, unit?.summary, unit?.content].filter(Boolean).join(' ').toLowerCase();
+    return haystack.includes('candlestick') || haystack.includes('candle');
+  }, [lesson?.title, unit?.content, unit?.summary, unit?.title]);
+
+  const shouldShowVisualExplainer = isCandlestickLesson;
 
   useEffect(() => {
     if (!lesson) return;
@@ -155,6 +278,49 @@ export default function LessonPage() {
   }, [chatMessages]);
 
   useEffect(() => {
+    if (!lessonHeadings.length) {
+      setActiveHeadingId('');
+      return;
+    }
+
+    setActiveHeadingId((current) => current || lessonHeadings[0].id);
+
+    const container = lessonContentRef.current;
+    if (!container) return;
+
+    const headingEls = container.querySelectorAll<HTMLElement>('[data-lesson-heading="true"]');
+    if (!headingEls.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+
+        if (!visible.length) return;
+
+        const nextId = visible[0].target.getAttribute('id') ?? '';
+        if (nextId) setActiveHeadingId(nextId);
+      },
+      {
+        root: null,
+        rootMargin: '-18% 0px -62% 0px',
+        threshold: [0.1, 0.25, 0.5, 0.75, 1],
+      }
+    );
+
+    headingEls.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [lessonHeadings]);
+
+  useEffect(() => {
+    const link = activeTopicLinkRef.current;
+    const container = topicListContainerRef.current;
+    if (!link || !container) return;
+    link.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, [lesson?.slug]);
+
+  useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
 
@@ -259,10 +425,36 @@ export default function LessonPage() {
 
           {!unitLoading && unit && (
             <>
+              {shouldShowVisualExplainer && (
+                <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
+                  <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-500">Visual Explainer</h2>
+                  <p className="mt-2 text-sm leading-relaxed text-zinc-700">{unit.image_prompt}</p>
+                  <div className="mt-4">
+                    <CandlestickVisualDiagram />
+                  </div>
+                </div>
+              )}
+
               <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
                 <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-500">Detailed Lesson</h2>
-                <div className="prose prose-zinc mt-4 max-w-none prose-headings:font-bold prose-headings:text-zinc-900 prose-p:text-zinc-700 prose-strong:text-zinc-900 prose-li:text-zinc-700 prose-code:text-emerald-700 prose-pre:bg-zinc-100">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{unit.content}</ReactMarkdown>
+                <div ref={lessonContentRef} className="prose prose-zinc mt-4 max-w-none scroll-mt-24 prose-headings:font-bold prose-headings:text-zinc-900 prose-p:text-zinc-700 prose-strong:text-zinc-900 prose-li:text-zinc-700 prose-code:text-emerald-700 prose-pre:bg-zinc-100">
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      h2: ({ children }) => {
+                        const title = childrenToText(children);
+                        const id = headingSlug(title);
+                        return <h2 id={id} data-lesson-heading="true">{children}</h2>;
+                      },
+                      h3: ({ children }) => {
+                        const title = childrenToText(children);
+                        const id = headingSlug(title);
+                        return <h3 id={id} data-lesson-heading="true">{children}</h3>;
+                      },
+                    }}
+                  >
+                    {unit.content}
+                  </ReactMarkdown>
                 </div>
               </div>
 
@@ -332,32 +524,96 @@ export default function LessonPage() {
             </div>
           </div>
 
-          <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
+          <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm xl:sticky xl:top-4">
             <p className="text-xs uppercase tracking-[0.25em] text-zinc-500">Chapter · Topics · Subtopics</p>
             <h3 className="mt-2 text-sm font-semibold text-zinc-900">{lesson.module}</h3>
             <p className="mt-0.5 text-xs text-zinc-500">Chapter {lesson.week} · {lesson.level}</p>
-            <ul className="mt-3 space-y-1.5">
-              {moduleTopics.map((t) => (
-                <li key={t.slug}>
-                  <Link
-                    href={`/our-courses/lesson/${encodeURIComponent(t.slug)}`}
-                    className={`block rounded-md px-2.5 py-1.5 text-xs transition-colors ${
-                      t.slug === lesson.slug ? 'bg-emerald-100 font-semibold text-emerald-800' : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900'
-                    }`}
-                  >
-                    <span className="text-zinc-500">{t.day} L{t.lessonNumber} · </span>
-                    {t.title}
-                  </Link>
-                </li>
-              ))}
+            <ul ref={topicListContainerRef} className="mt-3 max-h-72 space-y-1.5 overflow-y-auto pr-1">
+              {moduleTopics.map((t) => {
+                const isActiveLesson = isActiveLessonSidebarItem(t.slug, activeSidebarSlug);
+
+                return (
+                  <li key={t.slug}>
+                    <Link
+                      href={`/our-courses/lesson/${encodeURIComponent(t.slug)}`}
+                      ref={isActiveLesson ? activeTopicLinkRef : undefined}
+                      className="block rounded-md px-2.5 py-1.5 text-xs transition-colors text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 aria-[current=page]:border-l-4 aria-[current=page]:border-emerald-500 aria-[current=page]:bg-emerald-100 aria-[current=page]:font-bold aria-[current=page]:text-emerald-900 aria-[current=page]:ring-1 aria-[current=page]:ring-emerald-300"
+                      aria-current={isActiveLesson ? 'page' : undefined}
+                    >
+                      <span className={isActiveLesson ? 'text-emerald-800' : 'text-zinc-500'}>{t.day} L{t.lessonNumber} · </span>
+                      {t.title}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </div>
+
+          {!!lessonHeadings.length && (
+            <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm xl:sticky xl:top-4">
+              <p className="text-xs uppercase tracking-[0.25em] text-zinc-500">Lesson Topic</p>
+              <p className="mt-1 text-xs text-zinc-500">Highlight updates automatically as you scroll.</p>
+              <ul className="mt-3 space-y-1.5">
+                {lessonHeadings.map((heading) => {
+                  const isActive = heading.id === activeHeadingId;
+                  return (
+                    <li key={heading.id}>
+                      <a
+                        href={`#${heading.id}`}
+                        className={`block rounded-md px-2.5 py-1.5 text-xs transition-colors ${
+                          isActive
+                            ? 'bg-emerald-100 font-semibold text-emerald-800'
+                            : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900'
+                        } ${heading.level === 3 ? 'ml-3' : ''}`}
+                        aria-current={isActive ? 'true' : undefined}
+                      >
+                        {heading.title}
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
 
           <Link href="/our-courses" className="flex items-center justify-center rounded-lg border border-zinc-300 bg-white py-2.5 text-sm font-semibold text-zinc-700 hover:bg-zinc-50">
             All Courses
           </Link>
         </aside>
       </div>
+
+      {chapterQuiz && (
+        <div className="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 p-6 shadow-sm">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-emerald-600">
+                Chapter Complete · Quiz Unlocked
+              </p>
+              <h2 className="mt-2 text-lg font-bold text-zinc-900">
+                Chapter {lesson?.week} Quiz · {chapterQuiz.chapterTitle}
+              </h2>
+              <p className="mt-2 text-sm leading-relaxed text-zinc-700">{chapterQuiz.description}</p>
+              <div className="mt-3 flex flex-wrap gap-2 text-xs">
+                <span className="rounded-full border border-emerald-200 bg-white px-2.5 py-0.5 text-emerald-700">
+                  20 Multiple Choice
+                </span>
+                <span className="rounded-full border border-emerald-200 bg-white px-2.5 py-0.5 text-emerald-700">
+                  5 Fill in the Gap
+                </span>
+                <span className="rounded-full border border-zinc-200 bg-white px-2.5 py-0.5 text-zinc-600">
+                  ~{chapterQuiz.estimatedMinutes} min · Answers shown after submission
+                </span>
+              </div>
+            </div>
+            <Link
+              href={`/our-courses/quiz/${lesson?.week}`}
+              className="shrink-0 rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-emerald-500"
+            >
+              Take Chapter Quiz →
+            </Link>
+          </div>
+        </div>
+      )}
 
       <div className="mt-6 rounded-xl border border-zinc-200 bg-white shadow-sm">
         <div className="border-b border-zinc-200 p-4">
