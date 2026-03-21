@@ -57,12 +57,39 @@ export const authOptions: NextAuthOptions = {
           async authorize(credentials) {
             const email = credentials?.email?.toLowerCase().trim();
             const password = credentials?.password;
-            if (!email || !password) return null;
+            if (!email || !password) {
+              if (process.env.NODE_ENV !== 'production') {
+                console.warn('[auth][credentials] rejected: missing email or password');
+              }
+              return null;
+            }
 
             const user = await prisma.user.findUnique({ where: { email } });
-            if (!user?.passwordHash) return null;
+            if (!user) {
+              if (process.env.NODE_ENV !== 'production') {
+                console.warn(`[auth][credentials] rejected: user not found for ${email}`);
+              }
+              return null;
+            }
+
+            if (!user.passwordHash) {
+              if (process.env.NODE_ENV !== 'production') {
+                console.warn(`[auth][credentials] rejected: passwordHash missing for ${email}`);
+              }
+              return null;
+            }
+
             const ok = await bcrypt.compare(password, user.passwordHash);
-            if (!ok) return null;
+            if (!ok) {
+              if (process.env.NODE_ENV !== 'production') {
+                console.warn(`[auth][credentials] rejected: password mismatch for ${email}`);
+              }
+              return null;
+            }
+
+            if (process.env.NODE_ENV !== 'production') {
+              console.info(`[auth][credentials] success: ${email}`);
+            }
 
             return {
               id: user.id,

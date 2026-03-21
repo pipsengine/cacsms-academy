@@ -101,14 +101,14 @@ function childrenToText(children: ReactNode): string {
 
 export default function LessonPage() {
   const params = useParams<{ slug?: string | string[] }>();
-  const pathname = usePathname();
+  const pathname = usePathname() ?? '';
   const router = useRouter();
   const { user, isLoading: authLoading } = useAuth();
 
   const slugParam = params?.slug;
-  const rawSlug = Array.isArray(slugParam) ? slugParam[0] : slugParam;
-  const slug = rawSlug ? decodeURIComponent(rawSlug) : '';
-  const activeSidebarSlug = useMemo(() => deriveActiveLessonSlug(pathname, slug), [pathname, slug]);
+  const rawSlug = (Array.isArray(slugParam) ? slugParam[0] : slugParam) ?? '';
+  const slug: string = rawSlug ? decodeURIComponent(rawSlug) : '';
+  const activeSidebarSlug = useMemo(() => deriveActiveLessonSlug(pathname, slug as string), [pathname, slug]);
 
   const lesson = useMemo(() => getLessonBySlug(slug), [slug]);
   const adjacent = useMemo(() => (lesson ? getAdjacentLessons(lesson.slug) : { previous: null, next: null }), [lesson]);

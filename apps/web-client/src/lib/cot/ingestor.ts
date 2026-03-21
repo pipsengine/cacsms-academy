@@ -1,5 +1,5 @@
-import { fetchCurrencyRaw, fetchDisaggRaw } from './fetcher';
-import { parseCurrencyCsv, parseDisaggCsv } from './parser';
+import { fetchCurrencyHistoricalRaw, fetchCurrencyRaw } from './fetcher';
+import { parseCurrencyCsv } from './parser';
 import { groupAndSortByAsset } from './transformer';
 import { computeMetrics } from './analytics';
 import { applySignalEngine } from './signalEngine';
@@ -30,7 +30,7 @@ export async function runIngestion(): Promise<IngestResult> {
 
   // Step 1: Fetch
   let currencyRaw = '';
-  let disaggRaw = '';
+  const historicalCurrencyRaws: string[] = [];
 
   try {
     currencyRaw = await fetchCurrencyRaw();
@@ -38,13 +38,7 @@ export async function runIngestion(): Promise<IngestResult> {
     errors.push(`Currency fetch failed: ${err instanceof Error ? err.message : String(err)}`);
   }
 
-  try {
-    disaggRaw = await fetchDisaggRaw();
-  } catch (err) {
-    errors.push(`Disaggregated fetch failed: ${err instanceof Error ? err.message : String(err)}`);
-  }
-
-  if (!currencyRaw && !disaggRaw) {
+  if (!currencyRaw) {
     return {
       success: false,
       recordsProcessed: 0,
@@ -54,10 +48,24 @@ export async function runIngestion(): Promise<IngestResult> {
     };
   }
 
+  // Historical backfill (current + previous year) to support 6M/1Y views.
+  const currentYear = new Date().getUTCFullYear();
+  const years = [currentYear, currentYear - 1];
+
+  for (const year of years) {
+    try {
+      const raw = await fetchCurrencyHistoricalRaw(year);
+      historicalCurrencyRaws.push(raw);
+    } catch (err) {
+      errors.push(`Currency historical fetch failed (${year}): ${err instanceof Error ? err.message : String(err)}`);
+    }
+
+  }
+
   // Step 2: Parse
-  const currencyRows = currencyRaw ? parseCurrencyCsv(currencyRaw) : [];
-  const disaggRows = disaggRaw ? parseDisaggCsv(disaggRaw) : [];
-  const allRaw = [...currencyRows, ...disaggRows];
+  const allRaw = [currencyRaw, ...historicalCurrencyRaws]
+    .filter(Boolean)
+    .flatMap((raw) => parseCurrencyCsv(raw));
 
   // Step 3: Group & sort
   const grouped = groupAndSortByAsset(allRaw);

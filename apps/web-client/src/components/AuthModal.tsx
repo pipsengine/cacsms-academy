@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { getProviders, signIn } from "next-auth/react";
 import Link from "next/link";
 import { X } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useAuth } from "@/components/AuthProvider";
 
 type AuthMode = "login" | "register";
 
@@ -20,6 +22,10 @@ export default function AuthModal({
   mode,
   defaultCountry = "International",
 }: AuthModalProps) {
+  const { refreshAuth } = useAuth();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams?.get("callbackUrl") || "/";
   const [activeMode, setActiveMode] = useState<AuthMode>(mode);
   const title = activeMode === "register" ? "Create your account" : "Sign in";
   const [email, setEmail] = useState("");
@@ -97,14 +103,25 @@ export default function AuthModal({
       const result = await signIn("credentials", {
         email: normalizedEmail,
         password,
-        redirect: true,
-        callbackUrl: "/",
+        redirect: false,
+        callbackUrl,
       });
 
-      if (result && (result as any).error) {
-        setError("Invalid credentials.");
+      if (!result) {
+        setError("Sign-in failed. Please try again.");
         setBusy(false);
+        return;
       }
+
+      if (result.error) {
+        setError(result.error === "CredentialsSignin" ? "Invalid email or password." : result.error);
+        setBusy(false);
+        return;
+      }
+
+      await refreshAuth();
+      router.push(result.url || callbackUrl);
+      router.refresh();
     } catch (err) {
       setError("Something went wrong. Please try again.");
       setBusy(false);

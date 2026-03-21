@@ -1,6 +1,8 @@
 import { prisma } from '@/lib/prisma';
 import { CotRecord, CotAsset } from './types';
 
+export type CotHistoryRange = '6m' | '1y' | 'all';
+
 /**
  * Upsert a batch of CotRecord objects into the database.
  * Uses the unique constraint (asset, date) for deduplication.
@@ -63,10 +65,28 @@ export async function upsertCotRecords(records: CotRecord[]): Promise<number> {
   return upserted;
 }
 
-/** Fetch all records for a given asset, sorted newest first */
-export async function getCotHistory(asset: CotAsset): Promise<CotRecord[]> {
+function rangeToDate(range: CotHistoryRange): Date | undefined {
+  if (range === 'all') return undefined;
+
+  const now = new Date();
+  const start = new Date(now);
+  if (range === '6m') {
+    start.setMonth(start.getMonth() - 6);
+    return start;
+  }
+
+  start.setFullYear(start.getFullYear() - 1);
+  return start;
+}
+
+/** Fetch records for a given asset and range, sorted newest first */
+export async function getCotHistory(asset: CotAsset, range: CotHistoryRange = 'all'): Promise<CotRecord[]> {
+  const fromDate = rangeToDate(range);
   const rows = await prisma.cotData.findMany({
-    where: { asset },
+    where: {
+      asset,
+      ...(fromDate ? { date: { gte: fromDate } } : {}),
+    },
     orderBy: { date: 'desc' },
   });
   return rows as unknown as CotRecord[];

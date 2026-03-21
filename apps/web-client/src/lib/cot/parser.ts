@@ -2,25 +2,26 @@ import {
   CotAsset,
   RawCotRow,
   CFTC_MARKET_NAMES,
-  CURRENCY_ASSETS,
+  ALL_ASSETS,
 } from './types';
 
 /**
  * Parse a CFTC CSV text file into raw COT rows.
  *
- * Both FinFutWk.txt and DisaggWk.txt are comma-separated with a header row.
+ * Both the legacy futures-only currency file and the disaggregated file are
+ * comma-separated without a header row in the current CFTC exports.
  *
- * FinFutWk.txt relevant columns (0-based):
+ * deafut.txt relevant columns (0-based):
  *   0  – Market and Exchange Names
- *   2  – Report Date as MM/DD/YYYY
- *   7  – Noncommercial Positions-Long (All)
- *   8  – Noncommercial Positions-Short (All)
+ *   2  – Report Date as YYYY-MM-DD
+ *   8  – Noncommercial Positions-Long (All)
+ *   9  – Noncommercial Positions-Short (All)
  *
- * DisaggWk.txt relevant columns (0-based):
+ * f_disagg.txt relevant columns (0-based):
  *   0  – Market and Exchange Names
- *   2  – Report Date as MM/DD/YYYY
- *   9  – Managed Money Positions-Long (All)
- *   10 – Managed Money Positions-Short (All)
+ *   2  – Report Date as YYYY-MM-DD
+ *   13 – Managed Money Positions-Long (All)
+ *   14 – Managed Money Positions-Short (All)
  */
 
 interface ColMap {
@@ -33,15 +34,16 @@ interface ColMap {
 const FIN_FUT_COLS: ColMap = {
   marketNameCol: 0,
   dateCol: 2,
-  longCol: 7,
-  shortCol: 8,
+  longCol: 8,
+  shortCol: 9,
 };
 
 const DISAGG_COLS: ColMap = {
   marketNameCol: 0,
   dateCol: 2,
-  longCol: 9,
-  shortCol: 10,
+  // f_disagg.txt uses managed-money positions at 13/14 (futures only)
+  longCol: 13,
+  shortCol: 14,
 };
 
 function parseCsvLine(line: string): string[] {
@@ -64,8 +66,16 @@ function parseCsvLine(line: string): string[] {
 }
 
 function parseDate(raw: string): Date | null {
-  // CFTC uses MM/DD/YYYY
-  const parts = raw.trim().split('/');
+  const value = raw.trim();
+
+  // Newer CFTC files use YYYY-MM-DD.
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    const d = new Date(`${value}T00:00:00.000Z`);
+    return isNaN(d.getTime()) ? null : d;
+  }
+
+  // Legacy CFTC format uses MM/DD/YYYY.
+  const parts = value.split('/');
   if (parts.length !== 3) return null;
   const [mm, dd, yyyy] = parts.map(Number);
   if (!mm || !dd || !yyyy) return null;
@@ -75,11 +85,11 @@ function parseDate(raw: string): Date | null {
 
 function extractRows(csv: string, assets: CotAsset[], cols: ColMap): RawCotRow[] {
   const lines = csv.split('\n');
-  if (lines.length < 2) return [];
+  if (lines.length < 1) return [];
 
   const rows: RawCotRow[] = [];
 
-  for (let i = 1; i < lines.length; i++) {
+  for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
     if (!line) continue;
     const cells = parseCsvLine(line);
@@ -89,7 +99,7 @@ function extractRows(csv: string, assets: CotAsset[], cols: ColMap): RawCotRow[]
     let matchedAsset: CotAsset | null = null;
     for (const asset of assets) {
       const needle = CFTC_MARKET_NAMES[asset].toUpperCase();
-      if (marketName.includes(needle)) {
+      if (marketName.startsWith(needle)) {
         matchedAsset = asset;
         break;
       }
@@ -109,12 +119,15 @@ function extractRows(csv: string, assets: CotAsset[], cols: ColMap): RawCotRow[]
   return rows;
 }
 
-/** Parse FinFutWk.txt — Non-Commercial positions for currency futures */
+/** Parse deafut.txt — legacy non-commercial positions for tracked futures assets */
 export function parseCurrencyCsv(csv: string): RawCotRow[] {
-  return extractRows(csv, CURRENCY_ASSETS, FIN_FUT_COLS);
+  return extractRows(csv, ALL_ASSETS, FIN_FUT_COLS);
 }
 
-/** Parse DisaggWk.txt — Managed Money positions for gold */
-export function parseDisaggCsv(csv: string): RawCotRow[] {
-  return extractRows(csv, ['XAU'], DISAGG_COLS);
+/**
+ * Disaggregated parsing is intentionally disabled.
+ * XAU is sourced from legacy futures-only noncommercial columns in deafut.txt.
+ */
+export function parseDisaggCsv(_csv: string): RawCotRow[] {
+  return [];
 }

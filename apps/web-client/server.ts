@@ -8,6 +8,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { getMarketDataService } from './src/lib/market/service.ts';
 import { syncDerivedAlerts } from './src/lib/alerts/service.ts';
+import { startCotWeeklyScheduler } from './src/lib/cot/scheduler.ts';
 
 if (!process.env.NODE_ENV) {
   (process.env as any).NODE_ENV = process.env.npm_lifecycle_event === 'start' ? 'production' : 'development';
@@ -57,6 +58,8 @@ app.prepare().then(() => {
   void syncDerivedAlerts().catch((error) => {
     console.error('Initial derived alert sync failed', error);
   });
+
+  startCotWeeklyScheduler();
 
   setInterval(() => {
     void marketService.refresh()

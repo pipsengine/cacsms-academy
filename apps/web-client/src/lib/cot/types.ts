@@ -38,19 +38,19 @@ export interface CotRecord {
 
 /** Asset → CFTC market name fragment used in CSV matching */
 export const CFTC_MARKET_NAMES: Record<CotAsset, string> = {
-  EUR: 'EURO FX',
-  GBP: 'BRITISH POUND STERLING',
-  JPY: 'JAPANESE YEN',
-  CHF: 'SWISS FRANC',
-  CAD: 'CANADIAN DOLLAR',
-  AUD: 'AUSTRALIAN DOLLAR',
-  NZD: 'NEW ZEALAND DOLLAR',
-  USD: 'U.S. DOLLAR INDEX',
-  XAU: 'GOLD',
+  EUR: 'EURO FX - CHICAGO MERCANTILE EXCHANGE',
+  GBP: 'BRITISH POUND - CHICAGO MERCANTILE EXCHANGE',
+  JPY: 'JAPANESE YEN - CHICAGO MERCANTILE EXCHANGE',
+  CHF: 'SWISS FRANC - CHICAGO MERCANTILE EXCHANGE',
+  CAD: 'CANADIAN DOLLAR - CHICAGO MERCANTILE EXCHANGE',
+  AUD: 'AUSTRALIAN DOLLAR - CHICAGO MERCANTILE EXCHANGE',
+  NZD: 'NZ DOLLAR - CHICAGO MERCANTILE EXCHANGE',
+  USD: 'USD INDEX - ICE FUTURES U.S.',
+  XAU: 'GOLD - COMMODITY EXCHANGE INC.',
 };
 
 export const CURRENCY_ASSETS: CotAsset[] = ['AUD', 'CAD', 'CHF', 'EUR', 'GBP', 'JPY', 'NZD', 'USD'];
 export const ALL_ASSETS: CotAsset[] = [...CURRENCY_ASSETS, 'XAU'];
 
-export const CFTC_CURRENCY_URL = 'https://www.cftc.gov/dea/newcot/FinFutWk.txt';
-export const CFTC_DISAGG_URL = 'https://www.cftc.gov/dea/newcot/DisaggWk.txt';
+export const CFTC_CURRENCY_URL = 'https://www.cftc.gov/dea/newcot/deafut.txt';
+export const CFTC_DISAGG_URL = 'https://www.cftc.gov/dea/newcot/f_disagg.txt';

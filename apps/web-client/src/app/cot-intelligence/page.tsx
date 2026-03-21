@@ -12,6 +12,8 @@ import {
   RefreshCw,
 } from 'lucide-react';
 
+type HistoryRange = '6m' | '1y' | 'all';
+
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
 function fmt(n: number, decimals = 0): string {
@@ -163,11 +165,11 @@ function HistoryTable({ records }: { records: CotRecord[] }) {
   }
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-auto max-h-[560px]">
       <table className="w-full text-xs font-mono text-zinc-300 border-collapse">
-        <thead>
+        <thead className="sticky top-0 z-10 bg-zinc-950">
           <tr className="border-b border-zinc-800">
-            {['Date', 'Long', 'Short', 'Net', 'Change', 'Z-Score', 'Pctile', 'Signal', 'Phase', 'Bias', 'Risk', 'Conf%'].map((h) => (
+            {['Date', 'Long', 'Short', 'Net', 'Change', 'Z-Score', 'Pctile', 'Signal', 'Phase', 'Conf%'].map((h) => (
               <th key={h} className="text-left py-3 px-3 text-[10px] uppercase tracking-widest text-zinc-500 whitespace-nowrap">
                 {h}
               </th>
@@ -200,16 +202,6 @@ function HistoryTable({ records }: { records: CotRecord[] }) {
                 <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${phaseBadge(r.phase)}`}>{r.phase}</span>
               </td>
               <td className="py-2.5 px-3">
-                <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
-                  r.weeklyBias === 'Long'
-                    ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                    : 'bg-red-500/10 text-red-400 border border-red-500/20'
-                }`}>{r.weeklyBias}</span>
-              </td>
-              <td className="py-2.5 px-3">
-                <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${riskBadge(r.risk)}`}>{r.risk}</span>
-              </td>
-              <td className="py-2.5 px-3">
                 <div className="flex items-center gap-1.5">
                   <div className="h-1.5 w-16 bg-zinc-800 rounded-full overflow-hidden">
                     <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${r.confidence}%` }} />
@@ -228,11 +220,18 @@ function HistoryTable({ records }: { records: CotRecord[] }) {
 // ─── Page Component ──────────────────────────────────────────────────────────
 
 export default function CotIntelligencePage() {
+  const [syncStatus, setSyncStatus] = useState<{
+    lastScheduledSyncDate: string | null;
+    nextScheduledSyncIso: string;
+    cotRecords: number;
+    autoSyncEnabled: boolean;
+  } | null>(null);
   const [selectedAsset, setSelectedAsset] = useState<CotAsset>('EUR');
   const [latestAll, setLatestAll] = useState<CotRecord[]>([]);
   const [history, setHistory] = useState<CotRecord[]>([]);
   const [loadingLatest, setLoadingLatest] = useState(true);
   const [loadingHistory, setLoadingHistory] = useState(false);
+  const [historyRange, setHistoryRange] = useState<HistoryRange>('1y');
   const [errorLatest, setErrorLatest] = useState<string | null>(null);
   const [errorHistory, setErrorHistory] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'history'>('overview');
@@ -248,24 +247,39 @@ export default function CotIntelligencePage() {
       .finally(() => setLoadingLatest(false));
   }, []);
 
+  useEffect(() => {
+    fetch('/api/cot/status')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.error) return;
+        setSyncStatus({
+          lastScheduledSyncDate: data.lastScheduledSyncDate ?? null,
+          nextScheduledSyncIso: data.nextScheduledSyncIso,
+          cotRecords: data.cotRecords ?? 0,
+          autoSyncEnabled: !!data.autoSyncEnabled,
+        });
+      })
+      .catch(() => {
+        setSyncStatus(null);
+      });
+  }, []);
+
   // Fetch history when asset changes or tab becomes history
   const fetchHistory = useCallback(() => {
     setLoadingHistory(true);
     setErrorHistory(null);
-    fetch(`/api/cot/history?asset=${selectedAsset}`)
+    fetch(`/api/cot/history?asset=${selectedAsset}&range=${historyRange}`)
       .then((r) => r.json())
       .then((data) => setHistory(data.records ?? []))
       .catch(() => setErrorHistory('Failed to load historical COT data.'))
       .finally(() => setLoadingHistory(false));
-  }, [selectedAsset]);
+  }, [selectedAsset, historyRange]);
 
   useEffect(() => {
     if (activeTab === 'history') {
       fetchHistory();
     }
-  }, [selectedAsset, activeTab, fetchHistory]);
-
-  const selectedLatest = latestAll.find((r) => r.asset === selectedAsset) ?? null;
+  }, [selectedAsset, activeTab, historyRange, fetchHistory]);
 
   return (
     <DashboardLayout>
@@ -280,6 +294,22 @@ export default function CotIntelligencePage() {
             <p className="text-sm text-zinc-500">
               Commitments of Traders — CFTC positioning data for institutional trend analysis.
             </p>
+            {syncStatus && (
+              <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] font-mono">
+                <span className={`px-2 py-1 rounded-full border ${syncStatus.autoSyncEnabled ? 'border-emerald-500/30 text-emerald-400 bg-emerald-500/10' : 'border-red-500/30 text-red-400 bg-red-500/10'}`}>
+                  Auto Sync: {syncStatus.autoSyncEnabled ? 'Enabled' : 'Disabled'}
+                </span>
+                <span className="px-2 py-1 rounded-full border border-zinc-700 text-zinc-400 bg-zinc-900/40">
+                  Last Sync Date (Lagos): {syncStatus.lastScheduledSyncDate ?? 'Not yet run'}
+                </span>
+                <span className="px-2 py-1 rounded-full border border-zinc-700 text-zinc-400 bg-zinc-900/40">
+                  Next Sync: {fmtDate(syncStatus.nextScheduledSyncIso)} 00:00 (Lagos)
+                </span>
+                <span className="px-2 py-1 rounded-full border border-zinc-700 text-zinc-400 bg-zinc-900/40">
+                  Records: {fmt(syncStatus.cotRecords)}
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Asset Selector */}
@@ -334,55 +364,6 @@ export default function CotIntelligencePage() {
               </div>
             ) : (
               <>
-                {/* Selected asset highlight */}
-                {selectedLatest && (
-                  <div className="rounded-xl border border-zinc-700/60 bg-zinc-900/60 p-5">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <span className="text-xl font-bold font-mono text-zinc-100">{selectedLatest.asset}</span>
-                        <span className={`text-sm font-semibold ${signalColor(selectedLatest.signal)}`}>
-                          {selectedLatest.signal}
-                        </span>
-                        {selectedLatest.extreme && (
-                          <span className="flex items-center gap-1 text-amber-400 text-xs font-mono">
-                            <AlertTriangle className="w-3.5 h-3.5" /> Extreme
-                          </span>
-                        )}
-                      </div>
-                      <span className="text-xs font-mono text-zinc-600">{fmtDate(selectedLatest.date)}</span>
-                    </div>
-
-                    <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
-                      {[
-                        { label: 'Long', value: fmt(selectedLatest.long), color: 'text-zinc-300' },
-                        { label: 'Short', value: fmt(selectedLatest.short), color: 'text-zinc-300' },
-                        { label: 'Net', value: `${selectedLatest.net >= 0 ? '+' : ''}${fmt(selectedLatest.net)}`, color: selectedLatest.net >= 0 ? 'text-emerald-400' : 'text-red-400' },
-                        { label: 'Change', value: `${selectedLatest.change >= 0 ? '+' : ''}${fmt(selectedLatest.change)}`, color: selectedLatest.change >= 0 ? 'text-emerald-400' : 'text-red-400' },
-                        { label: 'Z-Score', value: selectedLatest.zScore.toFixed(2), color: Math.abs(selectedLatest.zScore) > 2 ? 'text-amber-400' : 'text-zinc-300' },
-                        { label: 'Percentile', value: `${fmt(selectedLatest.percentile)}%`, color: 'text-zinc-300' },
-                        { label: 'Velocity', value: fmt(selectedLatest.velocity), color: selectedLatest.velocity >= 0 ? 'text-emerald-400' : 'text-red-400' },
-                        { label: 'Accel.', value: fmt(selectedLatest.acceleration), color: 'text-zinc-300' },
-                      ].map(({ label, value, color }) => (
-                        <div key={label}>
-                          <div className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest mb-1">{label}</div>
-                          <div className={`text-sm font-mono font-semibold ${color}`}>{value}</div>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="flex flex-wrap gap-2 mt-4">
-                      <span className={`text-xs font-mono px-2.5 py-1 rounded-full ${trendBadge(selectedLatest.trend)}`}>{selectedLatest.trend}</span>
-                      <span className={`text-xs font-mono px-2.5 py-1 rounded-full ${phaseBadge(selectedLatest.phase)}`}>{selectedLatest.phase}</span>
-                      <span className={`text-xs font-mono px-2.5 py-1 rounded-full ${riskBadge(selectedLatest.risk)}`}>{selectedLatest.risk} Risk</span>
-                      <span className={`text-xs font-mono px-2.5 py-1 rounded-full ${
-                        selectedLatest.weeklyBias === 'Long'
-                          ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                          : 'bg-red-500/10 text-red-400 border border-red-500/20'
-                      }`}>Bias: {selectedLatest.weeklyBias}</span>
-                    </div>
-                  </div>
-                )}
-
                 {/* All assets grid */}
                 <div>
                   <div className="text-xs font-mono text-zinc-500 uppercase tracking-widest mb-3">All Assets — Latest</div>
@@ -420,7 +401,7 @@ export default function CotIntelligencePage() {
 
         {/* ── HISTORY TAB ── */}
         {activeTab === 'history' && (
-          <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 overflow-hidden">
+          <div className="rounded-xl border border-zinc-800 bg-zinc-900/60">
             <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800">
               <div className="flex items-center gap-2">
                 <BarChart2 className="w-4 h-4 text-zinc-400" />
@@ -429,13 +410,34 @@ export default function CotIntelligencePage() {
                   <span className="text-xs font-mono text-zinc-600">({history.length} records)</span>
                 )}
               </div>
-              <button
-                onClick={fetchHistory}
-                className="text-xs font-mono text-zinc-500 hover:text-zinc-300 flex items-center gap-1.5 transition-colors"
-              >
-                <RefreshCw className={`w-3.5 h-3.5 ${loadingHistory ? 'animate-spin' : ''}`} />
-                Refresh
-              </button>
+              <div className="flex items-center gap-2">
+                <div className="flex gap-1 p-1 bg-zinc-900 border border-zinc-700 rounded-md">
+                  {([
+                    { value: '6m', label: '6M' },
+                    { value: '1y', label: '1Y' },
+                    { value: 'all', label: 'All' },
+                  ] as const).map((opt) => (
+                    <button
+                      key={opt.value}
+                      onClick={() => setHistoryRange(opt.value)}
+                      className={`px-2.5 py-1 text-[10px] font-mono rounded ${
+                        historyRange === opt.value
+                          ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                          : 'text-zinc-500 hover:text-zinc-300'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  onClick={fetchHistory}
+                  className="text-xs font-mono text-zinc-500 hover:text-zinc-300 flex items-center gap-1.5 transition-colors"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${loadingHistory ? 'animate-spin' : ''}`} />
+                  Refresh
+                </button>
+              </div>
             </div>
 
             {loadingHistory ? (
