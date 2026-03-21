@@ -95,6 +95,16 @@ export default function AdminDashboard() {
     if (tab === 'analytics') void loadAnalytics();
   }, [tab]);
 
+  useEffect(() => {
+    if (tab !== 'pricing') return;
+
+    const interval = setInterval(() => {
+      void loadPricing();
+    }, 60_000);
+
+    return () => clearInterval(interval);
+  }, [tab]);
+
   const toggleLimits = async () => {
     const next = !limitsEnabled;
     setLimitsEnabled(next);
@@ -403,7 +413,7 @@ export default function AdminDashboard() {
               <div className="p-6 space-y-8">
                 <div className="grid gap-4 md:grid-cols-3">
                   <MetricCard icon={<CreditCard />} label="USD/NGN Rate" value={exchangeRate ? exchangeRate.usdToNgn.toFixed(2) : '-'} trend={exchangeRate?.source || 'No rate source'} />
-                  <MetricCard icon={<Activity />} label="Rate Status" value={exchangeRate?.stale ? 'Cached' : 'Live'} trend={exchangeRate?.fetchedAt ? new Date(exchangeRate.fetchedAt).toLocaleString() : 'No fetch timestamp'} />
+                  <MetricCard icon={<Activity />} label="Rate Status" value={exchangeRate ? (exchangeRate.stale ? 'Stale' : 'Live') : '-'} trend={exchangeRate?.fetchedAt ? new Date(exchangeRate.fetchedAt).toLocaleString() : 'No fetch timestamp'} />
                   <MetricCard icon={<Shield />} label="Pricing Model" value="USD Master" trend="NGN derived automatically" />
                 </div>
 

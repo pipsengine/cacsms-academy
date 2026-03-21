@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma';
+import { prisma } from '../prisma.ts';
 import {
   defaultPricingMatrix,
   type BillingCycle,
@@ -6,11 +6,12 @@ import {
   type PricingDetail,
   type PricingMatrix,
   type Region,
-} from '@/lib/pricing/catalog';
+} from './catalog.ts';
 
 const USD_BASE_PRICING_KEY = 'pricingUsdBaseMatrix';
 const USD_NGN_RATE_KEY = 'usdNgnExchangeRate';
 const EXCHANGE_RATE_PROVIDER = 'openexchangerates';
+const OPEN_ER_API_PROVIDER = 'open-er-api';
 const MANUAL_EXCHANGE_RATE_PROVIDER = 'manual';
 const EXCHANGE_RATE_TTL_MS = 6 * 60 * 60 * 1000;
 
@@ -138,10 +139,7 @@ async function readCachedExchangeRate(): Promise<ExchangeRateSnapshot> {
   }
 }
 
-async function fetchLiveUsdToNgnRate(): Promise<ExchangeRateSnapshot | null> {
-  const appId = process.env.OPEN_EXCHANGE_RATES_APP_ID;
-  if (!appId) return null;
-
+async function fetchFromOpenExchangeRates(appId: string): Promise<ExchangeRateSnapshot> {
   const url = new URL('https://openexchangerates.org/api/latest.json');
   url.searchParams.set('app_id', appId);
   url.searchParams.set('symbols', 'NGN');
@@ -170,6 +168,52 @@ async function fetchLiveUsdToNgnRate(): Promise<ExchangeRateSnapshot | null> {
     source: EXCHANGE_RATE_PROVIDER,
     stale: false,
   };
+}
+
+async function fetchFromOpenErApi(): Promise<ExchangeRateSnapshot> {
+  const response = await fetch('https://open.er-api.com/v6/latest/USD', {
+    method: 'GET',
+    next: { revalidate: 3600 },
+  });
+
+  if (!response.ok) {
+    throw new Error(`open.er-api request failed with status ${response.status}`);
+  }
+
+  const payload = await response.json();
+  const usdToNgn = Number(payload?.rates?.NGN);
+  const timestamp = typeof payload?.time_last_update_unix === 'number'
+    ? new Date(payload.time_last_update_unix * 1000).toISOString()
+    : new Date().toISOString();
+
+  if (!Number.isFinite(usdToNgn) || usdToNgn <= 0) {
+    throw new Error('Invalid open.er-api USD/NGN rate payload');
+  }
+
+  return {
+    usdToNgn,
+    fetchedAt: timestamp,
+    source: OPEN_ER_API_PROVIDER,
+    stale: false,
+  };
+}
+
+async function fetchLiveUsdToNgnRate(): Promise<ExchangeRateSnapshot | null> {
+  const appId = process.env.OPEN_EXCHANGE_RATES_APP_ID;
+
+  if (appId) {
+    try {
+      return await fetchFromOpenExchangeRates(appId);
+    } catch {
+      // Continue to no-key backup provider.
+    }
+  }
+
+  try {
+    return await fetchFromOpenErApi();
+  } catch {
+    return null;
+  }
 }
 
 async function persistExchangeRate(snapshot: ExchangeRateSnapshot) {

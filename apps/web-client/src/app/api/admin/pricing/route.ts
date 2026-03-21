@@ -16,9 +16,10 @@ export async function GET() {
   const role = (session?.user as any)?.role as string | undefined;
   if (!isAdmin(role)) return NextResponse.json({ error: 'Forbidden' }, { status: role ? 403 : 401 });
 
-  const refresh = isSuperAdmin(role);
   const { pricingMatrix, exchangeRate, usdBasePricing } = await getPricingMatrix({
-    forceRefreshRate: refresh,
+    // Always attempt a live refresh for admin pricing views so stale fallback values
+    // do not linger in the dashboard when providers are available.
+    forceRefreshRate: true,
   });
   return NextResponse.json({ pricingMatrix, exchangeRate, usdBasePricing });
 }
