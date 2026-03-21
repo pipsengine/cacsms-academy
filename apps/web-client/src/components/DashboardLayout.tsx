@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useMemo, useState, useEffect } from 'react';
-import { Activity, Clock, Cpu, Globe, LayoutDashboard, Settings, ShieldAlert, Zap, Target, Shield, Lightbulb, BookOpen, LineChart } from 'lucide-react';
+import { Activity, BarChart2, Clock, Cpu, Globe, LayoutDashboard, Settings, ShieldAlert, Zap, Target, Shield, Lightbulb, BookOpen, LineChart } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
@@ -54,6 +54,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       case '/daily-tips': return 'Daily Tips';
       case '/our-courses': return 'Our Courses';
       case '/weekly-analysis': return 'Weekly Analysis';
+      case '/cot-intelligence': return 'COT Intelligence';
       case '/profile': return 'Profile';
       case '/alert-history': return 'Alert History';
       case '/configuration': return 'Configuration';
@@ -114,6 +115,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <NavItem href="/daily-tips" icon={<Lightbulb />} label="Daily Tips" active={effectivePathname === '/daily-tips'} />
           <NavItem href="/our-courses" icon={<BookOpen />} label="Our Courses" active={effectivePathname === '/our-courses'} />
           <NavItem href="/weekly-analysis" icon={<LineChart />} label="Weekly Analysis" active={effectivePathname === '/weekly-analysis'} />
+          <NavItem href="/cot-intelligence" icon={<BarChart2 />} label="COT Intelligence" active={effectivePathname === '/cot-intelligence'} />
           
           <div className="mt-8 mb-4 px-2 text-xs font-mono text-zinc-500 uppercase tracking-widest">System</div>
           <NavItem href="/alert-history" icon={<Clock />} label="Alert History" active={effectivePathname === '/alert-history'} />

@@ -19,6 +19,7 @@ const dashboardPrefixes = [
   '/weekly-analysis',
   '/profile',
   '/ai-prompts',
+  '/cot-intelligence',
 ];
 
 function isDashboardRoute(pathname: string) {

@@ -405,3 +405,30 @@ model JournalEntry {
   @@index([userId, createdAt])
   @@index([tradeExecutionId])
 }
+
+model CotData {
+  id           String   @id @default(cuid())
+  date         DateTime
+  asset        String
+  long         Float
+  short        Float
+  net          Float
+  change       Float    @default(0)
+  zScore       Float    @default(0)
+  percentile   Float    @default(0)
+  velocity     Float    @default(0)
+  acceleration Float    @default(0)
+  trend        String
+  extreme      Boolean  @default(false)
+  phase        String
+  signal       String
+  confidence   Float    @default(0)
+  risk         String
+  weeklyBias   String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([asset, date])
+  @@index([asset, date(sort: Desc)])
+  @@index([date])
+}
