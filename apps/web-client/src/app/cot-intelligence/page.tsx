@@ -217,6 +217,77 @@ function HistoryTable({ records }: { records: CotRecord[] }) {
   );
 }
 
+// ─── Net Position Chart ─────────────────────────────────────────────────────
+
+function NetPositionChart({ records }: { records: CotRecord[] }) {
+  if (records.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 text-zinc-600 gap-3">
+        <Activity className="w-10 h-10 opacity-50" />
+        <p className="text-sm font-mono">No historical data available for this chart.</p>
+      </div>
+    );
+  }
+
+  const sorted = [...records].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  const nets = sorted.map(r => r.net);
+  const min = Math.min(...nets);
+  const max = Math.max(...nets);
+  const range = max - min || 1;
+  const padding = range * 0.1;
+
+  return (
+    <div className="space-y-4">
+      {/* Chart Container */}
+      <div className="rounded-xl border border-zinc-200 bg-white p-6">
+        <div className="flex items-end justify-between gap-1" style={{ height: '300px' }}>
+          {sorted.map((record, idx) => {
+            const normalized = (record.net - (min - padding)) / (range + padding * 2);
+            const height = Math.max(5, normalized * 290);
+            const isPositive = record.net >= 0;
+            const color = isPositive ? 'bg-emerald-500' : 'bg-red-500';
+            
+            return (
+              <div key={`${record.asset}-${record.date}`} className="flex-1 flex flex-col items-center gap-2 group relative">
+                <div 
+                  className={`w-full ${color} rounded-t opacity-70 hover:opacity-100 transition-all cursor-pointer group-hover:shadow-lg`}
+                  style={{ height: `${height}px` }}
+                  title={`${fmtDate(record.date)}: ${fmt(record.net)}`}
+                />
+                {idx % Math.ceil(sorted.length / 8) === 0 && (
+                  <div className="text-[10px] font-mono text-zinc-500 whitespace-nowrap">{fmtDate(record.date).split(' ')[0]}</div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Statistics */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="rounded-lg border border-zinc-200 bg-slate-50 p-3 text-center">
+          <div className="text-[10px] font-mono text-zinc-500 mb-1">Highest</div>
+          <div className="text-sm font-mono font-semibold text-emerald-600">{fmt(max)}</div>
+        </div>
+        <div className="rounded-lg border border-zinc-200 bg-slate-50 p-3 text-center">
+          <div className="text-[10px] font-mono text-zinc-500 mb-1">Lowest</div>
+          <div className="text-sm font-mono font-semibold text-red-600">{fmt(min)}</div>
+        </div>
+        <div className="rounded-lg border border-zinc-200 bg-slate-50 p-3 text-center">
+          <div className="text-[10px] font-mono text-zinc-500 mb-1">Latest</div>
+          <div className={`text-sm font-mono font-semibold ${sorted[sorted.length - 1]?.net >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+            {fmt(sorted[sorted.length - 1]?.net || 0)}
+          </div>
+        </div>
+        <div className="rounded-lg border border-zinc-200 bg-slate-50 p-3 text-center">
+          <div className="text-[10px] font-mono text-zinc-500 mb-1">Range</div>
+          <div className="text-sm font-mono font-semibold text-zinc-700">{fmt(range)}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Page Component ──────────────────────────────────────────────────────────
 
 export default function CotIntelligencePage() {
@@ -234,7 +305,7 @@ export default function CotIntelligencePage() {
   const [historyRange, setHistoryRange] = useState<HistoryRange>('1y');
   const [errorLatest, setErrorLatest] = useState<string | null>(null);
   const [errorHistory, setErrorHistory] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'history'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'history' | 'graphical'>('overview');
 
   // Fetch latest all assets on mount
   useEffect(() => {
@@ -276,7 +347,7 @@ export default function CotIntelligencePage() {
   }, [selectedAsset, historyRange]);
 
   useEffect(() => {
-    if (activeTab === 'history') {
+    if (activeTab === 'history' || activeTab === 'graphical') {
       fetchHistory();
     }
   }, [selectedAsset, activeTab, historyRange, fetchHistory]);
@@ -285,62 +356,60 @@ export default function CotIntelligencePage() {
     <DashboardLayout>
       <div className="space-y-6">
         {/* Page Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <BarChart2 className="w-5 h-5 text-emerald-500" />
-              <h1 className="text-lg font-semibold text-zinc-900">COT Intelligence</h1>
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <BarChart2 className="w-5 h-5 text-emerald-500" />
+            <h1 className="text-lg font-semibold text-zinc-900">COT Intelligence</h1>
+          </div>
+          <p className="text-sm text-zinc-500">
+            Commitments of Traders — CFTC positioning data for institutional trend analysis.
+          </p>
+          {syncStatus && (
+            <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] font-mono">
+              <span className={`px-2 py-1 rounded-full border ${syncStatus.autoSyncEnabled ? 'border-emerald-500/30 text-emerald-400 bg-emerald-500/10' : 'border-red-500/30 text-red-400 bg-red-500/10'}`}>
+                Auto Sync: {syncStatus.autoSyncEnabled ? 'Enabled' : 'Disabled'}
+              </span>
+              <span className="px-2 py-1 rounded-full border border-zinc-300 text-zinc-400 bg-slate-50">
+                Last Sync Date (Lagos): {syncStatus.lastScheduledSyncDate ?? 'Not yet run'}
+              </span>
+              <span className="px-2 py-1 rounded-full border border-zinc-300 text-zinc-400 bg-slate-50">
+                Next Sync: {fmtDate(syncStatus.nextScheduledSyncIso)} 00:00 (Lagos)
+              </span>
+              <span className="px-2 py-1 rounded-full border border-zinc-300 text-zinc-400 bg-slate-50">
+                Records: {fmt(syncStatus.cotRecords)}
+              </span>
             </div>
-            <p className="text-sm text-zinc-500">
-              Commitments of Traders — CFTC positioning data for institutional trend analysis.
-            </p>
-            {syncStatus && (
-              <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] font-mono">
-                <span className={`px-2 py-1 rounded-full border ${syncStatus.autoSyncEnabled ? 'border-emerald-500/30 text-emerald-400 bg-emerald-500/10' : 'border-red-500/30 text-red-400 bg-red-500/10'}`}>
-                  Auto Sync: {syncStatus.autoSyncEnabled ? 'Enabled' : 'Disabled'}
-                </span>
-                <span className="px-2 py-1 rounded-full border border-zinc-300 text-zinc-400 bg-slate-50">
-                  Last Sync Date (Lagos): {syncStatus.lastScheduledSyncDate ?? 'Not yet run'}
-                </span>
-                <span className="px-2 py-1 rounded-full border border-zinc-300 text-zinc-400 bg-slate-50">
-                  Next Sync: {fmtDate(syncStatus.nextScheduledSyncIso)} 00:00 (Lagos)
-                </span>
-                <span className="px-2 py-1 rounded-full border border-zinc-300 text-zinc-400 bg-slate-50">
-                  Records: {fmt(syncStatus.cotRecords)}
-                </span>
-              </div>
-            )}
+          )}
+        </div>
+
+        {/* Tabs & Currency Selector */}
+        <div className="flex items-center gap-3">
+          <div className="flex gap-1 p-1 bg-white border border-zinc-200 rounded-lg w-fit">
+            {(['overview', 'history', 'graphical'] as const).map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-4 py-1.5 text-xs font-mono rounded-md transition-colors capitalize ${
+                  activeTab === tab
+                    ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                    : 'text-zinc-500 hover:text-zinc-600'
+                }`}
+              >
+                {tab === 'overview' ? 'Overview' : tab === 'history' ? `${selectedAsset} History` : 'Graphical Representation'}
+              </button>
+            ))}
           </div>
 
           {/* Asset Selector */}
-          <div className="flex items-center gap-3">
-            <select
-              value={selectedAsset}
-              onChange={(e) => setSelectedAsset(e.target.value as CotAsset)}
-              className="bg-white border border-zinc-300 text-zinc-700 text-sm font-mono rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-500/50 cursor-pointer"
-            >
-              {ALL_ASSETS.map((a) => (
-                <option key={a} value={a}>{a}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        {/* Tabs */}
-        <div className="flex gap-1 p-1 bg-white border border-zinc-200 rounded-lg w-fit">
-          {(['overview', 'history'] as const).map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-4 py-1.5 text-xs font-mono rounded-md transition-colors capitalize ${
-                activeTab === tab
-                  ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                  : 'text-zinc-500 hover:text-zinc-600'
-              }`}
-            >
-              {tab === 'overview' ? 'Overview' : `${selectedAsset} History`}
-            </button>
-          ))}
+          <select
+            value={selectedAsset}
+            onChange={(e) => setSelectedAsset(e.target.value as CotAsset)}
+            className="bg-white border border-zinc-300 text-zinc-700 text-sm font-mono rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-emerald-500/50 cursor-pointer"
+          >
+            {ALL_ASSETS.map((a) => (
+              <option key={a} value={a}>{a}</option>
+            ))}
+          </select>
         </div>
 
         {/* ── OVERVIEW TAB ── */}
@@ -450,6 +519,54 @@ export default function CotIntelligencePage() {
             ) : (
               <HistoryTable records={history} />
             )}
+          </div>
+        )}
+
+        {/* ── GRAPHICAL REPRESENTATION TAB ── */}
+        {activeTab === 'graphical' && (
+          <div className="space-y-6">
+            <div className="rounded-xl border border-zinc-200 bg-white p-6">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <div className="text-sm font-mono text-zinc-600 mb-1">
+                    <span className="font-semibold">{selectedAsset}</span> — Net Position Trend Analysis
+                  </div>
+                  <div className="text-xs text-zinc-500 font-mono">
+                    Visualizing net long/short positions over time ({historyRange === '6m' ? '6 Months' : historyRange === '1y' ? '1 Year' : 'All Time'})
+                  </div>
+                </div>
+                <div className="flex items-center gap-1 p-1 bg-white border border-zinc-300 rounded-md">
+                  {([
+                    { value: '6m', label: '6M' },
+                    { value: '1y', label: '1Y' },
+                    { value: 'all', label: 'All' },
+                  ] as const).map((opt) => (
+                    <button
+                      key={opt.value}
+                      onClick={() => setHistoryRange(opt.value)}
+                      className={`px-2.5 py-1 text-[10px] font-mono rounded ${
+                        historyRange === opt.value
+                          ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                          : 'text-zinc-500 hover:text-zinc-600'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {loadingHistory ? (
+                <div className="flex items-center gap-3 p-6 text-zinc-500">
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <span className="text-sm font-mono">Loading {selectedAsset} chart data…</span>
+                </div>
+              ) : errorHistory ? (
+                <div className="text-sm text-red-400">{errorHistory}</div>
+              ) : (
+                <NetPositionChart records={history} />
+              )}
+            </div>
           </div>
         )}
 
