@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
@@ -53,18 +53,18 @@ export default function ChartModal({ isOpen, onClose, pair, timeframe, type }: C
   const currentPrice = data[data.length - 1]?.price;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-zinc-950/80 backdrop-blur-sm">
-      <div className="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-4xl shadow-2xl overflow-hidden flex flex-col">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-800 bg-zinc-900/50">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-50 backdrop-blur-sm">
+      <div className="bg-white border border-zinc-200 rounded-2xl w-full max-w-4xl shadow-2xl overflow-hidden flex flex-col">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-200 bg-white">
           <div>
-            <h2 className="text-xl font-bold text-zinc-100 flex items-center gap-3">
-              {pair} <span className="text-sm font-mono text-zinc-500 bg-zinc-800 px-2 py-0.5 rounded">{timeframe}</span>
+            <h2 className="text-xl font-bold text-zinc-900 flex items-center gap-3">
+              {pair} <span className="text-sm font-mono text-zinc-500 bg-zinc-200 px-2 py-0.5 rounded">{timeframe}</span>
             </h2>
             <p className="text-sm text-zinc-400 mt-1">Structural Analysis: {type}</p>
           </div>
           <button 
             onClick={onClose}
-            className="p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors"
+            className="p-2 text-zinc-400 hover:text-white hover:bg-zinc-200 rounded-lg transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -113,11 +113,11 @@ export default function ChartModal({ isOpen, onClose, pair, timeframe, type }: C
           </ResponsiveContainer>
         </div>
 
-        <div className="bg-zinc-950 p-4 border-t border-zinc-800 flex justify-between items-center text-sm">
+        <div className="bg-white p-4 border-t border-zinc-200 flex justify-between items-center text-sm">
           <div className="flex gap-6">
             <div>
               <span className="text-zinc-500">Current Price:</span>
-              <span className="ml-2 font-mono text-zinc-200">{currentPrice?.toFixed(pair.includes('JPY') ? 2 : 4)}</span>
+              <span className="ml-2 font-mono text-zinc-700">{currentPrice?.toFixed(pair.includes('JPY') ? 2 : 4)}</span>
             </div>
             <div>
               <span className="text-zinc-500">Volatility:</span>

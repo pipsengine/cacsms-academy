@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { ArrowDownRight, ArrowUpRight, Minus, LineChart } from 'lucide-react';
@@ -34,9 +34,9 @@ export default function ActiveChannelScanner() {
 
   return (
     <>
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden flex flex-col h-full">
-        <div className="px-4 py-3 border-b border-zinc-800 flex items-center justify-between">
-          <h3 className="text-sm font-medium text-zinc-200 uppercase tracking-wider">Active Channel Scanner</h3>
+      <div className="rounded-xl border border-zinc-200 bg-white overflow-hidden flex flex-col h-full">
+        <div className="px-4 py-3 border-b border-zinc-200 flex items-center justify-between">
+          <h3 className="text-sm font-medium text-zinc-700 uppercase tracking-wider">Active Channel Scanner</h3>
           <div className="flex items-center gap-2">
             <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`} />
             <span className="text-xs font-mono text-zinc-500">{isConnected ? 'SCANNING 65 CHARTS' : 'DISCONNECTED'}</span>
@@ -45,7 +45,7 @@ export default function ActiveChannelScanner() {
         <div className="flex-1 min-h-0 overflow-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-zinc-800 text-xs font-mono text-zinc-500 bg-zinc-900/80">
+              <tr className="border-b border-zinc-200 text-xs font-mono text-zinc-500 bg-slate-50">
                 <th className="px-4 py-3 font-medium">PAIR</th>
                 <th className="px-4 py-3 font-medium">TF</th>
                 <th className="px-4 py-3 font-medium">TYPE</th>
@@ -66,10 +66,10 @@ export default function ActiveChannelScanner() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="border-b border-zinc-800/50 hover:bg-zinc-800/30 transition-colors group"
+                    className="border-b border-zinc-200 hover:bg-zinc-100 transition-colors group"
                   >
                     <td className="px-4 py-3">
-                      <div className="font-bold text-zinc-200">{channel.pair}</div>
+                      <div className="font-bold text-zinc-700">{channel.pair}</div>
                       {prices[channel.pair] !== undefined && (
                         <div className="text-xs font-mono text-emerald-400 mt-0.5 tabular-nums">
                           {formatPrice(channel.pair, prices[channel.pair])}
@@ -80,7 +80,7 @@ export default function ActiveChannelScanner() {
                       </div>
                     </td>
                     <td className="px-4 py-3 font-mono text-zinc-400">{channel.tf}</td>
-                    <td className="px-4 py-3 text-zinc-300">
+                    <td className="px-4 py-3 text-zinc-600">
                       <div>{channel.type}</div>
                       <div className={`mt-1 text-[10px] font-mono ${channel.stage === 'Confirmed' ? 'text-emerald-400' : 'text-amber-400'}`}>
                         {channel.stage} · W {formatPercent(channel.widthPct, 2)}%
@@ -89,7 +89,7 @@ export default function ActiveChannelScanner() {
                     <td className="px-4 py-3 font-mono text-zinc-400">{channel.touches}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
-                        <div className="w-12 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                        <div className="w-12 h-1.5 bg-zinc-200 rounded-full overflow-hidden">
                           <div 
                             className={`h-full rounded-full transition-all duration-500 ${channel.score > 80 ? 'bg-emerald-500' : channel.score > 60 ? 'bg-amber-500' : 'bg-zinc-500'}`}
                             style={{ width: `${channel.score}%` }}
@@ -109,7 +109,7 @@ export default function ActiveChannelScanner() {
                         {channel.bias}
                       </div>
                     </td>
-                    <td className="px-4 py-3 font-mono text-zinc-300 transition-all duration-500">
+                    <td className="px-4 py-3 font-mono text-zinc-600 transition-all duration-500">
                       <div>{channel.prob}%</div>
                       <div className="mt-1 text-[10px] text-zinc-500">
                         C {Number.isFinite(channel.containmentPct) ? channel.containmentPct : '--'}%
@@ -118,7 +118,7 @@ export default function ActiveChannelScanner() {
                     <td className="px-4 py-3 text-right">
                       <button 
                         onClick={() => setSelectedChart({ pair: channel.pair, tf: channel.tf, type: channel.type })}
-                        className="p-1.5 bg-zinc-800 hover:bg-emerald-500/20 text-zinc-400 hover:text-emerald-400 rounded transition-colors opacity-0 group-hover:opacity-100"
+                        className="p-1.5 bg-zinc-200 hover:bg-emerald-500/20 text-zinc-400 hover:text-emerald-400 rounded transition-colors opacity-0 group-hover:opacity-100"
                         title="View Chart"
                       >
                         <LineChart className="w-4 h-4" />

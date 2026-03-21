@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -67,14 +67,14 @@ function phaseBadge(phase: string) {
 function SummaryCard({ record }: { record: CotRecord }) {
   const isBullish = record.trend === 'Bullish';
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-4 space-y-3">
+    <div className="rounded-xl border border-zinc-200 bg-white p-4 space-y-3">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           {isBullish
             ? <TrendingUp className="w-4 h-4 text-emerald-400" />
             : <TrendingDown className="w-4 h-4 text-red-400" />}
-          <span className="text-sm font-semibold text-zinc-100">{record.asset}</span>
+          <span className="text-sm font-semibold text-zinc-900">{record.asset}</span>
         </div>
         <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full ${trendBadge(record.trend)}`}>
           {record.trend}
@@ -97,13 +97,13 @@ function SummaryCard({ record }: { record: CotRecord }) {
         </div>
         <div>
           <div className="text-zinc-500 mb-0.5">Z-Score</div>
-          <div className={Math.abs(record.zScore) > 2 ? 'text-amber-400' : 'text-zinc-300'}>
+          <div className={Math.abs(record.zScore) > 2 ? 'text-amber-400' : 'text-zinc-600'}>
             {record.zScore.toFixed(2)}
           </div>
         </div>
         <div>
           <div className="text-zinc-500 mb-0.5">Pctile</div>
-          <div className="text-zinc-300">{fmt(record.percentile)}%</div>
+          <div className="text-zinc-600">{fmt(record.percentile)}%</div>
         </div>
       </div>
 
@@ -136,9 +136,9 @@ function SummaryCard({ record }: { record: CotRecord }) {
       <div>
         <div className="flex justify-between text-[10px] font-mono text-zinc-500 mb-1">
           <span>Confidence</span>
-          <span className="text-zinc-300">{fmt(record.confidence)}%</span>
+          <span className="text-zinc-600">{fmt(record.confidence)}%</span>
         </div>
-        <div className="h-1 bg-zinc-800 rounded-full overflow-hidden">
+        <div className="h-1 bg-zinc-200 rounded-full overflow-hidden">
           <div
             className="h-full bg-emerald-500 rounded-full"
             style={{ width: `${record.confidence}%` }}
@@ -166,9 +166,9 @@ function HistoryTable({ records }: { records: CotRecord[] }) {
 
   return (
     <div className="overflow-auto max-h-[560px]">
-      <table className="w-full text-xs font-mono text-zinc-300 border-collapse">
-        <thead className="sticky top-0 z-10 bg-zinc-950">
-          <tr className="border-b border-zinc-800">
+      <table className="w-full text-xs font-mono text-zinc-600 border-collapse">
+        <thead className="sticky top-0 z-10 bg-white">
+          <tr className="border-b border-zinc-200">
             {['Date', 'Long', 'Short', 'Net', 'Change', 'Z-Score', 'Pctile', 'Signal', 'Phase', 'Conf%'].map((h) => (
               <th key={h} className="text-left py-3 px-3 text-[10px] uppercase tracking-widest text-zinc-500 whitespace-nowrap">
                 {h}
@@ -180,30 +180,30 @@ function HistoryTable({ records }: { records: CotRecord[] }) {
           {records.map((r, i) => (
             <tr
               key={`${r.asset}-${r.date}`}
-              className={`border-b border-zinc-800/50 hover:bg-zinc-800/30 transition-colors ${
-                i === 0 ? 'bg-zinc-900/40' : ''
+              className={`border-b border-zinc-200 hover:bg-zinc-100 transition-colors ${
+                i === 0 ? 'bg-slate-50' : ''
               }`}
             >
               <td className="py-2.5 px-3 text-zinc-400 whitespace-nowrap">{fmtDate(r.date)}</td>
-              <td className="py-2.5 px-3 text-zinc-300">{fmt(r.long)}</td>
-              <td className="py-2.5 px-3 text-zinc-300">{fmt(r.short)}</td>
+              <td className="py-2.5 px-3 text-zinc-600">{fmt(r.long)}</td>
+              <td className="py-2.5 px-3 text-zinc-600">{fmt(r.short)}</td>
               <td className={`py-2.5 px-3 font-semibold ${r.net >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
                 {r.net >= 0 ? '+' : ''}{fmt(r.net)}
               </td>
               <td className={`py-2.5 px-3 ${r.change >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
                 {r.change >= 0 ? '+' : ''}{fmt(r.change)}
               </td>
-              <td className={`py-2.5 px-3 ${Math.abs(r.zScore) > 2 ? 'text-amber-400' : 'text-zinc-300'}`}>
+              <td className={`py-2.5 px-3 ${Math.abs(r.zScore) > 2 ? 'text-amber-400' : 'text-zinc-600'}`}>
                 {r.zScore.toFixed(2)}
               </td>
-              <td className="py-2.5 px-3 text-zinc-300">{fmt(r.percentile)}%</td>
+              <td className="py-2.5 px-3 text-zinc-600">{fmt(r.percentile)}%</td>
               <td className={`py-2.5 px-3 whitespace-nowrap ${signalColor(r.signal)}`}>{r.signal}</td>
               <td className="py-2.5 px-3">
                 <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${phaseBadge(r.phase)}`}>{r.phase}</span>
               </td>
               <td className="py-2.5 px-3">
                 <div className="flex items-center gap-1.5">
-                  <div className="h-1.5 w-16 bg-zinc-800 rounded-full overflow-hidden">
+                  <div className="h-1.5 w-16 bg-zinc-200 rounded-full overflow-hidden">
                     <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${r.confidence}%` }} />
                   </div>
                   <span className="text-zinc-400">{fmt(r.confidence)}</span>
@@ -289,7 +289,7 @@ export default function CotIntelligencePage() {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <BarChart2 className="w-5 h-5 text-emerald-500" />
-              <h1 className="text-lg font-semibold text-zinc-100">COT Intelligence</h1>
+              <h1 className="text-lg font-semibold text-zinc-900">COT Intelligence</h1>
             </div>
             <p className="text-sm text-zinc-500">
               Commitments of Traders — CFTC positioning data for institutional trend analysis.
@@ -299,13 +299,13 @@ export default function CotIntelligencePage() {
                 <span className={`px-2 py-1 rounded-full border ${syncStatus.autoSyncEnabled ? 'border-emerald-500/30 text-emerald-400 bg-emerald-500/10' : 'border-red-500/30 text-red-400 bg-red-500/10'}`}>
                   Auto Sync: {syncStatus.autoSyncEnabled ? 'Enabled' : 'Disabled'}
                 </span>
-                <span className="px-2 py-1 rounded-full border border-zinc-700 text-zinc-400 bg-zinc-900/40">
+                <span className="px-2 py-1 rounded-full border border-zinc-300 text-zinc-400 bg-slate-50">
                   Last Sync Date (Lagos): {syncStatus.lastScheduledSyncDate ?? 'Not yet run'}
                 </span>
-                <span className="px-2 py-1 rounded-full border border-zinc-700 text-zinc-400 bg-zinc-900/40">
+                <span className="px-2 py-1 rounded-full border border-zinc-300 text-zinc-400 bg-slate-50">
                   Next Sync: {fmtDate(syncStatus.nextScheduledSyncIso)} 00:00 (Lagos)
                 </span>
-                <span className="px-2 py-1 rounded-full border border-zinc-700 text-zinc-400 bg-zinc-900/40">
+                <span className="px-2 py-1 rounded-full border border-zinc-300 text-zinc-400 bg-slate-50">
                   Records: {fmt(syncStatus.cotRecords)}
                 </span>
               </div>
@@ -317,7 +317,7 @@ export default function CotIntelligencePage() {
             <select
               value={selectedAsset}
               onChange={(e) => setSelectedAsset(e.target.value as CotAsset)}
-              className="bg-zinc-900 border border-zinc-700 text-zinc-200 text-sm font-mono rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-500/50 cursor-pointer"
+              className="bg-white border border-zinc-300 text-zinc-700 text-sm font-mono rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-500/50 cursor-pointer"
             >
               {ALL_ASSETS.map((a) => (
                 <option key={a} value={a}>{a}</option>
@@ -327,7 +327,7 @@ export default function CotIntelligencePage() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 p-1 bg-zinc-900/60 border border-zinc-800 rounded-lg w-fit">
+        <div className="flex gap-1 p-1 bg-white border border-zinc-200 rounded-lg w-fit">
           {(['overview', 'history'] as const).map((tab) => (
             <button
               key={tab}
@@ -335,7 +335,7 @@ export default function CotIntelligencePage() {
               className={`px-4 py-1.5 text-xs font-mono rounded-md transition-colors capitalize ${
                 activeTab === tab
                   ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                  : 'text-zinc-500 hover:text-zinc-300'
+                  : 'text-zinc-500 hover:text-zinc-600'
               }`}
             >
               {tab === 'overview' ? 'Overview' : `${selectedAsset} History`}
@@ -348,14 +348,14 @@ export default function CotIntelligencePage() {
           <div className="space-y-6">
             {/* Selected asset detail */}
             {loadingLatest ? (
-              <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-6 flex items-center gap-3 text-zinc-500">
+              <div className="rounded-xl border border-zinc-200 bg-white p-6 flex items-center gap-3 text-zinc-500">
                 <RefreshCw className="w-4 h-4 animate-spin" />
                 <span className="text-sm font-mono">Loading latest COT data…</span>
               </div>
             ) : errorLatest ? (
               <div className="rounded-xl border border-red-900/50 bg-red-950/20 p-4 text-sm text-red-400">{errorLatest}</div>
             ) : latestAll.length === 0 ? (
-              <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-8 text-center space-y-3">
+              <div className="rounded-xl border border-zinc-200 bg-white p-8 text-center space-y-3">
                 <Activity className="w-10 h-10 text-zinc-600 mx-auto" />
                 <p className="text-sm text-zinc-500 font-mono">No COT data available yet.</p>
                 <p className="text-xs text-zinc-600">
@@ -374,7 +374,7 @@ export default function CotIntelligencePage() {
                         <div
                           key={asset}
                           onClick={() => setSelectedAsset(asset)}
-                          className="rounded-xl border border-zinc-800 bg-zinc-900/30 p-4 cursor-pointer hover:border-zinc-700 transition-colors"
+                          className="rounded-xl border border-zinc-200 bg-slate-50 p-4 cursor-pointer hover:border-zinc-300 transition-colors"
                         >
                           <div className="text-sm font-mono font-semibold text-zinc-400">{asset}</div>
                           <div className="text-xs text-zinc-600 mt-1 font-mono">No data</div>
@@ -401,17 +401,17 @@ export default function CotIntelligencePage() {
 
         {/* ── HISTORY TAB ── */}
         {activeTab === 'history' && (
-          <div className="rounded-xl border border-zinc-800 bg-zinc-900/60">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800">
+          <div className="rounded-xl border border-zinc-200 bg-white">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-200">
               <div className="flex items-center gap-2">
                 <BarChart2 className="w-4 h-4 text-zinc-400" />
-                <span className="text-sm font-mono text-zinc-300">{selectedAsset} — Full History</span>
+                <span className="text-sm font-mono text-zinc-600">{selectedAsset} — Full History</span>
                 {history.length > 0 && (
                   <span className="text-xs font-mono text-zinc-600">({history.length} records)</span>
                 )}
               </div>
               <div className="flex items-center gap-2">
-                <div className="flex gap-1 p-1 bg-zinc-900 border border-zinc-700 rounded-md">
+                <div className="flex gap-1 p-1 bg-white border border-zinc-300 rounded-md">
                   {([
                     { value: '6m', label: '6M' },
                     { value: '1y', label: '1Y' },
@@ -423,7 +423,7 @@ export default function CotIntelligencePage() {
                       className={`px-2.5 py-1 text-[10px] font-mono rounded ${
                         historyRange === opt.value
                           ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                          : 'text-zinc-500 hover:text-zinc-300'
+                          : 'text-zinc-500 hover:text-zinc-600'
                       }`}
                     >
                       {opt.label}
@@ -432,7 +432,7 @@ export default function CotIntelligencePage() {
                 </div>
                 <button
                   onClick={fetchHistory}
-                  className="text-xs font-mono text-zinc-500 hover:text-zinc-300 flex items-center gap-1.5 transition-colors"
+                  className="text-xs font-mono text-zinc-500 hover:text-zinc-600 flex items-center gap-1.5 transition-colors"
                 >
                   <RefreshCw className={`w-3.5 h-3.5 ${loadingHistory ? 'animate-spin' : ''}`} />
                   Refresh

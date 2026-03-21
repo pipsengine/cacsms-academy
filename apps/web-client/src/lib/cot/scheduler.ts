@@ -1,5 +1,5 @@
-import { prisma } from '@/lib/prisma';
-import { runIngestion } from '@/lib/cot/ingestor';
+import { prisma } from '../prisma.ts';
+import { runIngestion } from './ingestor.ts';
 
 export const COT_LAST_SYNC_KEY = 'cot:lastScheduledSyncLagosDate';
 const CHECK_INTERVAL_MS = 60_000;

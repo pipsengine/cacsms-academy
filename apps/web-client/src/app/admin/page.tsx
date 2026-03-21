@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import DashboardLayout from '@/components/DashboardLayout';
 import { useAuth } from '@/components/AuthProvider';
@@ -240,10 +240,10 @@ export default function AdminDashboard() {
       <div className="max-w-6xl mx-auto">
         <div className="mb-8 flex items-center justify-between gap-4">
           <div>
-            <h2 className="text-2xl font-medium text-zinc-100">System Administration</h2>
+            <h2 className="text-2xl font-medium text-zinc-900">System Administration</h2>
             <p className="text-sm text-zinc-500 mt-1">Manage users, subscriptions, pricing values, access limits, and platform metrics.</p>
           </div>
-          <div className="flex bg-zinc-900/50 border border-zinc-800 rounded-lg p-1">
+          <div className="flex bg-white border border-zinc-200 rounded-lg p-1">
             <TabButton active={tab === 'users'} onClick={() => setTab('users')}>Users & Revenue</TabButton>
             <TabButton active={tab === 'limits'} onClick={() => setTab('limits')}>Usage Limits</TabButton>
             <TabButton active={tab === 'pricing'} onClick={() => setTab('pricing')}>Pricing</TabButton>
@@ -263,7 +263,7 @@ export default function AdminDashboard() {
             <Panel title="User Administration">
               <div className="overflow-x-auto">
                 <table className="w-full text-sm text-left">
-                  <thead className="text-xs text-zinc-500 uppercase bg-zinc-900/50 border-b border-zinc-800">
+                  <thead className="text-xs text-zinc-500 uppercase bg-white border-b border-zinc-200">
                     <tr>
                       <th className="px-6 py-3">User</th>
                       <th className="px-6 py-3">Country</th>
@@ -273,7 +273,7 @@ export default function AdminDashboard() {
                       <th className="px-6 py-3">Action</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-zinc-800/50">
+                  <tbody className="divide-y divide-zinc-200/50">
                     {overview?.recentUsers?.length ? overview.recentUsers.map((entry: any) => (
                       <UserRow key={entry.id} entry={entry} onManage={() => void openManage(entry.id)} />
                     )) : (
@@ -288,9 +288,9 @@ export default function AdminDashboard() {
 
         {tab === 'limits' && (
           <div className="space-y-6">
-            <div className="flex items-center justify-between bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
+            <div className="flex items-center justify-between bg-white border border-zinc-200 rounded-xl p-6">
               <div>
-                <h3 className="text-lg font-medium text-zinc-100">Global Usage Limiter</h3>
+                <h3 className="text-lg font-medium text-zinc-900">Global Usage Limiter</h3>
                 <p className="text-sm text-zinc-500 mt-1">Enable or disable all usage limits across the platform.</p>
               </div>
               <button onClick={toggleLimits} className={`px-6 py-2 rounded-lg font-medium transition-colors ${limitsEnabled ? 'bg-red-500/10 text-red-500 hover:bg-red-500/20' : 'bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20'}`}>
@@ -300,7 +300,7 @@ export default function AdminDashboard() {
 
             <Panel title="Feature Limits Configuration" action={editingLimits ? (
               <div className="flex gap-2">
-                <button onClick={() => { setEditingLimits(false); setEditedLimits(limits); }} className="text-xs px-3 py-1 rounded bg-zinc-800 text-zinc-300 hover:bg-zinc-700">Cancel</button>
+                <button onClick={() => { setEditingLimits(false); setEditedLimits(limits); }} className="text-xs px-3 py-1 rounded bg-zinc-200 text-zinc-600 hover:bg-zinc-700">Cancel</button>
                 <button onClick={() => void saveLimits()} className="text-xs px-3 py-1 rounded bg-emerald-500 text-zinc-950 font-medium hover:bg-emerald-600">Save Changes</button>
               </div>
             ) : (
@@ -308,16 +308,16 @@ export default function AdminDashboard() {
             )}>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm text-left">
-                  <thead className="text-xs text-zinc-500 uppercase bg-zinc-900/50 border-b border-zinc-800">
+                  <thead className="text-xs text-zinc-500 uppercase bg-white border-b border-zinc-200">
                     <tr>
                       <th className="px-6 py-3">Feature</th>
                       {PLANS.map((plan) => <th key={plan} className="px-6 py-3">{plan}</th>)}
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-zinc-800/50">
+                  <tbody className="divide-y divide-zinc-200/50">
                     {FEATURES.map((feature) => (
-                      <tr key={feature} className="hover:bg-zinc-800/20 transition-colors">
-                        <td className="px-6 py-4 font-medium text-zinc-200">{feature}</td>
+                      <tr key={feature} className="hover:bg-zinc-200/20 transition-colors">
+                        <td className="px-6 py-4 font-medium text-zinc-700">{feature}</td>
                         {PLANS.map((plan) => {
                           const limit = (editingLimits ? editedLimits : limits).find((x: any) => x.planName === plan && x.featureName === feature) || { hourlyLimit: 'Unlimited', dailyLimit: 'Unlimited' };
                           return (
@@ -354,10 +354,10 @@ export default function AdminDashboard() {
                     <div key={feature} className="flex items-center justify-between">
                       <span className="text-zinc-400">{feature}</span>
                       <div className="flex items-center gap-4 w-1/2">
-                        <div className="flex-1 h-2 bg-zinc-800 rounded-full overflow-hidden">
+                        <div className="flex-1 h-2 bg-zinc-200 rounded-full overflow-hidden">
                           <div className="h-full bg-emerald-500" style={{ width: `${analytics.totalUsage ? (count / analytics.totalUsage) * 100 : 0}%` }} />
                         </div>
-                        <span className="text-zinc-200 font-mono text-sm w-12 text-right">{count}</span>
+                        <span className="text-zinc-700 font-mono text-sm w-12 text-right">{count}</span>
                       </div>
                     </div>
                   ))}
@@ -381,7 +381,7 @@ export default function AdminDashboard() {
                       setEditedUsdBasePricing(usdBasePricing);
                       setManualExchangeRate(exchangeRate?.usdToNgn ? String(exchangeRate.usdToNgn) : '');
                     }}
-                    className="text-xs px-3 py-1 rounded bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
+                    className="text-xs px-3 py-1 rounded bg-zinc-200 text-zinc-600 hover:bg-zinc-700"
                   >
                     Cancel
                   </button>
@@ -407,10 +407,10 @@ export default function AdminDashboard() {
                   <MetricCard icon={<Shield />} label="Pricing Model" value="USD Master" trend="NGN derived automatically" />
                 </div>
 
-                <div className="rounded-xl border border-zinc-800 bg-zinc-950/40 p-4">
+                <div className="rounded-xl border border-zinc-200 bg-white p-4">
                   <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                     <div>
-                      <h4 className="text-sm font-medium uppercase tracking-wider text-zinc-300">Exchange Rate Control</h4>
+                      <h4 className="text-sm font-medium uppercase tracking-wider text-zinc-600">Exchange Rate Control</h4>
                       <p className="text-xs text-zinc-500 mt-1">If live detection is unavailable, Super Admin can enter the current USD to NGN rate manually. That manual rate becomes the active pricing factor until it is changed again.</p>
                     </div>
                     <div className="flex items-end gap-3">
@@ -422,7 +422,7 @@ export default function AdminDashboard() {
                           value={manualExchangeRate}
                           onChange={(e) => setManualExchangeRate(e.target.value)}
                           disabled={!canEditPricing || !editingPricing}
-                          className="w-36 rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-emerald-500 disabled:text-zinc-500"
+                          className="w-36 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-emerald-500 disabled:text-zinc-500"
                         />
                       </Field>
                     </div>
@@ -431,12 +431,12 @@ export default function AdminDashboard() {
 
                 <div className="space-y-4">
                   <div>
-                    <h4 className="text-sm font-medium uppercase tracking-wider text-zinc-300">International Base Pricing</h4>
+                    <h4 className="text-sm font-medium uppercase tracking-wider text-zinc-600">International Base Pricing</h4>
                     <p className="text-xs text-zinc-500 mt-1">Super Admin edits the USD pricing here. Nigerian naira values are calculated automatically from the prevailing USD/NGN rate.</p>
                   </div>
-                  <div className="overflow-x-auto rounded-xl border border-zinc-800">
+                  <div className="overflow-x-auto rounded-xl border border-zinc-200">
                     <table className="w-full text-sm text-left">
-                      <thead className="bg-zinc-900/60 text-xs uppercase text-zinc-500">
+                      <thead className="bg-white text-xs uppercase text-zinc-500">
                         <tr>
                           <th className="px-4 py-3">Plan</th>
                           <th className="px-4 py-3">Monthly Price</th>
@@ -446,23 +446,23 @@ export default function AdminDashboard() {
                           <th className="px-4 py-3">Currency</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-zinc-800 bg-zinc-950/40">
+                      <tbody className="divide-y divide-zinc-200 bg-white">
                         {PLANS.map((plan) => {
                           const row = (editingPricing ? editedUsdBasePricing : usdBasePricing)?.[plan];
                           if (!row) return null;
                           return (
                             <tr key={`usd-${plan}`}>
-                              <td className="px-4 py-3 text-zinc-200">{plan}</td>
+                              <td className="px-4 py-3 text-zinc-700">{plan}</td>
                               <td className="px-4 py-3">
                                 {editingPricing ? (
                                   <input
                                     type="number"
                                     value={row.priceValue}
                                     onChange={(e) => onPricingChange(plan, 'priceValue', e.target.value)}
-                                    className="w-28 rounded border border-zinc-800 bg-zinc-900 px-2 py-1 text-zinc-100"
+                                    className="w-28 rounded border border-zinc-200 bg-white px-2 py-1 text-zinc-900"
                                   />
                                 ) : (
-                                  <span className="text-zinc-300">{row.priceValue}</span>
+                                  <span className="text-zinc-600">{row.priceValue}</span>
                                 )}
                               </td>
                               <td className="px-4 py-3">
@@ -471,7 +471,7 @@ export default function AdminDashboard() {
                                     type="number"
                                     value={row.unitAmountCents}
                                     onChange={(e) => onPricingChange(plan, 'unitAmountCents', e.target.value)}
-                                    className="w-32 rounded border border-zinc-800 bg-zinc-900 px-2 py-1 text-zinc-100"
+                                    className="w-32 rounded border border-zinc-200 bg-white px-2 py-1 text-zinc-900"
                                   />
                                 ) : (
                                   <span className="text-zinc-400">{row.unitAmountCents}</span>
@@ -483,10 +483,10 @@ export default function AdminDashboard() {
                                     type="number"
                                     value={row.annualPriceValue}
                                     onChange={(e) => onPricingChange(plan, 'annualPriceValue', e.target.value)}
-                                    className="w-28 rounded border border-zinc-800 bg-zinc-900 px-2 py-1 text-zinc-100"
+                                    className="w-28 rounded border border-zinc-200 bg-white px-2 py-1 text-zinc-900"
                                   />
                                 ) : (
-                                  <span className="text-zinc-300">{row.annualPriceValue}</span>
+                                  <span className="text-zinc-600">{row.annualPriceValue}</span>
                                 )}
                               </td>
                               <td className="px-4 py-3">
@@ -495,7 +495,7 @@ export default function AdminDashboard() {
                                     type="number"
                                     value={row.annualUnitAmountCents}
                                     onChange={(e) => onPricingChange(plan, 'annualUnitAmountCents', e.target.value)}
-                                    className="w-32 rounded border border-zinc-800 bg-zinc-900 px-2 py-1 text-zinc-100"
+                                    className="w-32 rounded border border-zinc-200 bg-white px-2 py-1 text-zinc-900"
                                   />
                                 ) : (
                                   <span className="text-zinc-400">{row.annualUnitAmountCents}</span>
@@ -512,12 +512,12 @@ export default function AdminDashboard() {
 
                 <div className="space-y-4">
                   <div>
-                    <h4 className="text-sm font-medium uppercase tracking-wider text-zinc-300">Nigeria Pricing Preview</h4>
+                    <h4 className="text-sm font-medium uppercase tracking-wider text-zinc-600">Nigeria Pricing Preview</h4>
                     <p className="text-xs text-zinc-500 mt-1">These values are read-only and are recalculated from the current USD/NGN rate used by checkout and the pricing page.</p>
                   </div>
-                  <div className="overflow-x-auto rounded-xl border border-zinc-800">
+                  <div className="overflow-x-auto rounded-xl border border-zinc-200">
                     <table className="w-full text-sm text-left">
-                      <thead className="bg-zinc-900/60 text-xs uppercase text-zinc-500">
+                      <thead className="bg-white text-xs uppercase text-zinc-500">
                         <tr>
                           <th className="px-4 py-3">Plan</th>
                           <th className="px-4 py-3">Monthly Price</th>
@@ -527,16 +527,16 @@ export default function AdminDashboard() {
                           <th className="px-4 py-3">Currency</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-zinc-800 bg-zinc-950/40">
+                      <tbody className="divide-y divide-zinc-200 bg-white">
                         {PLANS.map((plan) => {
                           const row = pricingMatrix?.nigeria?.[plan];
                           if (!row) return null;
                           return (
                             <tr key={`ngn-${plan}`}>
-                              <td className="px-4 py-3 text-zinc-200">{plan}</td>
-                              <td className="px-4 py-3 text-zinc-300">{row.priceValue}</td>
+                              <td className="px-4 py-3 text-zinc-700">{plan}</td>
+                              <td className="px-4 py-3 text-zinc-600">{row.priceValue}</td>
                               <td className="px-4 py-3 text-zinc-400">{row.unitAmountCents}</td>
-                              <td className="px-4 py-3 text-zinc-300">{row.annualPriceValue}</td>
+                              <td className="px-4 py-3 text-zinc-600">{row.annualPriceValue}</td>
                               <td className="px-4 py-3 text-zinc-400">{row.annualUnitAmountCents}</td>
                               <td className="px-4 py-3 text-zinc-400">{row.currencySymbol} / {row.currencyCode}</td>
                             </tr>
@@ -575,14 +575,14 @@ export default function AdminDashboard() {
 }
 
 function TabButton({ active, onClick, children }: any) {
-  return <button onClick={onClick} className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${active ? 'bg-zinc-800 text-zinc-100' : 'text-zinc-400 hover:text-zinc-200'}`}>{children}</button>;
+  return <button onClick={onClick} className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${active ? 'bg-zinc-200 text-zinc-900' : 'text-zinc-400 hover:text-zinc-700'}`}>{children}</button>;
 }
 
 function Panel({ title, children, action }: any) {
   return (
-    <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl overflow-hidden">
-      <div className="px-6 py-4 border-b border-zinc-800 bg-zinc-950/50 flex items-center justify-between">
-        <h3 className="font-medium text-zinc-200">{title}</h3>
+    <div className="bg-white border border-zinc-200 rounded-xl overflow-hidden">
+      <div className="px-6 py-4 border-b border-zinc-200 bg-slate-50 flex items-center justify-between">
+        <h3 className="font-medium text-zinc-700">{title}</h3>
         {action}
       </div>
       <div className="p-0">{children}</div>
@@ -592,9 +592,9 @@ function Panel({ title, children, action }: any) {
 
 function MetricCard({ icon, label, value, trend }: any) {
   return (
-    <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-4">
+    <div className="bg-white border border-zinc-200 rounded-xl p-4">
       <div className="flex items-center gap-3 text-zinc-400 mb-3">{icon}<span className="text-sm font-medium">{label}</span></div>
-      <div className="text-2xl font-bold text-zinc-100 mb-1">{value}</div>
+      <div className="text-2xl font-bold text-zinc-900 mb-1">{value}</div>
       <div className="text-xs text-emerald-500">{trend}</div>
     </div>
   );
@@ -602,10 +602,10 @@ function MetricCard({ icon, label, value, trend }: any) {
 
 function UserRow({ entry, onManage }: any) {
   return (
-    <tr className="hover:bg-zinc-800/20 transition-colors">
-      <td className="px-6 py-4"><div className="font-medium text-zinc-200">{entry.name}</div><div className="text-xs text-zinc-500">{entry.email}</div></td>
+    <tr className="hover:bg-zinc-200/20 transition-colors">
+      <td className="px-6 py-4"><div className="font-medium text-zinc-700">{entry.name}</div><div className="text-xs text-zinc-500">{entry.email}</div></td>
       <td className="px-6 py-4 text-zinc-400">{entry.country}</td>
-      <td className="px-6 py-4"><span className="px-2 py-1 bg-zinc-800 rounded text-xs text-zinc-300">{entry.plan}</span></td>
+      <td className="px-6 py-4"><span className="px-2 py-1 bg-zinc-200 rounded text-xs text-zinc-600">{entry.plan}</span></td>
       <td className="px-6 py-4"><span className={`px-2 py-1 rounded text-xs ${entry.subscriptionStatus === 'Active' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'}`}>{entry.subscriptionStatus}</span></td>
       <td className="px-6 py-4 text-zinc-400">{entry.role}</td>
       <td className="px-6 py-4"><button onClick={onManage} className="text-xs text-emerald-500 hover:underline">Manage</button></td>
@@ -623,8 +623,8 @@ function formatLimit(limit: any) {
 function EditLimitCell({ plan, feature, limit, onChange }: any) {
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex items-center gap-2"><span className="text-xs text-zinc-500 w-8">Hr:</span><input type="text" value={limit.hourlyLimit} onChange={(e) => onChange(plan, feature, 'hourlyLimit', e.target.value)} className="w-20 bg-zinc-950 border border-zinc-800 rounded px-2 py-1 text-xs text-zinc-200 focus:outline-none focus:border-emerald-500" /></div>
-      <div className="flex items-center gap-2"><span className="text-xs text-zinc-500 w-8">Day:</span><input type="text" value={limit.dailyLimit} onChange={(e) => onChange(plan, feature, 'dailyLimit', e.target.value)} className="w-20 bg-zinc-950 border border-zinc-800 rounded px-2 py-1 text-xs text-zinc-200 focus:outline-none focus:border-emerald-500" /></div>
+      <div className="flex items-center gap-2"><span className="text-xs text-zinc-500 w-8">Hr:</span><input type="text" value={limit.hourlyLimit} onChange={(e) => onChange(plan, feature, 'hourlyLimit', e.target.value)} className="w-20 bg-white border border-zinc-200 rounded px-2 py-1 text-xs text-zinc-700 focus:outline-none focus:border-emerald-500" /></div>
+      <div className="flex items-center gap-2"><span className="text-xs text-zinc-500 w-8">Day:</span><input type="text" value={limit.dailyLimit} onChange={(e) => onChange(plan, feature, 'dailyLimit', e.target.value)} className="w-20 bg-white border border-zinc-200 rounded px-2 py-1 text-xs text-zinc-700 focus:outline-none focus:border-emerald-500" /></div>
     </div>
   );
 }
@@ -633,48 +633,48 @@ function ManageModal({ modalData, form, error, saving, onClose, onSave, onFieldC
   return (
     <div className="fixed inset-0 z-[120] flex items-center justify-center p-4">
       <button type="button" onClick={onClose} className="absolute inset-0 bg-black/60" aria-label="Close modal" />
-      <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl border border-zinc-800 bg-zinc-950 shadow-2xl">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-800">
-          <div><h3 className="text-lg font-medium text-zinc-100">Manage User & Subscription</h3><p className="text-sm text-zinc-500 mt-1">{modalData.user.email}</p></div>
-          <button type="button" onClick={onClose} className="p-2 rounded-lg text-zinc-400 hover:bg-zinc-900 hover:text-zinc-200"><X className="w-4 h-4" /></button>
+      <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl border border-zinc-200 bg-white shadow-2xl">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-200">
+          <div><h3 className="text-lg font-medium text-zinc-900">Manage User & Subscription</h3><p className="text-sm text-zinc-500 mt-1">{modalData.user.email}</p></div>
+          <button type="button" onClick={onClose} className="p-2 rounded-lg text-zinc-400 hover:bg-white hover:text-zinc-700"><X className="w-4 h-4" /></button>
         </div>
 
         <div className="p-6 space-y-8">
           {error && <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">{error}</div>}
 
           <section className="space-y-4">
-            <h4 className="text-sm font-medium text-zinc-200 uppercase tracking-wider">User Profile</h4>
+            <h4 className="text-sm font-medium text-zinc-700 uppercase tracking-wider">User Profile</h4>
             <div className="grid gap-4 md:grid-cols-2">
-              <Field label="Name"><input value={form.name} onChange={(e) => onFieldChange('name', e.target.value)} className="w-full rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-emerald-500" /></Field>
-              <Field label="Email"><input value={modalData.user.email} disabled className="w-full rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm text-zinc-500" /></Field>
-              <Field label="Country"><select value={form.country} onChange={(e) => onFieldChange('country', e.target.value)} className="w-full rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-emerald-500">{modalData.options.countries.map((x: string) => <option key={x} value={x}>{x}</option>)}</select></Field>
-              <Field label="Role"><select value={form.role} onChange={(e) => onFieldChange('role', e.target.value)} className="w-full rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-emerald-500">{modalData.options.roles.map((x: string) => <option key={x} value={x}>{x}</option>)}</select></Field>
+              <Field label="Name"><input value={form.name} onChange={(e) => onFieldChange('name', e.target.value)} className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-emerald-500" /></Field>
+              <Field label="Email"><input value={modalData.user.email} disabled className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-500" /></Field>
+              <Field label="Country"><select value={form.country} onChange={(e) => onFieldChange('country', e.target.value)} className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-emerald-500">{modalData.options.countries.map((x: string) => <option key={x} value={x}>{x}</option>)}</select></Field>
+              <Field label="Role"><select value={form.role} onChange={(e) => onFieldChange('role', e.target.value)} className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-emerald-500">{modalData.options.roles.map((x: string) => <option key={x} value={x}>{x}</option>)}</select></Field>
             </div>
           </section>
 
           <section className="space-y-4">
-            <h4 className="text-sm font-medium text-zinc-200 uppercase tracking-wider">Managed Subscription</h4>
+            <h4 className="text-sm font-medium text-zinc-700 uppercase tracking-wider">Managed Subscription</h4>
             <div className="grid gap-4 md:grid-cols-3">
-              <Field label="Plan"><select value={form.managedSubscription.planType} onChange={(e) => onSubscriptionChange('planType', e.target.value)} className="w-full rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-emerald-500">{modalData.options.plans.map((x: string) => <option key={x} value={x}>{x}</option>)}</select></Field>
-              <Field label="Billing Cycle"><select value={form.managedSubscription.billingCycle} onChange={(e) => onSubscriptionChange('billingCycle', e.target.value)} className="w-full rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-emerald-500"><option value="monthly">monthly</option><option value="annual">annual</option></select></Field>
-              <Field label="Status"><select value={form.managedSubscription.status} onChange={(e) => onSubscriptionChange('status', e.target.value)} className="w-full rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-emerald-500">{modalData.options.statuses.map((x: string) => <option key={x} value={x}>{x}</option>)}</select></Field>
-              <Field label="Price"><input type="number" value={form.managedSubscription.price} onChange={(e) => onSubscriptionChange('price', e.target.value)} className="w-full rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-emerald-500" /></Field>
-              <Field label="Currency"><input value={form.managedSubscription.currency} onChange={(e) => onSubscriptionChange('currency', e.target.value)} className="w-full rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-emerald-500" /></Field>
-              <Field label="Payment Provider"><input value={form.managedSubscription.paymentProvider} onChange={(e) => onSubscriptionChange('paymentProvider', e.target.value)} className="w-full rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-emerald-500" /></Field>
-              <Field label="Start Date"><input type="date" value={form.managedSubscription.startDate} onChange={(e) => onSubscriptionChange('startDate', e.target.value)} className="w-full rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-emerald-500" /></Field>
-              <Field label="Expiry Date"><input type="date" value={form.managedSubscription.expiryDate} onChange={(e) => onSubscriptionChange('expiryDate', e.target.value)} className="w-full rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-emerald-500" /></Field>
+              <Field label="Plan"><select value={form.managedSubscription.planType} onChange={(e) => onSubscriptionChange('planType', e.target.value)} className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-emerald-500">{modalData.options.plans.map((x: string) => <option key={x} value={x}>{x}</option>)}</select></Field>
+              <Field label="Billing Cycle"><select value={form.managedSubscription.billingCycle} onChange={(e) => onSubscriptionChange('billingCycle', e.target.value)} className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-emerald-500"><option value="monthly">monthly</option><option value="annual">annual</option></select></Field>
+              <Field label="Status"><select value={form.managedSubscription.status} onChange={(e) => onSubscriptionChange('status', e.target.value)} className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-emerald-500">{modalData.options.statuses.map((x: string) => <option key={x} value={x}>{x}</option>)}</select></Field>
+              <Field label="Price"><input type="number" value={form.managedSubscription.price} onChange={(e) => onSubscriptionChange('price', e.target.value)} className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-emerald-500" /></Field>
+              <Field label="Currency"><input value={form.managedSubscription.currency} onChange={(e) => onSubscriptionChange('currency', e.target.value)} className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-emerald-500" /></Field>
+              <Field label="Payment Provider"><input value={form.managedSubscription.paymentProvider} onChange={(e) => onSubscriptionChange('paymentProvider', e.target.value)} className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-emerald-500" /></Field>
+              <Field label="Start Date"><input type="date" value={form.managedSubscription.startDate} onChange={(e) => onSubscriptionChange('startDate', e.target.value)} className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-emerald-500" /></Field>
+              <Field label="Expiry Date"><input type="date" value={form.managedSubscription.expiryDate} onChange={(e) => onSubscriptionChange('expiryDate', e.target.value)} className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-emerald-500" /></Field>
             </div>
           </section>
 
           <section className="space-y-4">
-            <h4 className="text-sm font-medium text-zinc-200 uppercase tracking-wider">Subscription History</h4>
-            <div className="overflow-x-auto rounded-xl border border-zinc-800">
+            <h4 className="text-sm font-medium text-zinc-700 uppercase tracking-wider">Subscription History</h4>
+            <div className="overflow-x-auto rounded-xl border border-zinc-200">
               <table className="w-full text-sm text-left">
-                <thead className="bg-zinc-900/60 text-xs uppercase text-zinc-500"><tr><th className="px-4 py-3">Plan</th><th className="px-4 py-3">Cycle</th><th className="px-4 py-3">Price</th><th className="px-4 py-3">Status</th><th className="px-4 py-3">Provider</th><th className="px-4 py-3">Expiry</th></tr></thead>
-                <tbody className="divide-y divide-zinc-800 bg-zinc-950/40">
+                <thead className="bg-white text-xs uppercase text-zinc-500"><tr><th className="px-4 py-3">Plan</th><th className="px-4 py-3">Cycle</th><th className="px-4 py-3">Price</th><th className="px-4 py-3">Status</th><th className="px-4 py-3">Provider</th><th className="px-4 py-3">Expiry</th></tr></thead>
+                <tbody className="divide-y divide-zinc-200 bg-white">
                   {modalData.user.subscriptions.length ? modalData.user.subscriptions.map((entry: any) => (
                     <tr key={entry.id}>
-                      <td className="px-4 py-3 text-zinc-200">{entry.planType}</td>
+                      <td className="px-4 py-3 text-zinc-700">{entry.planType}</td>
                       <td className="px-4 py-3 text-zinc-400">{entry.billingCycle}</td>
                       <td className="px-4 py-3 text-zinc-400">{entry.currency}{entry.price}</td>
                       <td className="px-4 py-3 text-zinc-400">{entry.status}</td>
@@ -688,8 +688,8 @@ function ManageModal({ modalData, form, error, saving, onClose, onSave, onFieldC
           </section>
         </div>
 
-        <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-zinc-800">
-          <button type="button" onClick={onClose} className="rounded-lg border border-zinc-800 px-4 py-2 text-sm text-zinc-300 hover:bg-zinc-900">Cancel</button>
+        <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-zinc-200">
+          <button type="button" onClick={onClose} className="rounded-lg border border-zinc-200 px-4 py-2 text-sm text-zinc-600 hover:bg-white">Cancel</button>
           <button type="button" onClick={onSave} disabled={saving} className="rounded-lg bg-emerald-500 px-4 py-2 text-sm font-medium text-zinc-950 hover:bg-emerald-400 disabled:opacity-50">{saving ? 'Saving...' : 'Save Changes'}</button>
         </div>
       </div>

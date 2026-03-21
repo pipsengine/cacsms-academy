@@ -7,7 +7,7 @@
  * high-priority lessons.
  */
 
-import type { ForexCourseUnitOutput } from './forexCourseUnit';
+import type { ForexCourseUnitOutput } from './forexCourseUnit.ts';
 
 const REGISTRY: Record<string, ForexCourseUnitOutput> = {
   // ─── Week 1 · Monday · Lesson 1 ─────────────────────────────────────────────

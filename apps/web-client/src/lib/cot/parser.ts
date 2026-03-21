@@ -1,9 +1,5 @@
-import {
-  CotAsset,
-  RawCotRow,
-  CFTC_MARKET_NAMES,
-  ALL_ASSETS,
-} from './types';
+import type { CotAsset, RawCotRow } from './types.ts';
+import { CFTC_MARKET_NAMES, ALL_ASSETS } from './types.ts';
 
 /**
  * Parse a CFTC CSV text file into raw COT rows.

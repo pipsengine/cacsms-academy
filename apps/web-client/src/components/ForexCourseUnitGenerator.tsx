@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useMemo, useState } from 'react';
 import { forexCourseCurriculum, getCurriculumTopic, getCurriculumTopicRecord, type CurriculumDay } from '@/lib/learning/curriculum';
@@ -81,8 +81,8 @@ export default function ForexCourseUnitGenerator() {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-5">
-        <h3 className="text-lg font-semibold text-zinc-100">Generate Learning Unit</h3>
+      <div className="rounded-xl border border-zinc-200 bg-white p-5">
+        <h3 className="text-lg font-semibold text-zinc-900">Generate Learning Unit</h3>
         <p className="mt-1 text-sm text-zinc-500">
           Create one structured forex lesson or Saturday assignment from your curriculum topic.
         </p>
@@ -93,7 +93,7 @@ export default function ForexCourseUnitGenerator() {
             <input
               value={topicTitle}
               onChange={(e) => setTopicTitle(e.target.value)}
-              className="w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-200 outline-none focus:border-emerald-500"
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-700 outline-none focus:border-emerald-500"
               placeholder="e.g., Support and Resistance Fundamentals"
             />
           </label>
@@ -103,7 +103,7 @@ export default function ForexCourseUnitGenerator() {
             <select
               value={weekNumber}
               onChange={(e) => setWeekNumber(Number(e.target.value || 1))}
-              className="w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-200 outline-none focus:border-emerald-500"
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-700 outline-none focus:border-emerald-500"
             >
               {forexCourseCurriculum.map((week) => (
                 <option key={week.week} value={week.week}>{`Week ${week.week} · ${week.module}`}</option>
@@ -116,7 +116,7 @@ export default function ForexCourseUnitGenerator() {
             <select
               value={dayOfWeek}
               onChange={(e) => setDayOfWeek(e.target.value as DayOfWeek)}
-              className="w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-200 outline-none focus:border-emerald-500"
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-700 outline-none focus:border-emerald-500"
             >
               {dayOptions.map((day) => (
                 <option key={day} value={day}>{day}</option>
@@ -130,7 +130,7 @@ export default function ForexCourseUnitGenerator() {
               value={effectiveTopicType}
               onChange={(e) => setTopicType(e.target.value as TopicType)}
               disabled={dayOfWeek === 'Saturday'}
-              className="w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-200 outline-none focus:border-emerald-500 disabled:opacity-60"
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-700 outline-none focus:border-emerald-500 disabled:opacity-60"
             >
               <option value="lesson">Lesson</option>
               <option value="assignment">Assignment</option>
@@ -142,9 +142,9 @@ export default function ForexCourseUnitGenerator() {
         </div>
 
         {selectedWeek && (
-          <div className="mt-4 rounded-lg border border-zinc-800 bg-zinc-950/60 p-3">
+          <div className="mt-4 rounded-lg border border-zinc-200 bg-slate-50 p-3">
             <p className="text-xs text-zinc-500">
-              Selected Topic: <span className="font-semibold text-zinc-200">{selectedWeek.topics[dayOfWeek]}</span>
+              Selected Topic: <span className="font-semibold text-zinc-700">{selectedWeek.topics[dayOfWeek]}</span>
             </p>
           </div>
         )}
@@ -167,17 +167,17 @@ export default function ForexCourseUnitGenerator() {
 
       {unit && (
         <div className="space-y-4">
-          <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-5">
+          <div className="rounded-xl border border-zinc-200 bg-white p-5">
             <div className="flex flex-wrap items-center gap-2">
               <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold text-emerald-300">
                 {unit.difficulty_level}
               </span>
-              <span className="rounded-full border border-zinc-700 bg-zinc-800 px-2.5 py-1 text-xs font-semibold text-zinc-300">
+              <span className="rounded-full border border-zinc-300 bg-zinc-200 px-2.5 py-1 text-xs font-semibold text-zinc-600">
                 {unit.is_assignment ? 'Assignment' : 'Lesson'}
               </span>
             </div>
-            <h3 className="mt-3 text-xl font-bold text-zinc-100">{unit.title}</h3>
-            <p className="mt-2 text-sm leading-relaxed text-zinc-300">{unit.summary}</p>
+            <h3 className="mt-3 text-xl font-bold text-zinc-900">{unit.title}</h3>
+            <p className="mt-2 text-sm leading-relaxed text-zinc-600">{unit.summary}</p>
             <div className="mt-4">
               <Link
                 href={selectedTopicRecord?.slug
@@ -190,27 +190,27 @@ export default function ForexCourseUnitGenerator() {
             </div>
           </div>
 
-          <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-5">
+          <div className="rounded-xl border border-zinc-200 bg-white p-5">
             <h4 className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-500">Sections</h4>
             <div className="mt-3 flex flex-wrap gap-2">
               {unit.sections.map((section) => (
-                <span key={section} className="rounded-full border border-zinc-700 bg-zinc-800 px-2.5 py-1 text-xs font-semibold text-zinc-200">
+                <span key={section} className="rounded-full border border-zinc-300 bg-zinc-200 px-2.5 py-1 text-xs font-semibold text-zinc-700">
                   {section}
                 </span>
               ))}
             </div>
           </div>
 
-          <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-5">
+          <div className="rounded-xl border border-zinc-200 bg-white p-5">
             <h4 className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-500">Detailed Lesson</h4>
-            <pre className="mt-3 overflow-x-auto whitespace-pre-wrap text-sm leading-relaxed text-zinc-200">
+            <pre className="mt-3 overflow-x-auto whitespace-pre-wrap text-sm leading-relaxed text-zinc-700">
               {unit.content}
             </pre>
           </div>
 
-          <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-5">
+          <div className="rounded-xl border border-zinc-200 bg-white p-5">
             <h4 className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-500">Example</h4>
-            <p className="mt-3 text-sm leading-relaxed text-zinc-200">{unit.example}</p>
+            <p className="mt-3 text-sm leading-relaxed text-zinc-700">{unit.example}</p>
           </div>
 
           {unit.is_assignment && (

@@ -1,6 +1,6 @@
 import { GoogleGenAI } from '@google/genai';
 import { getDayLessons, type LessonRecord } from '@/lib/learning/curriculum';
-import { getStaticLessonContent } from './lessonContentRegistry';
+import { getStaticLessonContent } from './lessonContentRegistry.ts';
 
 export type DayOfWeek = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday';
 export type TopicType = 'lesson' | 'assignment';

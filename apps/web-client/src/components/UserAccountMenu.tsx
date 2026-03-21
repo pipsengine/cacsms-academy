@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
@@ -25,15 +25,15 @@ const variantStyles = {
     role: 'text-zinc-500',
   },
   dark: {
-    button: 'border-transparent text-zinc-100 hover:border-zinc-700/50 hover:bg-zinc-800/70',
+    button: 'border-transparent text-zinc-900 hover:border-zinc-300 hover:bg-zinc-200/70',
     subtleText: 'text-zinc-400',
     chevron: 'text-zinc-500',
     avatar: 'border-emerald-500/30 bg-emerald-500/20 text-emerald-400',
-    menu: 'border-zinc-700/60 bg-zinc-900 shadow-2xl shadow-black/40',
-    sectionBorder: 'border-zinc-800',
-    heading: 'text-zinc-100',
+    menu: 'border-zinc-300/60 bg-white shadow-2xl shadow-black/40',
+    sectionBorder: 'border-zinc-200',
+    heading: 'text-zinc-900',
     secondary: 'text-zinc-400',
-    item: 'text-zinc-300 hover:bg-zinc-800/60 hover:text-zinc-100',
+    item: 'text-zinc-600 hover:bg-zinc-200/60 hover:text-zinc-900',
     itemIcon: 'text-zinc-500',
     role: 'text-zinc-500',
   },
@@ -48,7 +48,7 @@ function getPlanBadgeClasses(plan: string) {
     case 'Analyst':
       return 'text-blue-400 bg-blue-400/10 border-blue-400/20';
     default:
-      return 'text-zinc-400 bg-zinc-700/30 border-zinc-700/50';
+      return 'text-zinc-400 bg-zinc-700/30 border-zinc-300';
   }
 }
 

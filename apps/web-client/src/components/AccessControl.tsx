@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useAuth } from '@/components/AuthProvider';
 import Link from 'next/link';
@@ -36,11 +36,11 @@ export default function AccessControl({ children, requiredPlan, moduleName }: Ac
   }
 
   return (
-    <div className="h-full min-h-[400px] flex flex-col items-center justify-center border border-zinc-800/50 bg-zinc-900/20 rounded-xl p-6 text-center">
-      <div className="w-16 h-16 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center mb-6">
+    <div className="h-full min-h-[400px] flex flex-col items-center justify-center border border-zinc-200 bg-slate-50 rounded-xl p-6 text-center">
+      <div className="w-16 h-16 rounded-full bg-white border border-zinc-200 flex items-center justify-center mb-6">
         <Lock className="w-6 h-6 text-zinc-500" />
       </div>
-      <h2 className="text-xl font-medium text-zinc-100 mb-2">Access Restricted</h2>
+      <h2 className="text-xl font-medium text-zinc-900 mb-2">Access Restricted</h2>
       <p className="text-zinc-400 max-w-md mb-8">
         The <span className="text-emerald-500 font-mono">{moduleName}</span> module requires a {requiredPlan} subscription or higher. Upgrade your account to unlock this intelligence layer.
       </p>

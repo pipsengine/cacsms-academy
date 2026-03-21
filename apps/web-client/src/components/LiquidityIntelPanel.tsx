@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { ShieldAlert, TrendingDown, TrendingUp, Waves } from 'lucide-react';
@@ -54,18 +54,18 @@ export default function LiquidityIntelPanel() {
 
   if (loading) {
     return (
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6 text-center text-zinc-500">
+      <div className="rounded-xl border border-zinc-200 bg-white p-6 text-center text-zinc-500">
         Loading liquidity intelligence...
       </div>
     );
   }
 
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden">
-      <div className="px-4 py-3 border-b border-zinc-800 flex items-center justify-between bg-zinc-950/50">
+    <div className="rounded-xl border border-zinc-200 bg-white overflow-hidden">
+      <div className="px-4 py-3 border-b border-zinc-200 flex items-center justify-between bg-slate-50">
         <div className="flex items-center gap-2">
           <ShieldAlert className="w-4 h-4 text-amber-400" />
-          <h3 className="text-sm font-medium text-zinc-200 uppercase tracking-wider">Liquidity Intelligence</h3>
+          <h3 className="text-sm font-medium text-zinc-700 uppercase tracking-wider">Liquidity Intelligence</h3>
         </div>
         <span className="text-[10px] font-mono text-zinc-500">
           {data?.provider?.toUpperCase() || 'MARKET'} · {data?.generatedAt ? new Date(data.generatedAt).toLocaleTimeString() : '--'}
@@ -74,12 +74,12 @@ export default function LiquidityIntelPanel() {
 
       <div className="p-4 space-y-4">
         {data?.signals?.length ? data.signals.map((signal) => (
-          <div key={signal.pair} className="rounded-lg border border-zinc-800/70 bg-zinc-950/40 p-4">
+          <div key={signal.pair} className="rounded-lg border border-zinc-300 bg-white p-4">
             <div className="flex items-start justify-between gap-4 mb-3">
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="text-lg font-bold text-zinc-100">{signal.pair}</span>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded border border-zinc-700 text-zinc-400">{signal.timeframe}</span>
+                  <span className="text-lg font-bold text-zinc-900">{signal.pair}</span>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded border border-zinc-300 text-zinc-400">{signal.timeframe}</span>
                   <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${
                     signal.sweepState === 'SWEEPED-HIGH'
                       ? 'border-red-500/30 text-red-400 bg-red-500/10'
@@ -113,10 +113,10 @@ export default function LiquidityIntelPanel() {
               <MetricTile label="Displacement" value={`${signal.displacementScore}%`} icon={<TrendingUp className="w-3 h-3" />} />
             </div>
 
-            <div className="mt-4 pt-3 border-t border-zinc-800/60 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs text-zinc-400">
-              <span>Session High: <span className="text-zinc-200">{formatPrice(signal.pair, signal.sessionHigh)}</span></span>
-              <span>Session Low: <span className="text-zinc-200">{formatPrice(signal.pair, signal.sessionLow)}</span></span>
-              <span>Range Width: <span className="text-zinc-200">{signal.rangePercent}%</span></span>
+            <div className="mt-4 pt-3 border-t border-zinc-300 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs text-zinc-400">
+              <span>Session High: <span className="text-zinc-700">{formatPrice(signal.pair, signal.sessionHigh)}</span></span>
+              <span>Session Low: <span className="text-zinc-700">{formatPrice(signal.pair, signal.sessionLow)}</span></span>
+              <span>Range Width: <span className="text-zinc-700">{signal.rangePercent}%</span></span>
             </div>
           </div>
         )) : (
@@ -129,12 +129,12 @@ export default function LiquidityIntelPanel() {
 
 function MetricTile({ label, value, icon }: { label: string; value: string; icon: React.ReactNode }) {
   return (
-    <div className="rounded border border-zinc-800/60 bg-zinc-900/50 p-3">
+    <div className="rounded border border-zinc-300 bg-white p-3">
       <div className="flex items-center gap-1.5 text-zinc-500 mb-1">
         {icon}
         <span className="text-[10px] font-mono uppercase tracking-wider">{label}</span>
       </div>
-      <div className="text-sm font-medium text-zinc-200">{value}</div>
+      <div className="text-sm font-medium text-zinc-700">{value}</div>
     </div>
   );
 }

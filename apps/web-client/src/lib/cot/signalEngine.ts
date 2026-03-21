@@ -1,4 +1,4 @@
-import { CotRecord, CotPhase, CotSignal, CotRisk, CotBias } from './types';
+import type { CotRecord, CotPhase, CotSignal, CotRisk, CotBias } from './types.ts';
 
 type PartialRecord = Omit<CotRecord, 'phase' | 'signal' | 'confidence' | 'risk' | 'weeklyBias'>;
 

@@ -1,5 +1,5 @@
-import { prisma } from '@/lib/prisma';
-import { CotRecord, CotAsset } from './types';
+import { prisma } from '../prisma.ts';
+import type { CotRecord, CotAsset } from './types.ts';
 
 export type CotHistoryRange = '6m' | '1y' | 'all';
 

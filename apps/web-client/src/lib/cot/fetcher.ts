@@ -1,4 +1,4 @@
-import { CFTC_CURRENCY_URL, CFTC_DISAGG_URL } from './types';
+import { CFTC_CURRENCY_URL, CFTC_DISAGG_URL } from './types.ts';
 import { exec } from 'node:child_process';
 import { promisify } from 'node:util';
 import { mkdtemp, rm, writeFile } from 'node:fs/promises';

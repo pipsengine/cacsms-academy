@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageSquare, X, Send, Bot, User, Loader2 } from 'lucide-react';
@@ -94,16 +94,16 @@ export default function AIAssistant() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="fixed bottom-6 right-6 w-[380px] h-[600px] max-h-[80vh] bg-zinc-900 border border-zinc-800 rounded-2xl shadow-2xl flex flex-col z-50 overflow-hidden"
+            className="fixed bottom-6 right-6 w-[380px] h-[600px] max-h-[80vh] bg-white border border-zinc-200 rounded-2xl shadow-2xl flex flex-col z-50 overflow-hidden"
           >
             {/* Header */}
-            <div className="px-4 py-3 bg-zinc-950 border-b border-zinc-800 flex items-center justify-between">
+            <div className="px-4 py-3 bg-white border-b border-zinc-200 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500">
                   <Bot className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-zinc-100">Intel Trader AI</h3>
+                  <h3 className="text-sm font-bold text-zinc-900">Intel Trader AI</h3>
                   <div className="flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                     <span className="text-[10px] font-mono text-zinc-500 uppercase">
@@ -114,7 +114,7 @@ export default function AIAssistant() {
               </div>
               <button 
                 onClick={() => setIsOpen(false)}
-                className="p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors"
+                className="p-2 text-zinc-400 hover:text-white hover:bg-zinc-200 rounded-lg transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -128,14 +128,14 @@ export default function AIAssistant() {
                   className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
                 >
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-                    msg.role === 'user' ? 'bg-zinc-800 text-zinc-400' : 'bg-emerald-500/10 text-emerald-500'
+                    msg.role === 'user' ? 'bg-zinc-200 text-zinc-400' : 'bg-emerald-500/10 text-emerald-500'
                   }`}>
                     {msg.role === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
                   </div>
                   <div className={`px-4 py-2.5 rounded-2xl max-w-[80%] text-sm ${
                     msg.role === 'user' 
                       ? 'bg-emerald-600 text-white rounded-tr-sm' 
-                      : 'bg-zinc-800 text-zinc-200 rounded-tl-sm'
+                      : 'bg-zinc-200 text-zinc-700 rounded-tl-sm'
                   }`}>
                     {msg.content}
                   </div>
@@ -146,7 +146,7 @@ export default function AIAssistant() {
                   <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center shrink-0 text-emerald-500">
                     <Bot className="w-4 h-4" />
                   </div>
-                  <div className="px-4 py-3 bg-zinc-800 rounded-2xl rounded-tl-sm flex items-center gap-2">
+                  <div className="px-4 py-3 bg-zinc-200 rounded-2xl rounded-tl-sm flex items-center gap-2">
                     <Loader2 className="w-4 h-4 text-emerald-500 animate-spin" />
                     <span className="text-xs text-zinc-400 font-mono">Processing...</span>
                   </div>
@@ -156,7 +156,7 @@ export default function AIAssistant() {
             </div>
 
             {/* Input */}
-            <div className="p-4 bg-zinc-950 border-t border-zinc-800">
+            <div className="p-4 bg-white border-t border-zinc-200">
               <div className="relative">
                 <input
                   type="text"
@@ -164,7 +164,7 @@ export default function AIAssistant() {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                   placeholder="Ask about market structures..."
-                  className="w-full bg-zinc-900 border border-zinc-800 rounded-xl pl-4 pr-12 py-3 text-sm text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all"
+                  className="w-full bg-white border border-zinc-200 rounded-xl pl-4 pr-12 py-3 text-sm text-zinc-700 placeholder-zinc-400 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all"
                 />
                 <button
                   onClick={handleSend}

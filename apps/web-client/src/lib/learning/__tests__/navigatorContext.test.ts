@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { getAllLessons } from '../curriculum';
-import { parseActiveLearningContext } from '../navigatorContext';
+import { getAllLessons } from '../curriculum.ts';
+import { parseActiveLearningContext } from '../navigatorContext.ts';
 
 const LESSONS = getAllLessons();
 

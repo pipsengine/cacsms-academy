@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useRef, useState } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -40,7 +40,7 @@ export default function CommandCenterPage() {
     <DashboardLayout>
       <div className="space-y-6">
         <div>
-          <h2 className="text-xl font-medium text-zinc-100">Multi-Engine Market Overview</h2>
+          <h2 className="text-xl font-medium text-zinc-900">Multi-Engine Market Overview</h2>
           <p className="mt-1 text-sm text-zinc-500">
             Your dashboard automatically reflects the modules unlocked by your current subscription package.
           </p>

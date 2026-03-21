@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useMarketData } from './MarketDataProvider';
 
@@ -12,9 +12,9 @@ export default function CurrencyStrengthHeatmap() {
   };
 
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden flex flex-col h-fit">
-      <div className="px-4 py-3 border-b border-zinc-800 flex items-center justify-between">
-        <h3 className="text-sm font-medium text-zinc-200 uppercase tracking-wider">Currency Strength</h3>
+    <div className="rounded-xl border border-zinc-200 bg-white overflow-hidden flex flex-col h-fit">
+      <div className="px-4 py-3 border-b border-zinc-200 flex items-center justify-between">
+        <h3 className="text-sm font-medium text-zinc-700 uppercase tracking-wider">Currency Strength</h3>
         <div className="flex items-center gap-2">
           <span className={`w-1.5 h-1.5 rounded-full ${isConnected ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`} />
           <span className="text-xs font-mono text-zinc-500">{isConnected ? 'LIVE' : 'DISCONNECTED'}</span>

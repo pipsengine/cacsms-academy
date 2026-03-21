@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -107,7 +107,7 @@ export default function ConfigurationPage() {
       <div className="max-w-5xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-zinc-100">System Configuration</h2>
+            <h2 className="text-2xl font-bold text-zinc-900">System Configuration</h2>
             <p className="text-sm text-zinc-400 mt-1">Manage your platform preferences and alert settings.</p>
           </div>
           <button 
@@ -123,13 +123,13 @@ export default function ConfigurationPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Alert Preferences */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
+            <div className="bg-white border border-zinc-200 rounded-xl p-6">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-500">
                   <Bell className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-medium text-zinc-200">Alert Delivery Methods</h3>
+                  <h3 className="text-lg font-medium text-zinc-700">Alert Delivery Methods</h3>
                   <p className="text-sm text-zinc-500">Choose how you want to receive market intelligence.</p>
                 </div>
               </div>
@@ -166,13 +166,13 @@ export default function ConfigurationPage() {
               </div>
             </div>
 
-            <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
+            <div className="bg-white border border-zinc-200 rounded-xl p-6">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-500">
                   <Settings className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-medium text-zinc-200">Trading Parameters</h3>
+                  <h3 className="text-lg font-medium text-zinc-700">Trading Parameters</h3>
                   <p className="text-sm text-zinc-500">Configure the AI engine&apos;s analysis thresholds.</p>
                 </div>
               </div>
@@ -184,7 +184,7 @@ export default function ConfigurationPage() {
                     type="number" 
                     value={config.trading.riskPerTrade}
                     onChange={(e) => setConfig(c => ({...c, trading: {...c.trading, riskPerTrade: e.target.value}}))}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2.5 text-zinc-200 focus:outline-none focus:border-emerald-500/50"
+                    className="w-full bg-white border border-zinc-200 rounded-lg px-4 py-2.5 text-zinc-700 focus:outline-none focus:border-emerald-500/50"
                   />
                 </div>
                 <div className="space-y-2">
@@ -193,7 +193,7 @@ export default function ConfigurationPage() {
                     type="number" 
                     value={config.trading.minProbability}
                     onChange={(e) => setConfig(c => ({...c, trading: {...c.trading, minProbability: e.target.value}}))}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2.5 text-zinc-200 focus:outline-none focus:border-emerald-500/50"
+                    className="w-full bg-white border border-zinc-200 rounded-lg px-4 py-2.5 text-zinc-700 focus:outline-none focus:border-emerald-500/50"
                   />
                 </div>
                 <div className="space-y-2">
@@ -201,7 +201,7 @@ export default function ConfigurationPage() {
                   <select 
                     value={config.trading.defaultTimeframe}
                     onChange={(e) => setConfig(c => ({...c, trading: {...c.trading, defaultTimeframe: e.target.value}}))}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2.5 text-zinc-200 focus:outline-none focus:border-emerald-500/50 appearance-none"
+                    className="w-full bg-white border border-zinc-200 rounded-lg px-4 py-2.5 text-zinc-700 focus:outline-none focus:border-emerald-500/50 appearance-none"
                   >
                     <option value="M15">M15</option>
                     <option value="M30">M30</option>
@@ -223,13 +223,13 @@ export default function ConfigurationPage() {
 
           {/* Sidebar Settings */}
           <div className="space-y-6">
-            <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
+            <div className="bg-white border border-zinc-200 rounded-xl p-6">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-500">
                   <Globe className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-medium text-zinc-200">Asset Classes</h3>
+                  <h3 className="text-lg font-medium text-zinc-700">Asset Classes</h3>
                 </div>
               </div>
 
@@ -265,7 +265,7 @@ export default function ConfigurationPage() {
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between text-zinc-400">
                   <span>Provider</span>
-                  <span className="font-mono text-zinc-200">{marketStatus.provider}</span>
+                  <span className="font-mono text-zinc-700">{marketStatus.provider}</span>
                 </div>
                 <div className="flex justify-between text-zinc-400">
                   <span>Data Feed</span>
@@ -275,17 +275,17 @@ export default function ConfigurationPage() {
                 </div>
                 <div className="flex justify-between text-zinc-400">
                   <span>Last Sync</span>
-                  <span className="font-mono text-zinc-200">
+                  <span className="font-mono text-zinc-700">
                     {marketStatus.generatedAt ? new Date(marketStatus.generatedAt).toLocaleTimeString() : 'Unavailable'}
                   </span>
                 </div>
                 <div className="flex justify-between text-zinc-400">
                   <span>Tracked Pairs</span>
-                  <span className="font-mono text-zinc-200">{marketStatus.trackedPairs}</span>
+                  <span className="font-mono text-zinc-700">{marketStatus.trackedPairs}</span>
                 </div>
                 <div className="flex justify-between text-zinc-400">
                   <span>Snapshot Source</span>
-                  <span className="font-mono text-zinc-200">{marketStatus.snapshotProvider ?? 'Unavailable'}</span>
+                  <span className="font-mono text-zinc-700">{marketStatus.snapshotProvider ?? 'Unavailable'}</span>
                 </div>
                 {marketStatus.lastErrorMessage && (
                   <div className="text-xs text-amber-300 border border-amber-500/20 bg-amber-500/10 rounded-lg px-3 py-2">
@@ -303,11 +303,11 @@ export default function ConfigurationPage() {
 
 function ToggleRow({ icon, title, description, checked, onChange }: { icon: React.ReactNode, title: string, description: string, checked: boolean, onChange: (v: boolean) => void }) {
   return (
-    <div className="flex items-center justify-between p-4 rounded-lg bg-zinc-950/50 border border-zinc-800/50">
+    <div className="flex items-center justify-between p-4 rounded-lg bg-slate-50 border border-zinc-200">
       <div className="flex items-center gap-4">
         <div className="text-zinc-500">{icon}</div>
         <div>
-          <div className="font-medium text-zinc-200">{title}</div>
+          <div className="font-medium text-zinc-700">{title}</div>
           <div className="text-xs text-zinc-500">{description}</div>
         </div>
       </div>
@@ -324,10 +324,10 @@ function ToggleRow({ icon, title, description, checked, onChange }: { icon: Reac
 function CheckboxRow({ label, checked, onChange }: { label: string, checked: boolean, onChange: (v: boolean) => void }) {
   return (
     <label className="flex items-center gap-3 cursor-pointer group">
-      <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${checked ? 'bg-emerald-500 border-emerald-500' : 'border-zinc-700 bg-zinc-950 group-hover:border-zinc-500'}`}>
+      <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${checked ? 'bg-emerald-500 border-emerald-500' : 'border-zinc-300 bg-white group-hover:border-zinc-400'}`}>
         {checked && <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
       </div>
-      <span className="text-sm text-zinc-300 group-hover:text-zinc-100 transition-colors">{label}</span>
+      <span className="text-sm text-zinc-600 group-hover:text-zinc-900 transition-colors">{label}</span>
     </label>
   );
 }

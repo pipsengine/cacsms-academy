@@ -3,7 +3,7 @@ import {
   deriveActiveLessonSlug,
   isActiveLessonSidebarItem,
   normalizeLessonSlug,
-} from '../lessonSidebarActive';
+} from '../lessonSidebarActive.ts';
 
 describe('lessonSidebarActive', () => {
   it('normalizes slugs safely', () => {

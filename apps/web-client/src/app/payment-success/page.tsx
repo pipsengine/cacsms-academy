@@ -48,11 +48,11 @@ function PaymentSuccessContent() {
   }, [sessionId, plan, region, billingCycle, updatePlan]);
 
   return (
-    <div className="max-w-md w-full bg-zinc-900 border border-zinc-800 rounded-2xl p-8 text-center">
+    <div className="max-w-md w-full bg-white border border-zinc-200 rounded-2xl p-8 text-center">
       {status === 'loading' && (
         <div className="flex flex-col items-center">
           <Loader2 className="w-16 h-16 text-emerald-500 animate-spin mb-6" />
-          <h1 className="text-2xl font-bold text-zinc-100 mb-2">Processing Payment</h1>
+          <h1 className="text-2xl font-bold text-zinc-900 mb-2">Processing Payment</h1>
           <p className="text-zinc-400">Please wait while we confirm your subscription...</p>
         </div>
       )}
@@ -62,7 +62,7 @@ function PaymentSuccessContent() {
           <div className="w-20 h-20 bg-emerald-500/10 rounded-full flex items-center justify-center mb-6">
             <CheckCircle className="w-10 h-10 text-emerald-500" />
           </div>
-          <h1 className="text-3xl font-bold text-zinc-100 mb-2">Payment Successful!</h1>
+          <h1 className="text-3xl font-bold text-zinc-900 mb-2">Payment Successful!</h1>
           <p className="text-zinc-400 mb-8">
             Your subscription has been updated and your dashboard will now reflect the modules included in your package.
           </p>
@@ -80,13 +80,13 @@ function PaymentSuccessContent() {
           <div className="w-20 h-20 bg-red-500/10 rounded-full flex items-center justify-center mb-6">
             <AlertTriangle className="w-10 h-10 text-red-400" />
           </div>
-          <h1 className="text-2xl font-bold text-zinc-100 mb-2">Verification Failed</h1>
+          <h1 className="text-2xl font-bold text-zinc-900 mb-2">Verification Failed</h1>
           <p className="text-zinc-400 mb-8">
             We couldn&apos;t verify your payment. Please contact support if you were charged.
           </p>
           <Link
             href="/pricing"
-            className="w-full py-3 bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl font-bold transition-colors block"
+            className="w-full py-3 bg-zinc-200 hover:bg-zinc-300 text-zinc-900 rounded-xl font-bold transition-colors block"
           >
             Return to Pricing
           </Link>
@@ -98,7 +98,7 @@ function PaymentSuccessContent() {
 
 export default function PaymentSuccessPage() {
   return (
-    <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_#ecfeff_0%,_#f8fafc_45%,_#ffffff_100%)] flex flex-col items-center justify-center p-4">
       <Suspense fallback={<div className="text-zinc-400">Loading...</div>}>
         <PaymentSuccessContent />
       </Suspense>

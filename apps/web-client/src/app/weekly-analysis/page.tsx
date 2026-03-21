@@ -1,4 +1,4 @@
-import DashboardLayout from '@/components/DashboardLayout';
+﻿import DashboardLayout from '@/components/DashboardLayout';
 import AppSectionLayout from '@/components/AppSectionLayout';
 import WeeklyAnalysisOverview from '@/components/WeeklyAnalysisOverview';
 
@@ -18,9 +18,9 @@ export default function WeeklyAnalysisPage() {
           <WeeklyAnalysisOverview />
         </section>
 
-        <section id="playbook" className="scroll-mt-28 rounded-xl border border-zinc-800 bg-zinc-900/60 p-5">
+        <section id="playbook" className="scroll-mt-28 rounded-xl border border-zinc-200 bg-white p-5">
           <h3 className="text-sm font-semibold uppercase tracking-[0.22em] text-zinc-500">Weekly Playbook</h3>
-          <ol className="mt-4 list-decimal pl-5 space-y-2 text-sm text-zinc-300">
+          <ol className="mt-4 list-decimal pl-5 space-y-2 text-sm text-zinc-600">
             <li>Define directional bias from higher timeframe structure.</li>
             <li>Prioritize top-ranked opportunities by quality, not quantity.</li>
             <li>Predefine invalidation and risk for each setup before execution.</li>
@@ -28,9 +28,9 @@ export default function WeeklyAnalysisPage() {
           </ol>
         </section>
 
-        <section id="review" className="scroll-mt-28 rounded-xl border border-zinc-800 bg-zinc-900/60 p-5">
+        <section id="review" className="scroll-mt-28 rounded-xl border border-zinc-200 bg-white p-5">
           <h3 className="text-sm font-semibold uppercase tracking-[0.22em] text-zinc-500">Review Framework</h3>
-          <ul className="mt-4 space-y-2 text-sm text-zinc-300">
+          <ul className="mt-4 space-y-2 text-sm text-zinc-600">
             <li>Track setup quality score versus final outcome.</li>
             <li>Document rule violations separately from market losses.</li>
             <li>Identify one process improvement to apply next week.</li>

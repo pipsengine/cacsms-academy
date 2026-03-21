@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { AlertTriangle, TrendingUp, TrendingDown, LineChart } from 'lucide-react';
@@ -24,9 +24,9 @@ export default function BreakoutProbabilityTable() {
 
   return (
     <>
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden flex flex-col h-full min-h-0">
-        <div className="px-4 py-3 border-b border-zinc-800 flex items-center justify-between">
-          <h3 className="text-sm font-medium text-zinc-200 uppercase tracking-wider">Breakout Engine</h3>
+      <div className="rounded-xl border border-zinc-200 bg-white overflow-hidden flex flex-col h-full min-h-0">
+        <div className="px-4 py-3 border-b border-zinc-200 flex items-center justify-between">
+          <h3 className="text-sm font-medium text-zinc-700 uppercase tracking-wider">Breakout Engine</h3>
           <div className="flex items-center gap-2">
             <span className={`w-1.5 h-1.5 rounded-full ${isConnected ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`} />
             <span className="text-xs font-mono text-zinc-500">{isConnected ? 'AI PROBABILITY' : 'DISCONNECTED'}</span>
@@ -43,7 +43,7 @@ export default function BreakoutProbabilityTable() {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.3 }}
-                  className="flex items-center justify-between p-3 rounded-lg border border-zinc-800/50 bg-zinc-900/30 hover:bg-zinc-800/50 transition-colors group"
+                  className="flex items-center justify-between p-3 rounded-lg border border-zinc-200 bg-slate-50 hover:bg-zinc-200 transition-colors group"
                 >
                   <div className="flex items-center gap-3">
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
@@ -53,7 +53,7 @@ export default function BreakoutProbabilityTable() {
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-bold text-zinc-200">{bo.pair}</span>
+                        <span className="font-bold text-zinc-700">{bo.pair}</span>
                         <span className="text-xs font-mono text-zinc-500">{bo.tf}</span>
                         <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded border ${
                           bo.channelStage === 'Confirmed'
@@ -75,7 +75,7 @@ export default function BreakoutProbabilityTable() {
                   <div className="flex items-center gap-4">
                     <button 
                       onClick={() => setSelectedChart({ pair: bo.pair, tf: bo.tf, type: `${bo.dir} Breakout` })}
-                      className="p-1.5 bg-zinc-800 hover:bg-emerald-500/20 text-zinc-400 hover:text-emerald-400 rounded transition-colors opacity-0 group-hover:opacity-100"
+                      className="p-1.5 bg-zinc-200 hover:bg-emerald-500/20 text-zinc-400 hover:text-emerald-400 rounded transition-colors opacity-0 group-hover:opacity-100"
                       title="View Chart"
                     >
                       <LineChart className="w-4 h-4" />
@@ -89,7 +89,7 @@ export default function BreakoutProbabilityTable() {
                       </div>
                       <div className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${
                         bo.status === 'ACTIVE' ? 'border-emerald-500/30 text-emerald-400 bg-emerald-500/10 animate-pulse' :
-                        bo.status === 'TRIGGERED' ? 'border-zinc-700 text-zinc-400 bg-zinc-800' :
+                        bo.status === 'TRIGGERED' ? 'border-zinc-300 text-zinc-400 bg-zinc-200' :
                         'border-amber-500/30 text-amber-400 bg-amber-500/10'
                       }`}>
                         {bo.status}

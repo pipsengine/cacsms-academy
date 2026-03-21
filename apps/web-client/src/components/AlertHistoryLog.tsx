@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { AlertTriangle, Bell, CheckCircle2, Info } from 'lucide-react';
@@ -44,9 +44,9 @@ export default function AlertHistoryLog() {
   }, []);
 
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden flex flex-col h-fit">
-      <div className="px-4 py-3 border-b border-zinc-800 flex items-center justify-between">
-        <h3 className="text-sm font-medium text-zinc-200 uppercase tracking-wider">Alert History Log</h3>
+    <div className="rounded-xl border border-zinc-200 bg-white overflow-hidden flex flex-col h-fit">
+      <div className="px-4 py-3 border-b border-zinc-200 flex items-center justify-between">
+        <h3 className="text-sm font-medium text-zinc-700 uppercase tracking-wider">Alert History Log</h3>
         <span className="text-xs font-mono text-zinc-500">LIVE ARCHIVE</span>
       </div>
       <div className="p-4 flex-1 overflow-y-auto">
@@ -55,24 +55,24 @@ export default function AlertHistoryLog() {
             const style = severityStyle[alert.severity] ?? severityStyle.info;
             const Icon = style.icon ?? Bell;
             return (
-              <div key={alert.id} className={`flex gap-4 p-3 rounded-lg border ${style.border} bg-zinc-900/30 hover:bg-zinc-800/50 transition-colors`}>
+              <div key={alert.id} className={`flex gap-4 p-3 rounded-lg border ${style.border} bg-slate-50 hover:bg-zinc-200 transition-colors`}>
                 <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${style.bg} ${style.color}`}>
                   <Icon className="w-4 h-4" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-1 gap-3">
                     <div className="flex items-center gap-2 min-w-0">
-                      <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded border ${style.border} ${style.color} bg-zinc-950`}>
+                      <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded border ${style.border} ${style.color} bg-white`}>
                         {alert.alertType}
                       </span>
-                      {alert.pair && <span className="font-bold text-zinc-200 text-sm">{alert.pair}</span>}
+                      {alert.pair && <span className="font-bold text-zinc-700 text-sm">{alert.pair}</span>}
                       {alert.timeframe && <span className="text-xs font-mono text-zinc-500">{alert.timeframe}</span>}
                     </div>
                     <span className="text-[10px] font-mono text-zinc-500 whitespace-nowrap">
                       {new Date(alert.createdAt).toLocaleString()}
                     </span>
                   </div>
-                  <p className="text-sm text-zinc-200">{alert.title}</p>
+                  <p className="text-sm text-zinc-700">{alert.title}</p>
                   <p className="text-sm text-zinc-400 mt-1">{alert.message}</p>
                 </div>
               </div>

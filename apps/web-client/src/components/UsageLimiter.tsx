@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { useAuth } from '@/components/AuthProvider';
@@ -58,16 +58,16 @@ export default function UsageLimiter({ children, featureName }: UsageLimiterProp
 
   if (isAllowed === false && errorData) {
     return (
-      <div className="h-full min-h-[400px] flex flex-col items-center justify-center border border-zinc-800/50 bg-zinc-900/20 rounded-xl p-6 text-center">
-        <div className="w-16 h-16 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center mb-6">
+      <div className="h-full min-h-[400px] flex flex-col items-center justify-center border border-zinc-200 bg-slate-50 rounded-xl p-6 text-center">
+        <div className="w-16 h-16 rounded-full bg-white border border-zinc-200 flex items-center justify-center mb-6">
           <Lock className="w-6 h-6 text-amber-500" />
         </div>
-        <h2 className="text-xl font-medium text-zinc-100 mb-2">Usage Limit Reached</h2>
+        <h2 className="text-xl font-medium text-zinc-900 mb-2">Usage Limit Reached</h2>
         <p className="text-zinc-400 max-w-md mb-4">
           {errorData.message}
         </p>
         {errorData.resetTime && (
-          <div className="flex items-center gap-2 text-zinc-500 text-sm mb-8 bg-zinc-900/50 px-4 py-2 rounded-full border border-zinc-800">
+          <div className="flex items-center gap-2 text-zinc-500 text-sm mb-8 bg-white px-4 py-2 rounded-full border border-zinc-200">
             <Clock className="w-4 h-4" />
             <span>{errorData.resetTime}</span>
           </div>
@@ -83,11 +83,11 @@ export default function UsageLimiter({ children, featureName }: UsageLimiterProp
   }
 
   return (
-    <div className="h-full min-h-[400px] flex flex-col items-center justify-center border border-zinc-800/50 bg-zinc-900/20 rounded-xl p-6 text-center">
-      <div className="w-16 h-16 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center mb-6">
+    <div className="h-full min-h-[400px] flex flex-col items-center justify-center border border-zinc-200 bg-slate-50 rounded-xl p-6 text-center">
+      <div className="w-16 h-16 rounded-full bg-white border border-zinc-200 flex items-center justify-center mb-6">
         <Play className="w-6 h-6 text-emerald-500 ml-1" />
       </div>
-      <h2 className="text-xl font-medium text-zinc-100 mb-2">{featureName}</h2>
+      <h2 className="text-xl font-medium text-zinc-900 mb-2">{featureName}</h2>
       <p className="text-zinc-400 max-w-md mb-8">
         Click below to initialize the {featureName.toLowerCase()} module. This action will consume your usage allowance.
       </p>

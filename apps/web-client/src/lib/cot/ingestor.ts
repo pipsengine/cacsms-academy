@@ -1,10 +1,10 @@
-import { fetchCurrencyHistoricalRaw, fetchCurrencyRaw } from './fetcher';
-import { parseCurrencyCsv } from './parser';
-import { groupAndSortByAsset } from './transformer';
-import { computeMetrics } from './analytics';
-import { applySignalEngine } from './signalEngine';
-import { upsertCotRecords } from './storage';
-import { CotRecord } from './types';
+import { fetchCurrencyHistoricalRaw, fetchCurrencyRaw } from './fetcher.ts';
+import { parseCurrencyCsv } from './parser.ts';
+import { groupAndSortByAsset } from './transformer.ts';
+import { computeMetrics } from './analytics.ts';
+import { applySignalEngine } from './signalEngine.ts';
+import { upsertCotRecords } from './storage.ts';
+import type { CotRecord } from './types.ts';
 
 export interface IngestResult {
   success: boolean;

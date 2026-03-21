@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useMemo, useState } from 'react';
 import {
@@ -167,7 +167,7 @@ export default function WeeklyAnalysisOverview({
 
   if (loading) {
     return (
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-5 text-sm text-zinc-300">
+      <div className="rounded-xl border border-zinc-200 bg-white p-5 text-sm text-zinc-600">
         Loading weekly analysis snapshot...
       </div>
     );
@@ -176,7 +176,7 @@ export default function WeeklyAnalysisOverview({
   return (
     <div className="space-y-5">
       {showMarketHealth && (
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-5">
+        <div className="rounded-xl border border-zinc-200 bg-white p-5">
           <h3 className="text-sm font-semibold uppercase tracking-[0.22em] text-zinc-500">Market Health</h3>
           {status ? (
             <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -191,7 +191,7 @@ export default function WeeklyAnalysisOverview({
         </div>
       )}
 
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-5">
+      <div className="rounded-xl border border-zinc-200 bg-white p-5">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <h3 className="text-sm font-semibold uppercase tracking-[0.22em] text-zinc-500">Institutional Weekly Analysis</h3>
           <div className="flex flex-wrap gap-2">
@@ -200,7 +200,7 @@ export default function WeeklyAnalysisOverview({
                 key={opp.pair}
                 type="button"
                 onClick={() => setSelectedPair(opp.pair)}
-                className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${selectedPair === opp.pair ? 'border-emerald-500 bg-emerald-500/10 text-emerald-300' : 'border-zinc-700 bg-zinc-950/70 text-zinc-300 hover:border-zinc-600'}`}
+                className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${selectedPair === opp.pair ? 'border-emerald-500 bg-emerald-500/10 text-emerald-300' : 'border-zinc-300 bg-slate-50 text-zinc-600 hover:border-zinc-600'}`}
               >
                 {opp.pair}
               </button>
@@ -213,16 +213,16 @@ export default function WeeklyAnalysisOverview({
         ) : analysis ? (
           <div className={`mt-4 grid gap-5 ${compact ? 'lg:grid-cols-[minmax(0,1fr)_300px]' : 'xl:grid-cols-[minmax(0,1fr)_360px]'}`}>
             <div className="space-y-5">
-              <div className="rounded-lg border border-zinc-800 bg-zinc-950/70 p-4">
+              <div className="rounded-lg border border-zinc-200 bg-slate-50 p-4">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-lg font-bold text-zinc-100">{analysis.pair}</span>
+                  <span className="text-lg font-bold text-zinc-900">{analysis.pair}</span>
                   <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${analysis.direction === 'LONG' ? 'bg-emerald-500/10 text-emerald-300' : analysis.direction === 'SHORT' ? 'bg-red-500/10 text-red-300' : 'bg-amber-500/10 text-amber-300'}`}>
                     {analysis.direction}
                   </span>
-                  <span className="rounded-full bg-zinc-800 px-2.5 py-1 text-xs font-semibold text-zinc-300">{analysis.market_type}</span>
-                  <span className="rounded-full bg-zinc-800 px-2.5 py-1 text-xs font-semibold text-zinc-300">{analysis.probability} Probability</span>
+                  <span className="rounded-full bg-zinc-200 px-2.5 py-1 text-xs font-semibold text-zinc-600">{analysis.market_type}</span>
+                  <span className="rounded-full bg-zinc-200 px-2.5 py-1 text-xs font-semibold text-zinc-600">{analysis.probability} Probability</span>
                 </div>
-                <p className="mt-3 text-sm leading-7 text-zinc-300">{analysis.summary}</p>
+                <p className="mt-3 text-sm leading-7 text-zinc-600">{analysis.summary}</p>
                 <div className={`mt-4 grid grid-cols-1 gap-3 ${compact ? 'sm:grid-cols-2' : 'sm:grid-cols-3'}`}>
                   <Metric label="Score" value={String(analysis.score)} />
                   <Metric label="Probability" value={analysis.probability} />
@@ -231,25 +231,25 @@ export default function WeeklyAnalysisOverview({
               </div>
 
               {compact ? (
-                <div className="rounded-lg border border-zinc-800 bg-zinc-950/70 p-4">
+                <div className="rounded-lg border border-zinc-200 bg-slate-50 p-4">
                   <h4 className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-500">Preview Summary</h4>
-                  <p className="mt-3 text-sm leading-7 text-zinc-300">
+                  <p className="mt-3 text-sm leading-7 text-zinc-600">
                     {buildPreviewNarrative(analysis)}
                   </p>
-                  <div className="mt-3 rounded-md border border-zinc-800 bg-zinc-900/60 px-3 py-2">
+                  <div className="mt-3 rounded-md border border-zinc-200 bg-white px-3 py-2">
                     <p className="text-xs text-zinc-400">
-                      <span className="font-semibold text-zinc-200">Support:</span> {formatLevels(analysis.key_levels.support)}
+                      <span className="font-semibold text-zinc-700">Support:</span> {formatLevels(analysis.key_levels.support)}
                     </p>
                     <p className="mt-1 text-xs text-zinc-400">
-                      <span className="font-semibold text-zinc-200">Resistance:</span> {formatLevels(analysis.key_levels.resistance)}
+                      <span className="font-semibold text-zinc-700">Resistance:</span> {formatLevels(analysis.key_levels.resistance)}
                     </p>
                   </div>
                 </div>
               ) : (
                 <>
-                  <div className="rounded-lg border border-zinc-800 bg-zinc-950/70 p-4">
+                  <div className="rounded-lg border border-zinc-200 bg-slate-50 p-4">
                     <h4 className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-500">Detailed Analysis</h4>
-                    <p className="mt-3 text-sm leading-7 text-zinc-300">{analysis.analysis}</p>
+                    <p className="mt-3 text-sm leading-7 text-zinc-600">{analysis.analysis}</p>
                   </div>
 
                   <div className="grid gap-4 md:grid-cols-2">
@@ -257,16 +257,16 @@ export default function WeeklyAnalysisOverview({
                     <LevelCard label="Resistance" levels={analysis.key_levels.resistance} accent="red" />
                   </div>
 
-                  <div className="rounded-lg border border-zinc-800 bg-zinc-950/70 p-4">
+                  <div className="rounded-lg border border-zinc-200 bg-slate-50 p-4">
                     <h4 className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-500">Trade Focus</h4>
-                    <p className="mt-3 text-sm leading-7 text-zinc-300">{analysis.trade_focus}</p>
+                    <p className="mt-3 text-sm leading-7 text-zinc-600">{analysis.trade_focus}</p>
                   </div>
                 </>
               )}
             </div>
 
             <div className="space-y-4">
-              <div className="rounded-lg border border-zinc-800 bg-zinc-950/70 p-4">
+              <div className="rounded-lg border border-zinc-200 bg-slate-50 p-4">
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <h4 className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-500">Live Market Chart</h4>
@@ -307,9 +307,9 @@ export default function WeeklyAnalysisOverview({
               </div>
 
               {selectedOpportunity && (
-                <div className="rounded-lg border border-zinc-800 bg-zinc-950/70 p-4">
+                <div className="rounded-lg border border-zinc-200 bg-slate-50 p-4">
                   <h4 className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-500">Signal Context</h4>
-                  <div className="mt-4 space-y-2 text-sm text-zinc-300">
+                  <div className="mt-4 space-y-2 text-sm text-zinc-600">
                     <p>Rank #{selectedOpportunity.rank}</p>
                     <p>Opportunity score: {selectedOpportunity.compositeScore}</p>
                     <p>Confidence: {selectedOpportunity.confidenceClass}</p>
@@ -326,14 +326,14 @@ export default function WeeklyAnalysisOverview({
       </div>
 
       {showTopOpportunities && (
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-5">
+        <div className="rounded-xl border border-zinc-200 bg-white p-5">
           <h3 className="text-sm font-semibold uppercase tracking-[0.22em] text-zinc-500">Top Opportunities This Week</h3>
           {opps && opps.opportunities.length > 0 ? (
             <div className="mt-4 space-y-3">
               {opps.opportunities.map((opp) => (
-                <div key={`${opp.rank}-${opp.pair}`} className="rounded-lg border border-zinc-800 bg-zinc-950/70 p-3">
+                <div key={`${opp.rank}-${opp.pair}`} className="rounded-lg border border-zinc-200 bg-slate-50 p-3">
                   <div className="flex items-center justify-between">
-                    <p className="text-sm font-semibold text-zinc-100">#{opp.rank} {opp.pair}</p>
+                    <p className="text-sm font-semibold text-zinc-900">#{opp.rank} {opp.pair}</p>
                     <span className={`text-xs font-semibold ${opp.direction === 'LONG' ? 'text-emerald-400' : 'text-red-400'}`}>
                       {opp.direction}
                     </span>
@@ -375,9 +375,9 @@ function buildPreviewNarrative(analysis: WeeklyAnalysisPayload): string {
 
 function Metric({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg border border-zinc-800 bg-zinc-950/70 p-3">
+    <div className="rounded-lg border border-zinc-200 bg-slate-50 p-3">
       <p className="text-[11px] uppercase tracking-[0.22em] text-zinc-500">{label}</p>
-      <p className="mt-1 text-sm font-semibold text-zinc-200">{value}</p>
+      <p className="mt-1 text-sm font-semibold text-zinc-700">{value}</p>
     </div>
   );
 }
@@ -392,7 +392,7 @@ function LevelCard({
   accent: 'emerald' | 'red';
 }) {
   return (
-    <div className="rounded-lg border border-zinc-800 bg-zinc-950/70 p-4">
+    <div className="rounded-lg border border-zinc-200 bg-slate-50 p-4">
       <h4 className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-500">{label}</h4>
       <div className="mt-3 flex flex-wrap gap-2">
         {levels.map((level) => (

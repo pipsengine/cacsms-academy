@@ -1,4 +1,4 @@
-import { RawCotRow, CotRecord, CotAsset } from './types';
+import type { RawCotRow, CotRecord, CotAsset } from './types.ts';
 
 const ROLLING_WINDOW = 52;
 

@@ -100,10 +100,10 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
               className={`pointer-events-auto flex items-start gap-3 p-4 rounded-xl border shadow-lg backdrop-blur-md ${
-                notification.type === 'success' ? 'bg-emerald-950/80 border-emerald-500/30 text-emerald-100' :
-                notification.type === 'warning' ? 'bg-amber-950/80 border-amber-500/30 text-amber-100' :
-                notification.type === 'error' ? 'bg-red-950/80 border-red-500/30 text-red-100' :
-                'bg-zinc-900/80 border-zinc-700/50 text-zinc-100'
+                notification.type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-900' :
+                notification.type === 'warning' ? 'bg-amber-50 border-amber-200 text-amber-900' :
+                notification.type === 'error' ? 'bg-red-50 border-red-200 text-red-900' :
+                'bg-white border-zinc-200 text-zinc-900'
               }`}
             >
               <div className="flex-shrink-0 mt-0.5">

@@ -1,4 +1,4 @@
-import { RawCotRow, CotAsset } from './types';
+import type { RawCotRow, CotAsset } from './types.ts';
 
 /**
  * Deduplicate and sort raw rows per asset.

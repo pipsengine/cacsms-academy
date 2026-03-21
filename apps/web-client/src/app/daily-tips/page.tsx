@@ -1,4 +1,4 @@
-import DashboardLayout from '@/components/DashboardLayout';
+﻿import DashboardLayout from '@/components/DashboardLayout';
 import AppSectionLayout from '@/components/AppSectionLayout';
 import DailyTradingTipPreview from '@/components/DailyTradingTipPreview';
 
@@ -14,25 +14,25 @@ export default function DailyTipsPage() {
           { id: 'risk-checklist', label: 'Risk Checklist', helper: 'Protect downside before entry' },
         ]}
       >
-        <section id="today-tip" className="scroll-mt-28 rounded-xl border border-zinc-800 bg-zinc-900/60 p-5">
+        <section id="today-tip" className="scroll-mt-28 rounded-xl border border-zinc-200 bg-white p-5">
           <h3 className="text-sm font-semibold uppercase tracking-[0.22em] text-zinc-500">Today&apos;s Tip</h3>
           <div className="mt-4">
             <DailyTradingTipPreview />
           </div>
         </section>
 
-        <section id="how-to-use" className="scroll-mt-28 rounded-xl border border-zinc-800 bg-zinc-900/60 p-5">
+        <section id="how-to-use" className="scroll-mt-28 rounded-xl border border-zinc-200 bg-white p-5">
           <h3 className="text-sm font-semibold uppercase tracking-[0.22em] text-zinc-500">How to Use</h3>
-          <ol className="mt-4 list-decimal pl-5 space-y-2 text-sm text-zinc-300">
+          <ol className="mt-4 list-decimal pl-5 space-y-2 text-sm text-zinc-600">
             <li>Read the market state first, then check if your chart matches that context.</li>
             <li>Only execute when your trigger confirms (close, retest, or rejection rule).</li>
             <li>Keep risk fixed (e.g., 1%) so one bad trade does not break weekly performance.</li>
           </ol>
         </section>
 
-        <section id="risk-checklist" className="scroll-mt-28 rounded-xl border border-zinc-800 bg-zinc-900/60 p-5">
+        <section id="risk-checklist" className="scroll-mt-28 rounded-xl border border-zinc-200 bg-white p-5">
           <h3 className="text-sm font-semibold uppercase tracking-[0.22em] text-zinc-500">Risk Checklist</h3>
-          <ul className="mt-4 space-y-2 text-sm text-zinc-300">
+          <ul className="mt-4 space-y-2 text-sm text-zinc-600">
             <li>Invalidation level is defined before entry.</li>
             <li>Stop-loss is placed beyond structure, not emotion.</li>
             <li>Position size is calculated from fixed account risk.</li>
