@@ -20,6 +20,7 @@ const dashboardPrefixes = [
   '/profile',
   '/ai-prompts',
   '/cot-intelligence',
+  '/interest-rate-intelligence',
 ];
 
 function isDashboardRoute(pathname: string) {
