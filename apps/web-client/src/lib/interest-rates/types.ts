@@ -11,6 +11,8 @@ export interface InterestRateRecord {
   date: string;
   decisionTimestamp: string;
   changeBps: number;
+  previousRate?: number | null;
+  forecastRate?: number | null;
   policyDirection: PolicyDirection;
   source: string;
 }

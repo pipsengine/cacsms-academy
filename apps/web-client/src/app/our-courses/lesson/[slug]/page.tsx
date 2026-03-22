@@ -8,7 +8,7 @@ import remarkGfm from 'remark-gfm';
 import { useAuth } from '@/components/AuthProvider';
 import LearningProgressChips from '@/components/LearningProgressChips';
 import { trackLearningEvent } from '@/lib/learning/analytics';
-import { getAdjacentLessons, getLessonBySlug, getModuleLessons } from '@/lib/learning/curriculum';
+import { getAdjacentLessons, getAllLessons, getLessonBySlug, getModuleLessons } from '@/lib/learning/curriculum';
 import { deriveActiveLessonSlug, isActiveLessonSidebarItem } from '@/lib/learning/lessonSidebarActive';
 import { getChapterQuiz } from '@/lib/learning/chapterQuizRegistry';
 
@@ -31,6 +31,14 @@ type LessonHeading = {
   title: string;
   level: 2 | 3;
 };
+
+type LessonTopicSlide = {
+  id: string;
+  title: string;
+  markdown: string;
+};
+
+type SlideTransitionStyle = 'fade' | 'push' | 'zoom';
 
 function CandlestickVisualDiagram() {
   return (
@@ -99,6 +107,81 @@ function childrenToText(children: ReactNode): string {
   return '';
 }
 
+function splitMarkdownIntoSlidePages(markdown: string, maxChars = 1000): string[] {
+  const trimmed = markdown.trim();
+  if (!trimmed) return [''];
+
+  // Keep fenced code blocks and list groups intact so slides don't split mid-structure.
+  const lines = trimmed.split('\n');
+  const blocks: string[] = [];
+  let current: string[] = [];
+  let inFence = false;
+
+  const flushCurrent = () => {
+    const block = current.join('\n').trim();
+    if (block) blocks.push(block);
+    current = [];
+  };
+
+  for (const rawLine of lines) {
+    const line = rawLine;
+    const trimmedLine = line.trim();
+
+    if (trimmedLine.startsWith('```')) {
+      inFence = !inFence;
+      current.push(line);
+      continue;
+    }
+
+    if (inFence) {
+      current.push(line);
+      continue;
+    }
+
+    const isBlank = trimmedLine.length === 0;
+    const isListLine = /^[-*+]\s+|^\d+\.\s+|^>\s+/.test(trimmedLine);
+
+    if (isBlank) {
+      // Keep list groups together by retaining single blank lines inside lists.
+      if (current.length && /^[-*+]\s+|^\d+\.\s+|^>\s+/.test((current.at(-1) ?? '').trim())) {
+        current.push(line);
+      } else {
+        flushCurrent();
+      }
+      continue;
+    }
+
+    if (isListLine && current.length && !/^[-*+]\s+|^\d+\.\s+|^>\s+/.test((current.at(-1) ?? '').trim())) {
+      flushCurrent();
+      current.push(line);
+      continue;
+    }
+
+    current.push(line);
+  }
+
+  flushCurrent();
+
+  if (!blocks.length) return [trimmed];
+
+  const pages: string[] = [];
+  let currentPage = '';
+
+  for (const block of blocks) {
+    const candidate = currentPage ? `${currentPage}\n\n${block}` : block;
+    if (candidate.length <= maxChars || !currentPage) {
+      currentPage = candidate;
+      continue;
+    }
+
+    pages.push(currentPage);
+    currentPage = block;
+  }
+
+  if (currentPage) pages.push(currentPage);
+  return pages.length ? pages : [trimmed];
+}
+
 export default function LessonPage() {
   const params = useParams<{ slug?: string | string[] }>();
   const pathname = usePathname() ?? '';
@@ -113,6 +196,10 @@ export default function LessonPage() {
   const lesson = useMemo(() => getLessonBySlug(slug), [slug]);
   const adjacent = useMemo(() => (lesson ? getAdjacentLessons(lesson.slug) : { previous: null, next: null }), [lesson]);
   const moduleTopics = useMemo(() => (lesson ? getModuleLessons(lesson.week) : []), [lesson]);
+  const allLessons = useMemo(() => getAllLessons(), []);
+  const currentLessonPosition = lesson ? lesson.lessonIndex + 1 : 0;
+  const totalLessons = allLessons.length;
+  const completionPercent = totalLessons ? Math.round((currentLessonPosition / totalLessons) * 100) : 0;
 
   // Show the chapter quiz prompt when on the last lesson of a chapter (Saturday L3)
   const isLastLessonOfChapter = lesson?.day === 'Saturday' && lesson.lessonNumber === 3;
@@ -125,17 +212,27 @@ export default function LessonPage() {
   const [unitLoading, setUnitLoading] = useState(true);
   const [unitError, setUnitError] = useState<string | null>(null);
   const [lessonStatus, setLessonStatus] = useState<string>('not_started');
+  const [lessonProgressBySlug, setLessonProgressBySlug] = useState<Record<string, string>>({});
   const [markingComplete, setMarkingComplete] = useState(false);
 
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [chatInput, setChatInput] = useState('');
   const [chatLoading, setChatLoading] = useState(false);
   const [activeHeadingId, setActiveHeadingId] = useState<string>('');
+  const [slideMode, setSlideMode] = useState(false);
+  const [isSlideTransitioning, setIsSlideTransitioning] = useState(false);
+  const [slideTransitionStyle, setSlideTransitionStyle] = useState<SlideTransitionStyle>('fade');
+  const [currentTopicSlideIndex, setCurrentTopicSlideIndex] = useState(0);
+  const [currentTopicPageIndex, setCurrentTopicPageIndex] = useState(0);
+  const [topicMotionEnabled, setTopicMotionEnabled] = useState(true);
+  const [topicContentVisible, setTopicContentVisible] = useState(true);
 
   const lessonContentRef = useRef<HTMLDivElement>(null);
   const topicListContainerRef = useRef<HTMLUListElement>(null);
   const activeTopicLinkRef = useRef<HTMLAnchorElement | null>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const activeTimelineChipRef = useRef<HTMLButtonElement | null>(null);
+  const activeTopicSlideChipRef = useRef<HTMLButtonElement | null>(null);
 
   const lessonHeadings = useMemo<LessonHeading[]>(() => {
     if (!unit?.content) return [];
@@ -169,7 +266,90 @@ export default function LessonPage() {
     return haystack.includes('candlestick') || haystack.includes('candle');
   }, [lesson?.title, unit?.content, unit?.summary, unit?.title]);
 
+  const lessonTopicSlides = useMemo<LessonTopicSlide[]>(() => {
+    const content = unit?.content?.trim();
+    if (!content) return [];
+
+    const lines = content.split('\n');
+    const slides: LessonTopicSlide[] = [];
+    let currentTitle = 'Lesson Overview';
+    let currentLines: string[] = [];
+    let hasHeading = false;
+
+    const pushCurrent = () => {
+      const markdown = currentLines.join('\n').trim();
+      if (!markdown) return;
+      slides.push({
+        id: headingSlug(currentTitle || `topic-${slides.length + 1}`) || `topic-${slides.length + 1}`,
+        title: currentTitle || `Topic ${slides.length + 1}`,
+        markdown,
+      });
+    };
+
+    for (const line of lines) {
+      const headingMatch = /^(##)\s+(.+)$/.exec(line.trim());
+      if (headingMatch) {
+        hasHeading = true;
+        pushCurrent();
+        currentTitle = headingMatch[2].trim();
+        currentLines = [line];
+      } else {
+        currentLines.push(line);
+      }
+    }
+
+    pushCurrent();
+
+    if (!hasHeading && slides.length === 1) {
+      return [{
+        id: 'lesson-overview',
+        title: lesson?.title ?? 'Lesson Overview',
+        markdown: slides[0].markdown,
+      }];
+    }
+
+    return slides;
+  }, [lesson?.title, unit?.content]);
+
+  const totalTopicSlides = lessonTopicSlides.length || 1;
+  const activeTopicSlide = lessonTopicSlides[currentTopicSlideIndex] ?? null;
+  const activeTopicPages = useMemo(
+    () => splitMarkdownIntoSlidePages(activeTopicSlide?.markdown ?? '', 1000),
+    [activeTopicSlide?.markdown]
+  );
+  const totalTopicPages = activeTopicPages.length || 1;
+  const activeTopicPageMarkdown = activeTopicPages[currentTopicPageIndex] ?? activeTopicPages[0] ?? '';
+  const topicSlideProgressPct = totalTopicSlides
+    ? Math.round(((currentTopicSlideIndex + 1) / totalTopicSlides) * 100)
+    : 0;
+  const topicPageProgressPct = totalTopicPages
+    ? Math.round(((currentTopicPageIndex + 1) / totalTopicPages) * 100)
+    : 0;
+  const canGoPreviousPage = currentTopicPageIndex > 0;
+  const canGoNextPage = currentTopicPageIndex < totalTopicPages - 1;
+  const canGoPreviousSlide = canGoPreviousPage || currentTopicSlideIndex > 0 || Boolean(adjacent.previous);
+  const canGoNextSlide = canGoNextPage || currentTopicSlideIndex < totalTopicSlides - 1 || Boolean(adjacent.next);
+
   const shouldShowVisualExplainer = isCandlestickLesson;
+  const chapterCompletedCount = useMemo(
+    () => moduleTopics.filter((topic) => lessonProgressBySlug[topic.slug] === 'completed').length,
+    [lessonProgressBySlug, moduleTopics]
+  );
+
+  const slideTypographyClass = useMemo(() => {
+    const contentLength = activeTopicPageMarkdown.length || (unit?.content?.length ?? 0);
+    if (contentLength > 8500) return 'text-[13px] leading-6';
+    if (contentLength > 6000) return 'text-[14px] leading-6.5';
+    if (contentLength > 2500) return 'text-[17px] leading-8';
+    return 'text-[19px] leading-9';
+  }, [activeTopicPageMarkdown, unit?.content]);
+
+  const slideTransitionClass = useMemo(() => {
+    if (!isSlideTransitioning) return 'translate-y-0 opacity-100 scale-100';
+    if (slideTransitionStyle === 'push') return 'translate-x-4 opacity-0';
+    if (slideTransitionStyle === 'zoom') return 'scale-[0.985] opacity-0';
+    return 'translate-y-1 opacity-0';
+  }, [isSlideTransitioning, slideTransitionStyle]);
 
   useEffect(() => {
     if (!lesson) return;
@@ -207,6 +387,8 @@ export default function LessonPage() {
       .then(async (res) => {
         if (!res.ok) return;
         const data = (await res.json()) as { progress?: Array<{ lessonSlug: string; status: string }> };
+        const progressLookup = Object.fromEntries((data.progress ?? []).map((entry) => [entry.lessonSlug, entry.status]));
+        setLessonProgressBySlug(progressLookup);
         const entry = data.progress?.find((p) => p.lessonSlug === lesson.slug);
         if (entry) setLessonStatus(entry.status);
       })
@@ -237,7 +419,9 @@ export default function LessonPage() {
         day: lesson.day,
       });
       setLessonStatus('completed');
+      setLessonProgressBySlug((current) => ({ ...current, [lesson.slug]: 'completed' }));
       if (adjacent.next) {
+        setIsSlideTransitioning(true);
         setTimeout(() => {
           router.push(`/our-courses/lesson/${encodeURIComponent(adjacent.next!.slug)}`);
         }, 1000);
@@ -321,6 +505,128 @@ export default function LessonPage() {
   }, [lesson?.slug]);
 
   useEffect(() => {
+    if (!slideMode) return;
+    activeTimelineChipRef.current?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  }, [lesson?.slug, slideMode]);
+
+  useEffect(() => {
+    if (!slideMode) return;
+    activeTopicSlideChipRef.current?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  }, [currentTopicSlideIndex, slideMode]);
+
+  useEffect(() => {
+    setCurrentTopicSlideIndex(0);
+  }, [lesson?.slug, unit?.content]);
+
+  useEffect(() => {
+    setCurrentTopicPageIndex(0);
+  }, [activeTopicSlide?.id, lesson?.slug]);
+
+  useEffect(() => {
+    if (!slideMode || !topicMotionEnabled) {
+      setTopicContentVisible(true);
+      return;
+    }
+
+    setTopicContentVisible(false);
+    const timer = window.setTimeout(() => {
+      setTopicContentVisible(true);
+    }, 20);
+
+    return () => window.clearTimeout(timer);
+  }, [currentTopicSlideIndex, lesson?.slug, slideMode, topicMotionEnabled]);
+
+  useEffect(() => {
+    setIsSlideTransitioning(false);
+  }, [slug]);
+
+  const navigateToLesson = useCallback(
+    (targetSlug: string, direction: 'previous' | 'next' | 'direct' = 'direct') => {
+      if (isSlideTransitioning) return;
+      setIsSlideTransitioning(true);
+
+      if (lesson) {
+        void trackLearningEvent({
+          eventType: 'lesson_navigation_clicked',
+          route: `/our-courses/lesson/${encodeURIComponent(lesson.slug)}`,
+          lessonSlug: lesson.slug,
+          week: lesson.week,
+          day: lesson.day,
+          metadata: { direction },
+        });
+      }
+
+      window.setTimeout(() => {
+        router.push(`/our-courses/lesson/${encodeURIComponent(targetSlug)}`);
+      }, 180);
+
+      // Safety: release transition lock even if route push is interrupted.
+      window.setTimeout(() => {
+        setIsSlideTransitioning(false);
+      }, 1200);
+    },
+    [isSlideTransitioning, lesson, router]
+  );
+
+  const navigateToTopicSlide = useCallback(
+    (targetIndex: number) => {
+      if (isSlideTransitioning) return;
+      if (targetIndex < 0 || targetIndex >= lessonTopicSlides.length) return;
+      if (targetIndex === currentTopicSlideIndex) return;
+
+      setIsSlideTransitioning(true);
+      window.setTimeout(() => {
+        setCurrentTopicSlideIndex(targetIndex);
+        setIsSlideTransitioning(false);
+      }, 140);
+    },
+    [currentTopicSlideIndex, isSlideTransitioning, lessonTopicSlides.length]
+  );
+
+  const navigateToTopicPage = useCallback(
+    (targetIndex: number) => {
+      if (isSlideTransitioning) return;
+      if (targetIndex < 0 || targetIndex >= activeTopicPages.length) return;
+      if (targetIndex === currentTopicPageIndex) return;
+
+      setIsSlideTransitioning(true);
+      window.setTimeout(() => {
+        setCurrentTopicPageIndex(targetIndex);
+        setIsSlideTransitioning(false);
+      }, 120);
+    },
+    [activeTopicPages.length, currentTopicPageIndex, isSlideTransitioning]
+  );
+
+  const goPreviousSlide = useCallback(() => {
+    if (slideMode && canGoPreviousPage) {
+      navigateToTopicPage(currentTopicPageIndex - 1);
+      return;
+    }
+    if (slideMode && currentTopicSlideIndex > 0) {
+      navigateToTopicSlide(currentTopicSlideIndex - 1);
+      return;
+    }
+    if (adjacent.previous) {
+      navigateToLesson(adjacent.previous.slug, 'previous');
+    }
+  }, [adjacent.previous, canGoPreviousPage, currentTopicPageIndex, currentTopicSlideIndex, navigateToLesson, navigateToTopicPage, navigateToTopicSlide, slideMode]);
+
+  const goNextSlide = useCallback(() => {
+    if (slideMode && canGoNextPage) {
+      navigateToTopicPage(currentTopicPageIndex + 1);
+      return;
+    }
+    if (slideMode && currentTopicSlideIndex < totalTopicSlides - 1) {
+      navigateToTopicSlide(currentTopicSlideIndex + 1);
+      return;
+    }
+    if (adjacent.next) {
+      navigateToLesson(adjacent.next.slug, 'next');
+    }
+  }, [adjacent.next, canGoNextPage, currentTopicPageIndex, currentTopicSlideIndex, navigateToLesson, navigateToTopicPage, navigateToTopicSlide, slideMode, totalTopicSlides]);
+
+  useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
 
@@ -332,7 +638,9 @@ export default function LessonPage() {
       );
       if (isTypingContext) return;
 
-      if (event.key === 'ArrowLeft' && adjacent.previous) {
+      if (event.key === 'ArrowLeft' || event.key === 'PageUp') {
+        if (!canGoPreviousSlide) return;
+
         void trackLearningEvent({
           eventType: 'keyboard_navigation_used',
           route: `/our-courses/lesson/${encodeURIComponent(lesson?.slug ?? '')}`,
@@ -341,10 +649,13 @@ export default function LessonPage() {
           day: lesson?.day,
           metadata: { direction: 'previous' },
         });
-        router.push(`/our-courses/lesson/${encodeURIComponent(adjacent.previous.slug)}`);
+        goPreviousSlide();
       }
 
-      if (event.key === 'ArrowRight' && adjacent.next) {
+      if (event.key === 'ArrowRight' || event.key === 'PageDown' || event.key === ' ') {
+        event.preventDefault();
+        if (!canGoNextSlide) return;
+
         void trackLearningEvent({
           eventType: 'keyboard_navigation_used',
           route: `/our-courses/lesson/${encodeURIComponent(lesson?.slug ?? '')}`,
@@ -353,13 +664,17 @@ export default function LessonPage() {
           day: lesson?.day,
           metadata: { direction: 'next' },
         });
-        router.push(`/our-courses/lesson/${encodeURIComponent(adjacent.next.slug)}`);
+        goNextSlide();
+      }
+
+      if (event.key === 'Escape') {
+        setSlideMode(false);
       }
     };
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [adjacent.next, adjacent.previous, router]);
+  }, [canGoNextSlide, canGoPreviousSlide, goNextSlide, goPreviousSlide, lesson?.day, lesson?.slug, lesson?.week]);
 
   if (!lesson) {
     return (
@@ -374,18 +689,75 @@ export default function LessonPage() {
   }
 
   return (
-    <div className="max-w-6xl">
-      <nav className="mb-4 flex items-center gap-2 text-xs text-zinc-500">
-        <Link href="/our-courses" className="hover:text-zinc-700">Learning Home</Link>
-        <span>/</span>
-        <span className="text-zinc-600">Chapter {lesson.week} · {lesson.module}</span>
-        <span>/</span>
-        <span className="text-zinc-800">{lesson.title}</span>
-      </nav>
+    <div className={slideMode ? 'fixed inset-0 z-50 h-screen overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-zinc-50 p-4 sm:p-6' : 'max-w-7xl'}>
+      {!slideMode && (
+        <nav className="mb-4 flex items-center gap-2 text-xs text-zinc-500">
+          <Link href="/our-courses" className="hover:text-zinc-700">Learning Home</Link>
+          <span>/</span>
+          <span className="text-zinc-600">Chapter {lesson.week} · {lesson.module}</span>
+          <span>/</span>
+          <span className="text-zinc-800">{lesson.title}</span>
+        </nav>
+      )}
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
+      <div className={`mb-5 overflow-hidden rounded-2xl border shadow-sm ${slideMode ? 'border-emerald-200 bg-white text-zinc-900' : 'border-zinc-200 bg-white'}`}>
+        <div className={`flex flex-wrap items-center justify-between gap-3 border-b px-4 py-3 ${slideMode ? 'border-emerald-200 bg-emerald-50/50' : 'border-zinc-200 bg-zinc-50/80'}`}>
+          <div>
+            <p className={`text-[10px] font-semibold uppercase tracking-[0.22em] ${slideMode ? 'text-emerald-600' : 'text-zinc-500'}`}>Presentation Reader</p>
+            <p className={`mt-1 text-sm font-semibold ${slideMode ? 'text-zinc-900' : 'text-zinc-800'}`}>
+              Slide {currentLessonPosition} of {totalLessons} · {completionPercent}% through full course
+            </p>
+            {slideMode && (
+              <p className="mt-1 text-xs text-zinc-600">
+                Topic {currentTopicSlideIndex + 1}/{totalTopicSlides} · Page {currentTopicPageIndex + 1}/{totalTopicPages}{activeTopicSlide ? ` · ${activeTopicSlide.title}` : ''}
+              </p>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            <div className={`text-xs ${slideMode ? 'text-zinc-600' : 'text-zinc-500'}`}>
+            Controls: <span className="font-semibold">← / →</span>, <span className="font-semibold">PgUp / PgDn</span>, <span className="font-semibold">Space</span>
+            </div>
+            <label className={`hidden items-center gap-1 rounded-md border px-2 py-1 text-[11px] sm:flex ${slideMode ? 'border-emerald-200 bg-white text-zinc-700' : 'border-zinc-200 bg-white text-zinc-600'}`}>
+              <span>Transition</span>
+              <select
+                value={slideTransitionStyle}
+                onChange={(event) => setSlideTransitionStyle(event.target.value as SlideTransitionStyle)}
+                className={`rounded border px-1.5 py-0.5 text-[11px] ${slideMode ? 'border-emerald-200 bg-white text-zinc-700' : 'border-zinc-300 bg-white text-zinc-700'}`}
+              >
+                <option value="fade">Fade</option>
+                <option value="push">Push</option>
+                <option value="zoom">Zoom</option>
+              </select>
+            </label>
+            {slideMode && (
+              <button
+                type="button"
+                onClick={() => setTopicMotionEnabled((current) => !current)}
+                className={`rounded-md border px-2 py-1 text-[11px] font-semibold ${topicMotionEnabled ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-zinc-200 bg-white text-zinc-600'}`}
+              >
+                {topicMotionEnabled ? 'Motion On' : 'Motion Off'}
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={() => setSlideMode((current) => !current)}
+              className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${slideMode ? 'border border-emerald-200 bg-white text-zinc-700 hover:bg-emerald-50' : 'bg-emerald-600 text-white hover:bg-emerald-500'}`}
+            >
+              {slideMode ? 'Exit Slide Mode (Esc)' : 'Enter Slide Mode'}
+            </button>
+          </div>
+        </div>
+        <div className={`h-1.5 w-full ${slideMode ? 'bg-emerald-100' : 'bg-zinc-100'}`}>
+          <div
+            className="h-full bg-gradient-to-r from-emerald-500 to-cyan-500 transition-[width] duration-500"
+            style={{ width: `${completionPercent}%` }}
+          />
+        </div>
+      </div>
+
+      <div className={`grid gap-6 transition-all duration-200 ${slideTransitionClass} ${slideMode ? 'grid-cols-1' : 'xl:grid-cols-[minmax(0,1fr)_320px]'}`}>
         <div className="space-y-5">
-          <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
+          <div className={`rounded-2xl border p-5 shadow-sm ${slideMode ? 'border-emerald-200 bg-white text-zinc-900' : 'border-zinc-200 bg-gradient-to-br from-white via-white to-emerald-50/30'}`}>
             <div className="flex flex-wrap items-center gap-2">
               <span className={`rounded-full border px-2.5 py-0.5 text-xs font-semibold ${
                 lesson.level === 'Beginner' ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-amber-200 bg-amber-50 text-amber-700'
@@ -405,9 +777,9 @@ export default function LessonPage() {
                 <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">✓ Completed</span>
               )}
             </div>
-            <h1 className="mt-3 text-xl font-bold text-zinc-900">{lesson.title}</h1>
-            <p className="mt-2 text-sm leading-relaxed text-zinc-700">{lesson.summary}</p>
-            <p className="mt-2 text-xs text-zinc-500">Topic Theme: {lesson.dayTheme}</p>
+            <h1 className={`mt-3 text-xl font-bold ${slideMode ? 'text-zinc-900' : 'text-zinc-900'}`}>{lesson.title}</h1>
+            <p className={`mt-2 text-sm leading-relaxed ${slideMode ? 'text-zinc-700' : 'text-zinc-700'}`}>{lesson.summary}</p>
+            <p className={`mt-2 text-xs ${slideMode ? 'text-zinc-500' : 'text-zinc-500'}`}>Topic Theme: {lesson.dayTheme}</p>
             <LearningProgressChips week={lesson.week} day={lesson.day} currentLessonSlug={lesson.slug} />
           </div>
 
@@ -425,19 +797,96 @@ export default function LessonPage() {
 
           {!unitLoading && unit && (
             <>
-              {shouldShowVisualExplainer && (
-                <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
-                  <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-500">Visual Explainer</h2>
-                  <p className="mt-2 text-sm leading-relaxed text-zinc-700">{unit.image_prompt}</p>
+              {!slideMode && shouldShowVisualExplainer && (
+                <div className={`rounded-xl border p-5 shadow-sm ${slideMode ? 'border-emerald-200 bg-white' : 'border-zinc-200 bg-white'}`}>
+                  <h2 className={`text-sm font-semibold uppercase tracking-[0.2em] ${slideMode ? 'text-emerald-600' : 'text-zinc-500'}`}>Visual Explainer</h2>
+                  <p className={`mt-2 text-sm leading-relaxed ${slideMode ? 'text-zinc-700' : 'text-zinc-700'}`}>{unit.image_prompt}</p>
                   <div className="mt-4">
                     <CandlestickVisualDiagram />
                   </div>
                 </div>
               )}
 
-              <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
-                <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-500">Detailed Lesson</h2>
-                <div ref={lessonContentRef} className="prose prose-zinc mt-4 max-w-none scroll-mt-24 prose-headings:font-bold prose-headings:text-zinc-900 prose-p:text-zinc-700 prose-strong:text-zinc-900 prose-li:text-zinc-700 prose-code:text-emerald-700 prose-pre:bg-zinc-100">
+              <div className={`relative rounded-2xl border p-5 shadow-sm ${slideMode ? 'border-emerald-200 bg-white' : 'border-zinc-200 bg-white'}`}>
+                <h2 className={`text-sm font-semibold uppercase tracking-[0.2em] ${slideMode ? 'text-emerald-600' : 'text-zinc-500'}`}>
+                  {slideMode ? `Topic ${currentTopicSlideIndex + 1}/${totalTopicSlides} · Page ${currentTopicPageIndex + 1}/${totalTopicPages}` : 'Detailed Lesson'}
+                </h2>
+                {slideMode && activeTopicSlide && (
+                  <p className="mt-2 text-sm font-semibold text-zinc-800">{activeTopicSlide.title}</p>
+                )}
+
+                {slideMode && totalTopicSlides > 1 && (
+                  <div className="mt-3 rounded-lg border border-zinc-200 bg-zinc-50 p-2">
+                    <div className="mb-2 flex items-center justify-between gap-2 text-[11px] text-zinc-600">
+                      <span>In-Lesson Topic Navigator</span>
+                      <span>{topicSlideProgressPct}%</span>
+                    </div>
+                    <div className="mb-2 h-1.5 w-full overflow-hidden rounded-full bg-zinc-200">
+                      <div
+                        className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-cyan-500 transition-[width] duration-300"
+                        style={{ width: `${topicSlideProgressPct}%` }}
+                      />
+                    </div>
+                    <div className="flex gap-1.5 overflow-x-auto pb-1">
+                      {lessonTopicSlides.map((topicSlide, index) => {
+                        const isActiveTopicSlide = index === currentTopicSlideIndex;
+                        return (
+                          <button
+                            key={topicSlide.id}
+                            type="button"
+                            ref={isActiveTopicSlide ? activeTopicSlideChipRef : undefined}
+                            onClick={() => navigateToTopicSlide(index)}
+                            className={`shrink-0 rounded-md border px-2 py-1 text-[11px] font-semibold transition-colors ${
+                              isActiveTopicSlide
+                                ? 'border-emerald-300 bg-emerald-100 text-emerald-800'
+                                : 'border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-100'
+                            }`}
+                            title={topicSlide.title}
+                          >
+                            T{index + 1}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+                {slideMode && totalTopicPages > 1 && (
+                  <div className="mt-2 rounded-lg border border-zinc-200 bg-zinc-50 p-2">
+                    <div className="mb-2 flex items-center justify-between gap-2 text-[11px] text-zinc-600">
+                      <span>Topic Page Navigator</span>
+                      <span>{topicPageProgressPct}%</span>
+                    </div>
+                    <div className="mb-2 h-1.5 w-full overflow-hidden rounded-full bg-zinc-200">
+                      <div
+                        className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-cyan-500 transition-[width] duration-300"
+                        style={{ width: `${topicPageProgressPct}%` }}
+                      />
+                    </div>
+                    <div className="flex gap-1.5 overflow-x-auto pb-1">
+                      {activeTopicPages.map((_, pageIndex) => {
+                        const isActivePage = pageIndex === currentTopicPageIndex;
+                        return (
+                          <button
+                            key={`page-${pageIndex + 1}`}
+                            type="button"
+                            onClick={() => navigateToTopicPage(pageIndex)}
+                            className={`shrink-0 rounded-md border px-2 py-1 text-[11px] font-semibold transition-colors ${
+                              isActivePage
+                                ? 'border-cyan-300 bg-cyan-100 text-cyan-800'
+                                : 'border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-100'
+                            }`}
+                          >
+                            P{pageIndex + 1}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+                <div
+                  ref={lessonContentRef}
+                  className={`prose mt-4 max-w-none scroll-mt-24 transition-all duration-300 ${slideMode ? `${slideTypographyClass} min-h-[42vh] max-h-[48vh] overflow-hidden` : 'text-[15px] leading-7'} ${slideMode && topicMotionEnabled ? (topicContentVisible ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0') : 'translate-y-0 opacity-100'} prose-zinc prose-headings:text-zinc-900 prose-p:text-zinc-700 prose-strong:text-zinc-900 prose-li:text-zinc-700 prose-code:text-emerald-700 prose-pre:bg-zinc-100 prose-headings:font-bold`}
+                >
                   <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
                     components={{
@@ -453,22 +902,43 @@ export default function LessonPage() {
                       },
                     }}
                   >
-                    {unit.content}
+                    {slideMode && activeTopicSlide ? activeTopicPageMarkdown : unit.content}
                   </ReactMarkdown>
                 </div>
+
+                {slideMode && (
+                  <>
+                    {(canGoPreviousPage || currentTopicSlideIndex > 0 || adjacent.previous) && (
+                      <button
+                        type="button"
+                        onClick={goPreviousSlide}
+                        className="absolute left-0 top-0 h-full w-12 rounded-l-2xl bg-transparent text-transparent transition-colors hover:bg-emerald-100/70 md:w-16"
+                        aria-label="Go to previous slide"
+                      />
+                    )}
+                    {(canGoNextPage || currentTopicSlideIndex < totalTopicSlides - 1 || adjacent.next) && (
+                      <button
+                        type="button"
+                        onClick={goNextSlide}
+                        className="absolute right-0 top-0 h-full w-12 rounded-r-2xl bg-transparent text-transparent transition-colors hover:bg-emerald-100/70 md:w-16"
+                        aria-label="Go to next slide"
+                      />
+                    )}
+                  </>
+                )}
               </div>
 
-              {unit.example && (
-                <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
-                  <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-500">Practical Example</h2>
-                  <p className="mt-3 text-sm leading-relaxed text-zinc-700">{unit.example}</p>
+              {!slideMode && unit.example && (
+                <div className={`rounded-xl border p-5 shadow-sm ${slideMode ? 'border-emerald-200 bg-white' : 'border-zinc-200 bg-white'}`}>
+                  <h2 className={`text-sm font-semibold uppercase tracking-[0.2em] ${slideMode ? 'text-emerald-600' : 'text-zinc-500'}`}>Practical Example</h2>
+                  <p className={`mt-3 text-sm leading-relaxed ${slideMode ? 'text-zinc-700' : 'text-zinc-700'}`}>{unit.example}</p>
                 </div>
               )}
 
-              {unit.is_assignment && unit.assignment && (
-                <div className="rounded-xl border border-amber-200 bg-amber-50 p-5">
-                  <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-amber-700">Assignment Instructions</h2>
-                  <pre className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-amber-900">{unit.assignment}</pre>
+              {!slideMode && unit.is_assignment && unit.assignment && (
+                <div className={`rounded-xl border p-5 ${slideMode ? 'border-amber-200 bg-amber-50' : 'border-amber-200 bg-amber-50'}`}>
+                  <h2 className={`text-sm font-semibold uppercase tracking-[0.2em] ${slideMode ? 'text-amber-700' : 'text-amber-700'}`}>Assignment Instructions</h2>
+                  <pre className={`mt-3 whitespace-pre-wrap text-sm leading-relaxed ${slideMode ? 'text-amber-900' : 'text-amber-900'}`}>{unit.assignment}</pre>
                 </div>
               )}
             </>
@@ -485,9 +955,13 @@ export default function LessonPage() {
                 <>
                   <span className="text-sm font-semibold text-emerald-700">✓ Lesson Completed</span>
                   {adjacent.next && (
-                    <Link href={`/our-courses/lesson/${encodeURIComponent(adjacent.next.slug)}`} className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500">
+                    <button
+                      type="button"
+                      onClick={() => navigateToLesson(adjacent.next!.slug, 'next')}
+                      className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500"
+                    >
                       Next Lesson →
-                    </Link>
+                    </button>
                   )}
                 </>
               ) : (
@@ -499,25 +973,34 @@ export default function LessonPage() {
           )}
         </div>
 
+        {!slideMode && (
         <aside className="space-y-4">
           <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
             <p className="text-xs uppercase tracking-[0.25em] text-zinc-500">Navigation</p>
             <p className="mt-2 text-[11px] text-zinc-500">Keyboard: <span className="font-semibold">←</span> previous, <span className="font-semibold">→</span> next</p>
             <div className="mt-3 space-y-2.5">
               {adjacent.previous ? (
-                <Link href={`/our-courses/lesson/${encodeURIComponent(adjacent.previous.slug)}`} className="block rounded-lg border border-zinc-200 bg-zinc-50 p-3 hover:border-zinc-300 hover:bg-white">
+                <button
+                  type="button"
+                  onClick={() => navigateToLesson(adjacent.previous!.slug, 'previous')}
+                  className="block w-full rounded-lg border border-zinc-200 bg-zinc-50 p-3 text-left hover:border-zinc-300 hover:bg-white"
+                >
                   <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-500">Previous</p>
                   <p className="mt-1 text-sm font-semibold leading-tight text-zinc-900">{adjacent.previous.title}</p>
-                </Link>
+                </button>
               ) : (
                 <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-3 text-xs text-zinc-600">This is the first lesson.</div>
               )}
 
               {adjacent.next ? (
-                <Link href={`/our-courses/lesson/${encodeURIComponent(adjacent.next.slug)}`} className="block rounded-lg border border-zinc-200 bg-zinc-50 p-3 hover:border-zinc-300 hover:bg-white">
+                <button
+                  type="button"
+                  onClick={() => navigateToLesson(adjacent.next!.slug, 'next')}
+                  className="block w-full rounded-lg border border-zinc-200 bg-zinc-50 p-3 text-left hover:border-zinc-300 hover:bg-white"
+                >
                   <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-500">Next</p>
                   <p className="mt-1 text-sm font-semibold leading-tight text-zinc-900">{adjacent.next.title}</p>
-                </Link>
+                </button>
               ) : (
                 <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-3 text-xs text-zinc-600">This is the final lesson.</div>
               )}
@@ -580,9 +1063,100 @@ export default function LessonPage() {
             All Courses
           </Link>
         </aside>
+        )}
       </div>
 
-      {chapterQuiz && (
+      <div className={`mt-5 rounded-xl border p-3 shadow-sm ${slideMode ? 'border-emerald-200 bg-white' : 'border-zinc-200 bg-white'}`}>
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+          {canGoPreviousSlide ? (
+            <button
+              type="button"
+              onClick={goPreviousSlide}
+              className={`rounded-lg border px-3 py-2 text-center text-xs font-semibold transition-colors ${slideMode ? 'border-zinc-200 bg-zinc-50 text-zinc-700 hover:bg-white' : 'border-zinc-200 bg-zinc-50 text-zinc-700 hover:bg-white'}`}
+            >
+              {slideMode && canGoPreviousPage ? '← Previous Page' : slideMode && currentTopicSlideIndex > 0 ? '← Previous Topic' : '← Previous Lesson'}
+            </button>
+          ) : (
+            <div className={`rounded-lg border border-dashed px-3 py-2 text-center text-xs ${slideMode ? 'border-zinc-300 text-zinc-500' : 'border-zinc-300 text-zinc-500'}`}>
+              Start Slide
+            </div>
+          )}
+
+          {!slideMode && (
+            <button
+              type="button"
+              onClick={() => setSlideMode(true)}
+              className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-center text-xs font-semibold text-zinc-700 hover:bg-zinc-50"
+            >
+              Focus Mode
+            </button>
+          )}
+
+          {canGoNextSlide ? (
+            <button
+              type="button"
+              onClick={goNextSlide}
+              className="rounded-lg bg-emerald-600 px-3 py-2 text-center text-xs font-semibold text-white hover:bg-emerald-500"
+            >
+              {slideMode && canGoNextPage ? 'Next Page →' : slideMode && currentTopicSlideIndex < totalTopicSlides - 1 ? 'Next Topic →' : 'Next Lesson →'}
+            </button>
+          ) : (
+            <div className={`rounded-lg border border-dashed px-3 py-2 text-center text-xs ${slideMode ? 'border-zinc-300 text-zinc-500' : 'border-zinc-300 text-zinc-500'}`}>
+              Final Slide
+            </div>
+          )}
+        </div>
+
+        {slideMode && (
+          <div className="mt-3 rounded-lg border border-zinc-200 bg-zinc-50 p-2">
+            <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-500">Chapter Timeline</p>
+              <span className="rounded-full border border-emerald-200 bg-white px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
+                {chapterCompletedCount}/{moduleTopics.length} completed
+              </span>
+            </div>
+            <div className="mb-2 flex flex-wrap items-center gap-2 text-[10px] text-zinc-500">
+              <span className="inline-flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-emerald-400" />Completed</span>
+              <span className="inline-flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-cyan-400" />In progress</span>
+              <span className="inline-flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-zinc-300" />Upcoming</span>
+            </div>
+            <div className="flex gap-1.5 overflow-x-auto pb-1">
+              {moduleTopics.map((topic) => {
+                const isActive = topic.slug === lesson.slug;
+                const progressState = lessonProgressBySlug[topic.slug] ?? 'not_started';
+                const isCompleted = progressState === 'completed';
+                const isStarted = progressState === 'started';
+                return (
+                  <button
+                    key={topic.slug}
+                    type="button"
+                    onClick={() => navigateToLesson(topic.slug, 'direct')}
+                    ref={isActive ? activeTimelineChipRef : undefined}
+                    className={`shrink-0 rounded-md border px-2 py-1 text-[11px] font-semibold transition-colors ${
+                      isActive
+                        ? 'border-emerald-300 bg-emerald-100 text-emerald-800'
+                        : isCompleted
+                          ? 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
+                          : isStarted
+                            ? 'border-cyan-200 bg-cyan-50 text-cyan-700 hover:bg-cyan-100'
+                            : 'border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-100'
+                    }`}
+                    title={`${topic.day} · Lesson ${topic.lessonNumber} · ${topic.title}`}
+                  >
+                    {isCompleted ? '✓ ' : ''}{topic.day.slice(0, 3)} L{topic.lessonNumber}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {isSlideTransitioning && (
+        <div className="pointer-events-none fixed inset-0 z-[60] bg-emerald-100/35 backdrop-blur-[1px]" aria-hidden="true" />
+      )}
+
+      {!slideMode && chapterQuiz && (
         <div className="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 p-6 shadow-sm">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div>
@@ -615,6 +1189,7 @@ export default function LessonPage() {
         </div>
       )}
 
+      {!slideMode && (
       <div className="mt-6 rounded-xl border border-zinc-200 bg-white shadow-sm">
         <div className="border-b border-zinc-200 p-4">
           <h2 className="text-sm font-semibold text-zinc-900">AI Learning Assistant</h2>
@@ -661,6 +1236,7 @@ export default function LessonPage() {
           </div>
         </div>
       </div>
+      )}
     </div>
   );
 }

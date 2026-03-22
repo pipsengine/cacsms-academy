@@ -176,6 +176,24 @@ model PlatformSetting {
   updatedAt DateTime @updatedAt
 }
 
+model InterestRateDecision {
+  id                String   @id @default(cuid())
+  currency          String
+  rate              Float
+  date              DateTime
+  decisionTimestamp DateTime
+  changeBps         Int
+  previousRate      Float?
+  forecastRate      Float?
+  policyDirection   String
+  source            String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@unique([currency, date])
+  @@index([currency, decisionTimestamp])
+}
+
 model UsageLimit {
   id          String  @id @default(cuid())
   planName    String
