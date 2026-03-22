@@ -1,6 +1,5 @@
-import { prisma } from '@/lib/prisma';
-import { getClientIp } from '@/lib/security/rateLimit';
-import { buildDefaultInterestRateSeries, INTEREST_RATE_BASELINE_VERSION } from './defaults';
+import { prisma } from '../prisma.ts';
+import { buildDefaultInterestRateSeries, INTEREST_RATE_BASELINE_VERSION } from './defaults.ts';
 import {
   G8_CURRENCIES,
   type CurrencyRateAnalytics,
@@ -11,7 +10,7 @@ import {
   type InterestRateSnapshot,
   type PolicyCycle,
   type PolicyDirection,
-} from './types';
+} from './types.ts';
 
 const INTEREST_RATE_SERIES_KEY = 'interestRate:g8:series';
 const INTEREST_RATE_SYNC_KEY = 'interestRate:g8:lastSyncIso';

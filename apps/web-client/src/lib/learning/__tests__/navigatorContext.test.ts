@@ -7,11 +7,11 @@ const LESSONS = getAllLessons();
 describe('parseActiveLearningContext', () => {
   it('extracts active lesson from lesson route', () => {
     const ctx = parseActiveLearningContext(
-      '/our-courses/lesson/w1-dwed-l3-why-forex-volume-and-range-patterns-vary-by-time-of-day',
+      '/our-courses/lesson/w1-dwed-l2-london-new-york-overlap-when-most-big-moves-happen',
       LESSONS
     );
 
-    expect(ctx.activeSlug).toBe('w1-dwed-l3-why-forex-volume-and-range-patterns-vary-by-time-of-day');
+    expect(ctx.activeSlug).toBe('w1-dwed-l2-london-new-york-overlap-when-most-big-moves-happen');
     expect(ctx.activeWeek).toBe(1);
     expect(ctx.activeDay).toBe('wednesday');
   });

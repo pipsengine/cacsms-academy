@@ -3,7 +3,7 @@ import {
   type G8Currency,
   type InterestRateRecord,
   type PolicyDirection,
-} from './types';
+} from './types.ts';
 
 export const INTEREST_RATE_BASELINE_VERSION = 12;
 

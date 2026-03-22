@@ -1,13 +1,20 @@
-import { getUsdNgnExchangeRate } from '../../../lib/pricing/store.ts';
-import { auth } from '../../../lib/auth.ts';
-import { prisma } from '../../../lib/prisma.ts';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth/nextAuthOptions';
+import { getUsdNgnExchangeRate } from '@/lib/pricing/store';
+import { prisma } from '@/lib/prisma';
 
 export const dynamic = 'force-dynamic';
 
+function isSuperAdminRole(role: unknown): boolean {
+  if (typeof role !== 'string') return false;
+  return role === 'super_admin' || role === 'Super Admin';
+}
+
 export async function GET() {
   try {
-    const session = await auth();
-    if (!session?.user?.email || session.user.role !== 'super_admin') {
+    const session = await getServerSession(authOptions);
+    const role = (session?.user as { role?: unknown } | undefined)?.role;
+    if (!session?.user?.email || !isSuperAdminRole(role)) {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -51,8 +58,9 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
-    const session = await auth();
-    if (!session?.user?.email || session.user.role !== 'super_admin') {
+    const session = await getServerSession(authOptions);
+    const role = (session?.user as { role?: unknown } | undefined)?.role;
+    if (!session?.user?.email || !isSuperAdminRole(role)) {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 

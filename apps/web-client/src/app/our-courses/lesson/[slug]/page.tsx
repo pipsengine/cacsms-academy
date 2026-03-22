@@ -107,7 +107,140 @@ function childrenToText(children: ReactNode): string {
   return '';
 }
 
-function splitMarkdownIntoSlidePages(markdown: string, maxChars = 1000): string[] {
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function buildSemanticTopicSlides(content: string, lessonTitle: string, sections: string[] = []): LessonTopicSlide[] {
+  const trimmed = content.trim();
+  if (!trimmed) return [];
+
+  const sectionTitles = sections
+    .map((section) => section.trim())
+    .filter(Boolean);
+  const sectionMatchers = sectionTitles.map((section) => new RegExp(`^${escapeRegExp(section)}:?$`, 'i'));
+  const commonPlainHeadings = new Set([
+    'introduction',
+    'key concepts',
+    'market context',
+    'trading implication',
+    'trading implications',
+    'example',
+    'summary',
+    'action steps',
+    'risk notes',
+    'checklist',
+    'takeaway',
+    'takeaways',
+  ]);
+
+  const lines = trimmed.split('\n');
+  const slides: Array<{ title: string; markdown: string }> = [];
+  let currentTitle = lessonTitle || 'Lesson Overview';
+  let currentLines: string[] = [];
+
+  const pushCurrent = () => {
+    const markdown = currentLines.join('\n').trim();
+    if (!markdown) return;
+    slides.push({ title: currentTitle || `Topic ${slides.length + 1}`, markdown });
+    currentLines = [];
+  };
+
+  const isHeadingCandidate = (line: string) => {
+    const normalized = line.trim().toLowerCase().replace(/:$/, '');
+    if (!normalized) return false;
+    if (commonPlainHeadings.has(normalized)) return true;
+    return sectionMatchers.some((matcher) => matcher.test(line.trim()));
+  };
+
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index];
+    const trimmedLine = line.trim();
+    const prevLine = index > 0 ? lines[index - 1].trim() : '';
+    const nextLine = index < lines.length - 1 ? lines[index + 1].trim() : '';
+    const markdownHeadingMatch = /^(#{2,3})\s+(.+)$/.exec(trimmedLine);
+    const looksLikePlainHeading =
+      Boolean(trimmedLine) &&
+      !markdownHeadingMatch &&
+      !/^[-*+]\s+|^\d+\.\s+/.test(trimmedLine) &&
+      /^[A-Z][A-Za-z0-9\s&()/'\-:,]{2,90}$/.test(trimmedLine) &&
+      !/[.!?]$/.test(trimmedLine) &&
+      prevLine.length === 0 &&
+      nextLine.length > 0 &&
+      (isHeadingCandidate(trimmedLine) || trimmedLine.split(/\s+/).length <= 7);
+
+    if (markdownHeadingMatch) {
+      pushCurrent();
+      currentTitle = markdownHeadingMatch[2].trim();
+      currentLines = [line];
+      continue;
+    }
+
+    if (looksLikePlainHeading) {
+      pushCurrent();
+      currentTitle = trimmedLine.replace(/:$/, '').trim();
+      currentLines = [`## ${currentTitle}`];
+      continue;
+    }
+
+    currentLines.push(line);
+  }
+
+  pushCurrent();
+
+  if (!slides.length) {
+    return [{ id: 'lesson-overview', title: lessonTitle || 'Lesson Overview', markdown: trimmed }];
+  }
+
+  const idCounts = new Map<string, number>();
+  return slides.map((slide, index) => {
+    const baseId = headingSlug(slide.title || `topic-${index + 1}`) || `topic-${index + 1}`;
+    const existing = idCounts.get(baseId) ?? 0;
+    idCounts.set(baseId, existing + 1);
+    const id = existing === 0 ? baseId : `${baseId}-${existing + 1}`;
+    return {
+      id,
+      title: slide.title || `Topic ${index + 1}`,
+      markdown: slide.markdown,
+    };
+  });
+}
+
+function splitOversizedBlock(block: string, maxChars: number): string[] {
+  if (block.length <= maxChars) return [block];
+
+  const packedFrom = (parts: string[]) => {
+    const filteredParts = parts.map((part) => part.trim()).filter(Boolean);
+    if (!filteredParts.length) return [block];
+
+    const chunks: string[] = [];
+    let active = '';
+    for (const part of filteredParts) {
+      const candidate = active ? `${active}\n\n${part}` : part;
+      if (candidate.length <= maxChars || !active) {
+        active = candidate;
+      } else {
+        chunks.push(active);
+        active = part;
+      }
+    }
+    if (active) chunks.push(active);
+    return chunks;
+  };
+
+  const listParts = block.split(/\n(?=\s*(?:[-*+]\s+|\d+\.\s+))/).map((item) => item.trim()).filter(Boolean);
+  if (listParts.length > 1) return packedFrom(listParts);
+
+  const paragraphParts = block.split(/\n\s*\n/).map((item) => item.trim()).filter(Boolean);
+  if (paragraphParts.length > 1) return packedFrom(paragraphParts);
+
+  const sentenceParts = block.split(/(?<=[.!?])\s+/).map((item) => item.trim()).filter(Boolean);
+  if (sentenceParts.length > 1) return packedFrom(sentenceParts);
+
+  return [block];
+}
+
+function splitMarkdownIntoSlidePages(markdown: string, maxChars = 850): string[] {
   const trimmed = markdown.trim();
   if (!trimmed) return [''];
 
@@ -168,14 +301,17 @@ function splitMarkdownIntoSlidePages(markdown: string, maxChars = 1000): string[
   let currentPage = '';
 
   for (const block of blocks) {
-    const candidate = currentPage ? `${currentPage}\n\n${block}` : block;
-    if (candidate.length <= maxChars || !currentPage) {
-      currentPage = candidate;
-      continue;
-    }
+    const blockParts = splitOversizedBlock(block, maxChars);
+    for (const part of blockParts) {
+      const candidate = currentPage ? `${currentPage}\n\n${part}` : part;
+      if (candidate.length <= maxChars || !currentPage) {
+        currentPage = candidate;
+        continue;
+      }
 
-    pages.push(currentPage);
-    currentPage = block;
+      pages.push(currentPage);
+      currentPage = part;
+    }
   }
 
   if (currentPage) pages.push(currentPage);
@@ -226,6 +362,7 @@ export default function LessonPage() {
   const [currentTopicPageIndex, setCurrentTopicPageIndex] = useState(0);
   const [topicMotionEnabled, setTopicMotionEnabled] = useState(true);
   const [topicContentVisible, setTopicContentVisible] = useState(true);
+  const [isSlideNavigatorExpanded, setIsSlideNavigatorExpanded] = useState(false);
 
   const lessonContentRef = useRef<HTMLDivElement>(null);
   const topicListContainerRef = useRef<HTMLUListElement>(null);
@@ -269,52 +406,13 @@ export default function LessonPage() {
   const lessonTopicSlides = useMemo<LessonTopicSlide[]>(() => {
     const content = unit?.content?.trim();
     if (!content) return [];
-
-    const lines = content.split('\n');
-    const slides: LessonTopicSlide[] = [];
-    let currentTitle = 'Lesson Overview';
-    let currentLines: string[] = [];
-    let hasHeading = false;
-
-    const pushCurrent = () => {
-      const markdown = currentLines.join('\n').trim();
-      if (!markdown) return;
-      slides.push({
-        id: headingSlug(currentTitle || `topic-${slides.length + 1}`) || `topic-${slides.length + 1}`,
-        title: currentTitle || `Topic ${slides.length + 1}`,
-        markdown,
-      });
-    };
-
-    for (const line of lines) {
-      const headingMatch = /^(##)\s+(.+)$/.exec(line.trim());
-      if (headingMatch) {
-        hasHeading = true;
-        pushCurrent();
-        currentTitle = headingMatch[2].trim();
-        currentLines = [line];
-      } else {
-        currentLines.push(line);
-      }
-    }
-
-    pushCurrent();
-
-    if (!hasHeading && slides.length === 1) {
-      return [{
-        id: 'lesson-overview',
-        title: lesson?.title ?? 'Lesson Overview',
-        markdown: slides[0].markdown,
-      }];
-    }
-
-    return slides;
-  }, [lesson?.title, unit?.content]);
+    return buildSemanticTopicSlides(content, lesson?.title ?? 'Lesson Overview', unit?.sections ?? []);
+  }, [lesson?.title, unit?.content, unit?.sections]);
 
   const totalTopicSlides = lessonTopicSlides.length || 1;
   const activeTopicSlide = lessonTopicSlides[currentTopicSlideIndex] ?? null;
   const activeTopicPages = useMemo(
-    () => splitMarkdownIntoSlidePages(activeTopicSlide?.markdown ?? '', 1000),
+    () => splitMarkdownIntoSlidePages(activeTopicSlide?.markdown ?? '', 720),
     [activeTopicSlide?.markdown]
   );
   const totalTopicPages = activeTopicPages.length || 1;
@@ -338,10 +436,10 @@ export default function LessonPage() {
 
   const slideTypographyClass = useMemo(() => {
     const contentLength = activeTopicPageMarkdown.length || (unit?.content?.length ?? 0);
-    if (contentLength > 8500) return 'text-[13px] leading-6';
-    if (contentLength > 6000) return 'text-[14px] leading-6.5';
-    if (contentLength > 2500) return 'text-[17px] leading-8';
-    return 'text-[19px] leading-9';
+    if (contentLength > 640) return 'text-[15px] leading-[1.42]';
+    if (contentLength > 520) return 'text-[15.5px] leading-[1.46]';
+    if (contentLength > 400) return 'text-[16px] leading-[1.5]';
+    return 'text-[17px] leading-[1.55]';
   }, [activeTopicPageMarkdown, unit?.content]);
 
   const slideTransitionClass = useMemo(() => {
@@ -540,6 +638,12 @@ export default function LessonPage() {
     setIsSlideTransitioning(false);
   }, [slug]);
 
+  useEffect(() => {
+    if (!slideMode) {
+      setIsSlideNavigatorExpanded(false);
+    }
+  }, [slideMode]);
+
   const navigateToLesson = useCallback(
     (targetSlug: string, direction: 'previous' | 'next' | 'direct' = 'direct') => {
       if (isSlideTransitioning) return;
@@ -689,7 +793,7 @@ export default function LessonPage() {
   }
 
   return (
-    <div className={slideMode ? 'fixed inset-0 z-50 h-screen overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-zinc-50 p-4 sm:p-6' : 'max-w-7xl'}>
+    <div className={slideMode ? 'fixed inset-0 z-50 flex h-screen flex-col overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-zinc-50 p-4 sm:p-6' : 'max-w-7xl'}>
       {!slideMode && (
         <nav className="mb-4 flex items-center gap-2 text-xs text-zinc-500">
           <Link href="/our-courses" className="hover:text-zinc-700">Learning Home</Link>
@@ -755,8 +859,9 @@ export default function LessonPage() {
         </div>
       </div>
 
-      <div className={`grid gap-6 transition-all duration-200 ${slideTransitionClass} ${slideMode ? 'grid-cols-1' : 'xl:grid-cols-[minmax(0,1fr)_320px]'}`}>
+      <div className={`grid gap-6 transition-all duration-200 ${slideTransitionClass} ${slideMode ? 'flex-1 grid-cols-1 overflow-hidden' : 'xl:grid-cols-[minmax(0,1fr)_320px]'}`}>
         <div className="space-y-5">
+          {!slideMode && (
           <div className={`rounded-2xl border p-5 shadow-sm ${slideMode ? 'border-emerald-200 bg-white text-zinc-900' : 'border-zinc-200 bg-gradient-to-br from-white via-white to-emerald-50/30'}`}>
             <div className="flex flex-wrap items-center gap-2">
               <span className={`rounded-full border px-2.5 py-0.5 text-xs font-semibold ${
@@ -782,6 +887,7 @@ export default function LessonPage() {
             <p className={`mt-2 text-xs ${slideMode ? 'text-zinc-500' : 'text-zinc-500'}`}>Topic Theme: {lesson.dayTheme}</p>
             <LearningProgressChips week={lesson.week} day={lesson.day} currentLessonSlug={lesson.slug} />
           </div>
+          )}
 
           {unitLoading && (
             <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
@@ -807,103 +913,39 @@ export default function LessonPage() {
                 </div>
               )}
 
-              <div className={`relative rounded-2xl border p-5 shadow-sm ${slideMode ? 'border-emerald-200 bg-white' : 'border-zinc-200 bg-white'}`}>
-                <h2 className={`text-sm font-semibold uppercase tracking-[0.2em] ${slideMode ? 'text-emerald-600' : 'text-zinc-500'}`}>
-                  {slideMode ? `Topic ${currentTopicSlideIndex + 1}/${totalTopicSlides} · Page ${currentTopicPageIndex + 1}/${totalTopicPages}` : 'Detailed Lesson'}
-                </h2>
-                {slideMode && activeTopicSlide && (
-                  <p className="mt-2 text-sm font-semibold text-zinc-800">{activeTopicSlide.title}</p>
-                )}
+              <div className={`relative rounded-2xl border p-5 shadow-sm ${slideMode ? 'h-full border-emerald-200 bg-white overflow-hidden' : 'border-zinc-200 bg-white'}`}>
+                <div className={slideMode ? 'pointer-events-auto absolute left-1/2 top-4 z-10 w-[min(92%,64rem)] -translate-x-1/2' : ''}>
+                  <h2 className={`text-sm font-semibold uppercase tracking-[0.2em] ${slideMode ? 'text-center text-emerald-600' : 'text-zinc-500'}`}>
+                    {slideMode ? `Topic ${currentTopicSlideIndex + 1}/${totalTopicSlides} · Page ${currentTopicPageIndex + 1}/${totalTopicPages}` : 'Detailed Lesson'}
+                  </h2>
+                  {slideMode && activeTopicSlide && (
+                    <p className="mt-2 text-center text-sm font-semibold text-zinc-800">{activeTopicSlide.title}</p>
+                  )}
 
-                {slideMode && totalTopicSlides > 1 && (
-                  <div className="mt-3 rounded-lg border border-zinc-200 bg-zinc-50 p-2">
-                    <div className="mb-2 flex items-center justify-between gap-2 text-[11px] text-zinc-600">
-                      <span>In-Lesson Topic Navigator</span>
-                      <span>{topicSlideProgressPct}%</span>
-                    </div>
-                    <div className="mb-2 h-1.5 w-full overflow-hidden rounded-full bg-zinc-200">
-                      <div
-                        className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-cyan-500 transition-[width] duration-300"
-                        style={{ width: `${topicSlideProgressPct}%` }}
-                      />
-                    </div>
-                    <div className="flex gap-1.5 overflow-x-auto pb-1">
-                      {lessonTopicSlides.map((topicSlide, index) => {
-                        const isActiveTopicSlide = index === currentTopicSlideIndex;
-                        return (
-                          <button
-                            key={topicSlide.id}
-                            type="button"
-                            ref={isActiveTopicSlide ? activeTopicSlideChipRef : undefined}
-                            onClick={() => navigateToTopicSlide(index)}
-                            className={`shrink-0 rounded-md border px-2 py-1 text-[11px] font-semibold transition-colors ${
-                              isActiveTopicSlide
-                                ? 'border-emerald-300 bg-emerald-100 text-emerald-800'
-                                : 'border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-100'
-                            }`}
-                            title={topicSlide.title}
-                          >
-                            T{index + 1}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-                {slideMode && totalTopicPages > 1 && (
-                  <div className="mt-2 rounded-lg border border-zinc-200 bg-zinc-50 p-2">
-                    <div className="mb-2 flex items-center justify-between gap-2 text-[11px] text-zinc-600">
-                      <span>Topic Page Navigator</span>
-                      <span>{topicPageProgressPct}%</span>
-                    </div>
-                    <div className="mb-2 h-1.5 w-full overflow-hidden rounded-full bg-zinc-200">
-                      <div
-                        className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-cyan-500 transition-[width] duration-300"
-                        style={{ width: `${topicPageProgressPct}%` }}
-                      />
-                    </div>
-                    <div className="flex gap-1.5 overflow-x-auto pb-1">
-                      {activeTopicPages.map((_, pageIndex) => {
-                        const isActivePage = pageIndex === currentTopicPageIndex;
-                        return (
-                          <button
-                            key={`page-${pageIndex + 1}`}
-                            type="button"
-                            onClick={() => navigateToTopicPage(pageIndex)}
-                            className={`shrink-0 rounded-md border px-2 py-1 text-[11px] font-semibold transition-colors ${
-                              isActivePage
-                                ? 'border-cyan-300 bg-cyan-100 text-cyan-800'
-                                : 'border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-100'
-                            }`}
-                          >
-                            P{pageIndex + 1}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-                <div
-                  ref={lessonContentRef}
-                  className={`prose mt-4 max-w-none scroll-mt-24 transition-all duration-300 ${slideMode ? `${slideTypographyClass} min-h-[42vh] max-h-[48vh] overflow-hidden` : 'text-[15px] leading-7'} ${slideMode && topicMotionEnabled ? (topicContentVisible ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0') : 'translate-y-0 opacity-100'} prose-zinc prose-headings:text-zinc-900 prose-p:text-zinc-700 prose-strong:text-zinc-900 prose-li:text-zinc-700 prose-code:text-emerald-700 prose-pre:bg-zinc-100 prose-headings:font-bold`}
-                >
-                  <ReactMarkdown
-                    remarkPlugins={[remarkGfm]}
-                    components={{
-                      h2: ({ children }) => {
-                        const title = childrenToText(children);
-                        const id = headingSlug(title);
-                        return <h2 id={id} data-lesson-heading="true">{children}</h2>;
-                      },
-                      h3: ({ children }) => {
-                        const title = childrenToText(children);
-                        const id = headingSlug(title);
-                        return <h3 id={id} data-lesson-heading="true">{children}</h3>;
-                      },
-                    }}
+                </div>
+                <div className={slideMode ? 'mt-4 flex flex-1 items-center justify-center' : ''}>
+                  <div
+                    ref={lessonContentRef}
+                    className={`prose max-w-none scroll-mt-24 transition-all duration-300 ${slideMode ? `${slideTypographyClass} mx-auto w-full max-w-5xl min-h-[48vh] max-h-[66vh] overflow-hidden pt-7 prose-p:my-2 prose-li:my-0.5 prose-ul:my-2 prose-ol:my-2 prose-headings:mb-2 prose-headings:mt-3 prose-h1:text-[1.05em] prose-h2:text-[1.03em] prose-h3:text-[1.01em]` : 'mt-4 text-[15px] leading-7'} ${slideMode && topicMotionEnabled ? (topicContentVisible ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0') : 'translate-y-0 opacity-100'} prose-zinc prose-headings:text-zinc-900 prose-p:text-zinc-700 prose-strong:text-zinc-900 prose-li:text-zinc-700 prose-code:text-emerald-700 prose-pre:bg-zinc-100 prose-headings:font-bold`}
                   >
-                    {slideMode && activeTopicSlide ? activeTopicPageMarkdown : unit.content}
-                  </ReactMarkdown>
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      components={{
+                        h2: ({ children }) => {
+                          const title = childrenToText(children);
+                          const id = headingSlug(title);
+                          return <h2 id={id} data-lesson-heading="true">{children}</h2>;
+                        },
+                        h3: ({ children }) => {
+                          const title = childrenToText(children);
+                          const id = headingSlug(title);
+                          return <h3 id={id} data-lesson-heading="true">{children}</h3>;
+                        },
+                      }}
+                    >
+                      {slideMode && activeTopicSlide ? activeTopicPageMarkdown : unit.content}
+                    </ReactMarkdown>
+                  </div>
                 </div>
 
                 {slideMode && (
@@ -944,7 +986,7 @@ export default function LessonPage() {
             </>
           )}
 
-          {!authLoading && (
+          {!authLoading && !slideMode && (
             <div className="flex flex-wrap items-center gap-3 rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
               {!user ? (
                 <p className="text-sm text-zinc-600">
@@ -1066,7 +1108,90 @@ export default function LessonPage() {
         )}
       </div>
 
-      <div className={`mt-5 rounded-xl border p-3 shadow-sm ${slideMode ? 'border-emerald-200 bg-white' : 'border-zinc-200 bg-white'}`}>
+      <div className={`${slideMode ? 'mt-3 shrink-0 rounded-xl border border-emerald-200 bg-white/95 p-3 shadow-lg backdrop-blur-sm' : 'mt-5 rounded-xl border border-zinc-200 bg-white p-3 shadow-sm'}`}>
+        {slideMode && (
+          <div className="mb-3 flex items-center justify-between gap-2">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-500">Reader Controls</p>
+            <button
+              type="button"
+              onClick={() => setIsSlideNavigatorExpanded((current) => !current)}
+              className="rounded-md border border-zinc-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-zinc-700 hover:bg-zinc-50"
+            >
+              {isSlideNavigatorExpanded ? 'Hide Navigator' : 'Show Navigator'}
+            </button>
+          </div>
+        )}
+
+        {slideMode && isSlideNavigatorExpanded && totalTopicSlides > 1 && (
+          <div className="mb-2 rounded-lg border border-zinc-200 bg-zinc-50 p-2">
+            <div className="mb-2 flex items-center justify-between gap-2 text-[11px] text-zinc-600">
+              <span>In-Lesson Topic Navigator</span>
+              <span>{topicSlideProgressPct}%</span>
+            </div>
+            <div className="mb-2 h-1.5 w-full overflow-hidden rounded-full bg-zinc-200">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-cyan-500 transition-[width] duration-300"
+                style={{ width: `${topicSlideProgressPct}%` }}
+              />
+            </div>
+            <div className="flex gap-1.5 overflow-x-auto pb-1">
+              {lessonTopicSlides.map((topicSlide, index) => {
+                const isActiveTopicSlide = index === currentTopicSlideIndex;
+                return (
+                  <button
+                    key={topicSlide.id}
+                    type="button"
+                    ref={isActiveTopicSlide ? activeTopicSlideChipRef : undefined}
+                    onClick={() => navigateToTopicSlide(index)}
+                    className={`shrink-0 rounded-md border px-2 py-1 text-[11px] font-semibold transition-colors ${
+                      isActiveTopicSlide
+                        ? 'border-emerald-300 bg-emerald-100 text-emerald-800'
+                        : 'border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-100'
+                    }`}
+                    title={topicSlide.title}
+                  >
+                    T{index + 1}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {slideMode && isSlideNavigatorExpanded && totalTopicPages > 1 && (
+          <div className="mb-3 rounded-lg border border-zinc-200 bg-zinc-50 p-2">
+            <div className="mb-2 flex items-center justify-between gap-2 text-[11px] text-zinc-600">
+              <span>Topic Page Navigator</span>
+              <span>{topicPageProgressPct}%</span>
+            </div>
+            <div className="mb-2 h-1.5 w-full overflow-hidden rounded-full bg-zinc-200">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-cyan-500 transition-[width] duration-300"
+                style={{ width: `${topicPageProgressPct}%` }}
+              />
+            </div>
+            <div className="flex gap-1.5 overflow-x-auto pb-1">
+              {activeTopicPages.map((_, pageIndex) => {
+                const isActivePage = pageIndex === currentTopicPageIndex;
+                return (
+                  <button
+                    key={`page-${pageIndex + 1}`}
+                    type="button"
+                    onClick={() => navigateToTopicPage(pageIndex)}
+                    className={`shrink-0 rounded-md border px-2 py-1 text-[11px] font-semibold transition-colors ${
+                      isActivePage
+                        ? 'border-cyan-300 bg-cyan-100 text-cyan-800'
+                        : 'border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-100'
+                    }`}
+                  >
+                    P{pageIndex + 1}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
           {canGoPreviousSlide ? (
             <button
@@ -1107,7 +1232,7 @@ export default function LessonPage() {
           )}
         </div>
 
-        {slideMode && (
+        {slideMode && isSlideNavigatorExpanded && (
           <div className="mt-3 rounded-lg border border-zinc-200 bg-zinc-50 p-2">
             <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
               <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-500">Chapter Timeline</p>

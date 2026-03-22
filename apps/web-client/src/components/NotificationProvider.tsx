@@ -54,29 +54,33 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
     let active = true;
 
     const load = async () => {
-      const res = await fetch('/api/alerts/history?limit=5', { cache: 'no-store' });
-      if (!active || res.status === 401) return;
+      try {
+        const res = await fetch('/api/alerts/history?limit=5', { cache: 'no-store' });
+        if (!active || res.status === 401 || !res.ok) return;
 
-      const data = await res.json().catch(() => null);
-      if (!active || !res.ok || !data?.alerts) return;
+        const data = await res.json().catch(() => null);
+        if (!active || !data?.alerts || !Array.isArray(data.alerts)) return;
 
-      setSeenIds((prevSeen) => {
-        const nextSeen = [...prevSeen];
-        for (const alert of data.alerts) {
-          if (nextSeen.includes(alert.id)) continue;
+        setSeenIds((prevSeen) => {
+          const nextSeen = [...prevSeen];
+          for (const alert of data.alerts) {
+            if (nextSeen.includes(alert.id)) continue;
 
-          addNotification({
-            title: alert.title,
-            message: alert.message,
-            type: alert.severity === 'success' || alert.severity === 'warning' || alert.severity === 'error'
-              ? alert.severity
-              : 'info',
-          });
-          nextSeen.push(alert.id);
-        }
+            addNotification({
+              title: alert.title,
+              message: alert.message,
+              type: alert.severity === 'success' || alert.severity === 'warning' || alert.severity === 'error'
+                ? alert.severity
+                : 'info',
+            });
+            nextSeen.push(alert.id);
+          }
 
-        return nextSeen.slice(-50);
-      });
+          return nextSeen.slice(-50);
+        });
+      } catch {
+        // Avoid noisy runtime errors when the API is temporarily unavailable.
+      }
     };
 
     void load();

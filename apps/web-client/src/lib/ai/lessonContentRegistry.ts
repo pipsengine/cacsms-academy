@@ -10,6 +10,1945 @@
 import type { ForexCourseUnitOutput } from './forexCourseUnit.ts';
 
 const REGISTRY: Record<string, ForexCourseUnitOutput> = {
+  // ─── Week 1 · Monday · Lesson 1 (Ground Zero) ────────────────────────────
+  'w1-dmon-l1-a-brief-history-of-currency-exchange-from-gold-to-floating-fx': {
+    title: 'A Brief History of Currency Exchange: From Gold to Floating FX',
+    summary:
+      'A full beginner-first walkthrough of how money exchange evolved from metal-backed systems to the modern floating foreign exchange market, and what that history means in practical trading terms today.',
+    difficulty_level: 'Beginner',
+    is_assignment: false,
+    assignment: '',
+    sections: [
+      'Introduction',
+      'Why Currency Exchange Exists',
+      'Early History: From Barter to Coinage',
+      'The Gold Standard Era',
+      'Bretton Woods and Fixed Exchange Rates',
+      'The Shift to Floating FX',
+      'What the Modern Forex Market Looks Like',
+      'Layman Interpretation and Practical Meaning',
+      'Common Beginner Delusions',
+      'Real-World Example',
+      'Practical Application for New Traders',
+      'Key Takeaways',
+    ],
+    image_prompt:
+      'A clean educational timeline graphic showing the evolution of currency exchange: barter, coinage, gold standard, Bretton Woods, and modern floating forex screens, with clear arrows and labels in a professional blue and neutral palette.',
+    example:
+      'A Nigerian importer needs to pay a German supplier in EUR, while the importer earns NGN locally. The importer converts NGN to EUR through a bank, creating real EUR demand. At the same time, a U.S. fund manager sells EUR to buy USD after repricing ECB policy expectations. Banks and liquidity providers match these opposite flows in the interbank market, and the exchange rate shifts in real time. The move visible on a retail chart is not random; it is the final visible output of these combined commercial, policy, and speculative flows.',
+    content: `# A Brief History of Currency Exchange: From Gold to Floating FX
+
+## Introduction
+
+Many beginners approach forex backwards. They start with indicators, entry signals, and social-media setups before understanding what they are actually trading. That creates a dangerous illusion: price looks like a random line that can be gamed with patterns alone.
+
+In reality, forex is one of the most practical markets on earth. It exists because people, companies, banks, funds, and governments constantly need to exchange one currency for another. Every chart candle is a record of those decisions happening at scale.
+
+This lesson starts from absolute scratch. You will learn:
+
+- why currency exchange exists in daily life,
+- how the system evolved historically,
+- what changed when the world moved from fixed exchange rates to floating exchange rates,
+- and why this history directly affects how traders should think today.
+
+If you truly understand this chapter, you stop seeing forex as gambling and start seeing it as a global pricing system with cause and effect.
+
+---
+
+## Why Currency Exchange Exists
+
+Before history, start with common sense.
+
+If two countries use different money, cross-border transactions require conversion.
+
+- A traveler from the UK in Japan must exchange GBP for JPY.
+- A Kenyan importer buying machinery from Germany must exchange KES for EUR.
+- A U.S. pension fund buying Japanese bonds must convert USD to JPY.
+- A central bank smoothing volatility may buy or sell its own currency against another.
+
+All of those transactions create demand and supply for currencies. That is forex.
+
+So the first practical definition is simple:
+
+**Forex is the market where one currency is priced against another because the world needs to settle international trade, investment, and policy objectives every day.**
+
+This is why forex is not a niche market. It is the plumbing of the global economy.
+
+---
+
+## Early History: From Barter to Coinage
+
+### 1) Barter limitations
+
+In ancient economies, people exchanged goods directly. This worked at very small scale, but failed once trade became complex.
+
+Barter has two major problems:
+
+- You need a double coincidence of wants. Both sides must want exactly what the other offers.
+- You cannot easily store value and compare unlike goods.
+
+As trade expanded across cities and empires, societies needed a common medium.
+
+### 2) Metal money and standardization
+
+Coins made from precious metals solved many barter problems. They were durable, portable, and widely trusted.
+
+Over time, rulers and states standardized coin weights and purity. This made long-distance trade easier because merchants could compare value across regions.
+
+However, each kingdom still had its own units and coin standards, so exchange ratios still existed. In other words, foreign exchange existed even before modern banking.
+
+### 3) Merchant exchange and early banking
+
+As European and Asian trade routes matured, merchants used money changers and early banking houses to convert currencies. Bills of exchange emerged to reduce the need to transport physical metal across long distances.
+
+This period introduced the core idea that still defines forex today:
+
+**exchange rates are negotiated prices between monetary systems.**
+
+---
+
+## The Gold Standard Era
+
+### What was the gold standard?
+
+Under the classical gold standard, countries linked their currencies to a specific quantity of gold. If each currency had a defined gold value, exchange rates between currencies became effectively fixed.
+
+Example concept:
+
+- Currency A is redeemable for X grams of gold.
+- Currency B is redeemable for Y grams of gold.
+- Then A/B rate is implied by X and Y.
+
+### Why it mattered
+
+The gold standard increased confidence and reduced exchange-rate uncertainty in global trade. Businesses could plan cross-border contracts with more predictability.
+
+### Why it broke
+
+The system required strict discipline:
+
+- Governments needed enough gold reserves.
+- Monetary policy flexibility was limited.
+- In crises and wars, countries faced pressure to print money and suspend convertibility.
+
+Major conflicts and economic shocks made rigid gold convertibility difficult to maintain. By the early-to-mid twentieth century, the old gold framework had become unstable.
+
+Practical takeaway for traders:
+
+When exchange rates are mechanically fixed, macro repricing happens less through spot currency volatility and more through reserve stress and political decisions.
+
+---
+
+## Bretton Woods and Fixed Exchange Rates
+
+After World War II, countries designed a new monetary architecture known as the Bretton Woods system.
+
+Core structure:
+
+- The U.S. dollar was linked to gold.
+- Other major currencies were pegged to the U.S. dollar.
+- Central banks intervened to keep their currencies within narrow bands.
+
+### Why Bretton Woods initially worked
+
+- It provided post-war stability.
+- It supported trade reconstruction.
+- It created a clear reference structure for exchange rates.
+
+### Structural tension inside the system
+
+As global trade expanded, demand for dollars increased. Over time, U.S. liabilities and global dollar claims grew relative to gold reserves. Confidence in full convertibility eroded.
+
+In 1971, the U.S. suspended dollar-gold convertibility. The fixed architecture could not hold in its original form. By 1973, major currencies moved to floating exchange rates.
+
+This was a turning point. Modern forex, as traders know it today, began here.
+
+---
+
+## The Shift to Floating FX
+
+### What changed under floating rates
+
+A floating exchange rate means a currency price is determined primarily by market demand and supply, not permanently fixed by a hard peg.
+
+Demand and supply are driven by:
+
+- interest-rate expectations,
+- inflation and growth differentials,
+- trade and capital flows,
+- risk sentiment,
+- central bank communication and intervention.
+
+### Why floating rates matter for traders
+
+Floating regimes create persistent repricing opportunities. That is why forex became a deep, tradable macro market.
+
+In fixed regimes, price movement is intentionally compressed by policy.
+In floating regimes, policy is one force among many, and market repricing can be continuous.
+
+### Not all currencies float equally
+
+Some currencies still have hard pegs or managed pegs. Others are fully free-floating. Many sit between those extremes.
+
+This matters in practice:
+
+- heavily managed currencies may have lower organic volatility until policy breaks,
+- fully floating majors often show cleaner macro transmission from data to price,
+- intervention risk must always be part of your analysis.
+
+---
+
+## What the Modern Forex Market Looks Like
+
+Modern forex is a network, not a single exchange building.
+
+### Market structure layers
+
+1. Interbank market:
+Large banks quote and transact directly with each other.
+
+2. Institutional participants:
+Asset managers, hedge funds, corporates, insurers, and central banks execute large flows through bank liquidity.
+
+3. Prime brokerage and liquidity distribution:
+Access and credit lines determine who can trade where and at what pricing quality.
+
+4. Retail broker layer:
+Retail traders access aggregated pricing through brokers and platforms.
+
+### Why this structure matters for beginners
+
+- Retail charts are the visible tip of a deeper liquidity process.
+- Spread, slippage, and execution quality depend on market depth and time of day.
+- News releases widen spreads because liquidity providers pull risk when uncertainty spikes.
+
+If you ignore structure, you misread execution outcomes and blame strategy for what was often a liquidity-timing problem.
+
+---
+
+## Layman Interpretation and Practical Meaning
+
+Here is the simplest practical interpretation:
+
+**A forex pair is a live scoreboard of relative confidence between two economies and monetary systems.**
+
+If EUR/USD rises, it means EUR is gaining relative value versus USD at that moment. That can happen because:
+
+- EUR outlook improved,
+- USD outlook weakened,
+- or both at the same time.
+
+Beginners often ask: Is this pair bullish?
+
+A better question is: Bullish because of what driver, on what horizon, and under what conditions?
+
+Practical horizons:
+
+- Intraday: liquidity windows, event timing, order-flow bursts.
+- Swing: macro repricing, rate differentials, growth and inflation narrative changes.
+- Position: policy-cycle divergence, structural capital flows, long-duration narrative shifts.
+
+Without this framing, traders chase candles. With this framing, traders interpret candles.
+
+---
+
+## Common Beginner Delusions
+
+### Delusion 1: Forex is mostly random
+
+Reality: short-term noise exists, but major moves usually have identifiable drivers. Randomness is highest when context is ignored.
+
+### Delusion 2: More indicators means more certainty
+
+Reality: indicators summarize past price. They are tools, not causes. Macro and liquidity context still dominate.
+
+### Delusion 3: High leverage is the fastest path
+
+Reality: high leverage amplifies execution error and emotional instability. Most beginners fail from position sizing, not from lack of chart patterns.
+
+### Delusion 4: One strategy should work in every market condition
+
+Reality: trend, range, event volatility, and session regime require adaptation.
+
+### Delusion 5: P and L is the only feedback that matters
+
+Reality: process quality determines long-run outcomes. A profitable bad trade is still bad process.
+
+If this chapter does one thing well, it should remove these delusions early.
+
+---
+
+## Real-World Example: One Economic Event, Full Transmission Chain
+
+Scenario:
+
+- Consensus expects U.S. inflation to cool.
+- Actual CPI prints higher than expected.
+
+Transmission chain:
+
+1. Traders reprice Fed path toward tighter policy.
+2. U.S. yields rise.
+3. Dollar-denominated assets become relatively more attractive.
+4. Capital reallocates toward USD exposure.
+5. USD strengthens across major pairs.
+
+What the beginner sees:
+
+- EUR/USD drops quickly.
+- Spread widens briefly.
+- Volatility spikes during release window.
+
+What the informed trader understands:
+
+- The move is not magic.
+- It is policy expectation repricing expressed through currency flows.
+
+That is the difference between reacting and understanding.
+
+---
+
+## Practical Application for New Traders
+
+Use this 6-step foundation checklist before deep technical strategy work.
+
+1. Define the pair and relationship.
+- What does this pair represent economically?
+- Which side is base, which side is quote?
+
+2. Identify the active session.
+- Are you in low-liquidity or high-liquidity hours?
+- Is spread acceptable for your plan?
+
+3. Check event risk.
+- Any high-impact release today?
+- Are you trading into avoidable volatility?
+
+4. Clarify macro direction.
+- Which currency currently has stronger rate narrative?
+- Any shift in growth or inflation expectations?
+
+5. Set risk in money terms.
+- Lot size from stop distance and account risk.
+- Never size from emotion.
+
+6. Journal cause and effect.
+- What moved price?
+- What assumption was correct or incorrect?
+- What changes for next session?
+
+This checklist turns vague participation into professional learning behavior.
+
+---
+
+## Extended Definitions (Plain Language)
+
+- Exchange Rate: The price of one currency in terms of another.
+- Base Currency: The first currency in a pair.
+- Quote Currency: The second currency in a pair.
+- Spread: The difference between bid and ask.
+- Liquidity: How easily large orders can transact without large price disruption.
+- Volatility: How quickly and how far price moves.
+- Floating Currency: A currency mostly priced by market demand and supply.
+- Pegged Currency: A currency maintained near a target value against another currency.
+- Intervention: Central bank action to influence exchange rate.
+- Rate Differential: Interest-rate gap between two currencies, a major long-run flow driver.
+
+If these definitions are not clear, pause and re-read before moving forward. They are not optional vocabulary. They are basic operating language.
+
+---
+
+## Key Takeaways
+
+- Forex exists because the real world must exchange currencies constantly.
+- Exchange rates evolved through major monetary regimes: metal money, gold standard, Bretton Woods, and modern floating FX.
+- The 1970s shift to floating rates created the dynamic market structure traders operate in today.
+- Modern forex pricing reflects macro expectations, liquidity conditions, and cross-border capital flow behavior.
+- Beginners improve faster when they study cause-and-effect before indicator complexity.
+- The right first goal is not prediction perfection. The right first goal is contextual understanding plus disciplined risk behavior.
+
+When you internalize this chapter, you stop treating forex as a mystery chart and start treating it as a structured economic system. That mindset is the real beginning of trading competence.
+`,
+  },
+
+  // ─── Week 1 · Monday · Lesson 2 (Ground Zero) ────────────────────────────
+  'w1-dmon-l2-what-the-forex-market-actually-is-layman-explanation': {
+    title: 'What the Forex Market Actually Is (Layman Explanation)',
+    summary:
+      'A very detailed plain-English explanation of forex as a global pricing system for money itself, including who participates, why rates move, and how beginners should interpret the market without confusion.',
+    difficulty_level: 'Beginner',
+    is_assignment: false,
+    assignment: '',
+    sections: [
+      'Introduction',
+      'The Simplest Definition of Forex',
+      'How to Read a Pair in Plain Language',
+      'Who Is Actually Trading in This Market',
+      'Why Exchange Rates Move',
+      'How Orders Become Price Movement',
+      'What Beginners See vs What Is Really Happening',
+      'Practical Meaning for Daily Trading Decisions',
+      'Risk Reality and Misconceptions',
+      'Real-World Example',
+      'Operational Checklist',
+      'Key Takeaways',
+    ],
+    image_prompt:
+      'A professional beginner-friendly educational diagram showing currency pair mechanics with base and quote labels, banks and businesses exchanging flows, and arrows indicating demand and supply driving live price changes.',
+    example:
+      'A UK import company needs to pay a U.S. supplier in USD, so it buys USD with GBP. At the same time, a U.S. fund reduces UK equity exposure and sells GBP for USD. Combined flow increases USD demand and GBP supply, so GBP/USD falls. The retail trader who only sees candles might call it random bearish momentum. The informed trader sees actual flow logic: real commercial demand and portfolio reallocation both pointing the same way.',
+    content: `# What the Forex Market Actually Is (Layman Explanation)
+
+## Introduction
+
+Most forex beginners are not confused because they are unintelligent. They are confused because they are introduced to forex through the wrong doorway.
+
+They are shown charts first, signals second, and social-media narratives third. The result is predictable: forex looks mysterious, abstract, and emotionally unstable.
+
+This lesson removes that confusion.
+
+By the end, you should be able to explain forex to a non-trader in one minute, then explain it technically to a serious learner in ten minutes.
+
+If you cannot explain something simply, you do not yet understand it deeply. This chapter fixes that.
+
+---
+
+## The Simplest Definition of Forex
+
+Forex means foreign exchange.
+
+At its core, forex is the market where one currency is exchanged for another at a continuously changing price.
+
+That is all.
+
+No magic. No hidden formula. No secret indicator.
+
+It is simply the price of money versus money.
+
+Examples:
+
+- EUR/USD = price of euro in dollars.
+- GBP/JPY = price of pound in yen.
+- USD/CHF = price of dollar in Swiss francs.
+
+If that price changes, it means demand and supply for those two currencies changed.
+
+---
+
+## How to Read a Pair in Plain Language
+
+Take EUR/USD = 1.1000.
+
+- EUR is base.
+- USD is quote.
+- 1.1000 means 1 euro costs 1.10 dollars.
+
+If EUR/USD moves to 1.1100:
+
+- euro became stronger relative to dollar,
+- or dollar became weaker relative to euro,
+- or both happened together.
+
+If EUR/USD falls to 1.0900:
+
+- euro weakened relative to dollar,
+- or dollar strengthened relative to euro,
+- or both.
+
+Layman rule:
+
+When a pair rises, base wins.
+When a pair falls, quote wins.
+
+That rule alone already prevents many beginner misunderstandings.
+
+---
+
+## Who Is Actually Trading in This Market
+
+Beginners often imagine forex is mostly retail traders buying and selling on apps.
+
+That is incorrect.
+
+The majority of meaningful flow comes from institutions and real economy participants.
+
+Main groups:
+
+1. Commercial corporations
+- Importers need foreign currency to pay suppliers.
+- Exporters convert foreign revenue back into home currency.
+
+2. Banks and liquidity providers
+- Quote two-way prices.
+- Internalize and hedge customer flow.
+
+3. Asset managers and hedge funds
+- Rebalance international portfolios.
+- Express macro views across rate and growth differentials.
+
+4. Central banks and sovereign entities
+- Manage reserves.
+- Intervene when volatility threatens policy goals.
+
+5. Retail traders
+- Participate at much smaller size.
+- Must align timing and risk to survive within institutional flow.
+
+Practical conclusion:
+
+Forex is not primarily a prediction game.
+It is a flow interpretation game.
+
+---
+
+## Why Exchange Rates Move
+
+Exchange rates move because demand and supply are never static.
+
+The strongest recurring drivers are:
+
+- interest-rate expectations,
+- inflation and growth differences,
+- trade and payment flows,
+- risk sentiment,
+- geopolitical and policy shocks.
+
+Think of each currency as an economy package:
+
+- return potential,
+- policy credibility,
+- inflation stability,
+- growth outlook,
+- risk profile.
+
+When relative ranking between two packages changes, the exchange rate reprices.
+
+That repricing can be slow (weeks, months) or violent (seconds, minutes) depending on catalyst strength and positioning.
+
+---
+
+## How Orders Become Price Movement
+
+A chart candle is not a story by itself. It is a footprint of executed orders.
+
+Simplified sequence:
+
+1. New information arrives.
+2. Participants decide to buy or sell specific currencies.
+3. Orders hit available liquidity.
+4. If aggressive demand exceeds nearby supply, price lifts.
+5. If aggressive supply exceeds nearby demand, price drops.
+
+Why volatility spikes on news:
+
+- uncertainty increases,
+- some liquidity providers quote wider spreads,
+- market depth thins,
+- the same order size moves price more.
+
+So "big candle" does not mean chaos.
+It usually means imbalance under thinner or shifting liquidity conditions.
+
+---
+
+## What Beginners See vs What Is Really Happening
+
+What beginners often see:
+
+- random spikes,
+- false breakouts,
+- sudden reversals,
+- spread widening "for no reason."
+
+What is usually happening:
+
+- event repricing,
+- stop cascades near obvious levels,
+- liquidity withdrawal around high uncertainty,
+- session handoff flow between regions,
+- portfolio hedging at specific clock windows.
+
+This perspective shift is critical.
+
+When you stop personalizing market movement and start mapping flow mechanics, your emotional decisions reduce.
+
+---
+
+## Practical Meaning for Daily Trading Decisions
+
+If forex is a live repricing engine, your job is not to guess every move.
+Your job is to participate where context is clear.
+
+Daily practical rules:
+
+1. Trade when liquidity is meaningful.
+- Prefer active session windows.
+
+2. Respect event calendar.
+- Do not pretend macro releases are irrelevant.
+
+3. Define current market state.
+- Trend, range, or transition.
+
+4. Size risk in account currency.
+- Position size before entry, not after.
+
+5. Record why price moved.
+- Build cause-and-effect memory.
+
+A beginner who follows these five rules already trades better than most new entrants.
+
+---
+
+## Risk Reality and Misconceptions
+
+### Misconception: More trades means faster growth
+
+Reality: more low-quality trades means faster drawdown.
+
+### Misconception: Leverage is an advantage by default
+
+Reality: leverage is a force multiplier. It multiplies mistakes first.
+
+### Misconception: A good setup guarantees profit
+
+Reality: setup quality improves probability, never certainty.
+
+### Misconception: Losing means analysis failed
+
+Reality: losses are part of probabilistic process. Undisciplined risk is the true failure.
+
+Core survival truth:
+
+You do not need to win every trade.
+You must survive long enough for your edge to play out.
+
+---
+
+## Real-World Example
+
+Imagine this sequence on GBP/USD:
+
+- UK inflation data surprises higher.
+- Market increases probability of tighter Bank of England policy.
+- UK yields rise relative to U.S. yields in the short term.
+- Funds adjust exposure and buy GBP.
+- GBP/USD rallies.
+
+Two hours later, a U.S. policy speaker sounds unexpectedly hawkish:
+
+- U.S. yield curve reprices upward.
+- USD demand returns.
+- GBP/USD gives back part of the move.
+
+What changed? Not chart magic.
+
+What changed was relative policy expectation between two economies.
+
+That is forex in practical form.
+
+---
+
+## Operational Checklist
+
+Use this before each session:
+
+1. Pair context
+- What does this pair represent economically?
+
+2. Session context
+- Is this an active or quiet window?
+
+3. Event context
+- Any release or speech risk nearby?
+
+4. Flow bias
+- Which currency currently has stronger narrative?
+
+5. Execution context
+- Is spread acceptable for your strategy?
+
+6. Risk context
+- Position size defined from stop and account risk?
+
+7. Review context
+- What would invalidate your thesis quickly?
+
+This checklist transforms random chart engagement into structured decision making.
+
+---
+
+## Key Takeaways
+
+- Forex is the global market that prices one currency against another.
+- Exchange rates move because real demand and supply conditions change continuously.
+- Most influential flow comes from institutions, corporates, and policy actors, not retail alone.
+- A pair move is a relative repricing event between two economies.
+- Beginners progress faster when they learn market function before strategy complexity.
+- Good trading starts with context, timing, and risk control, not with indicator stacking.
+
+When this becomes intuitive, forex feels less like noise and more like a readable economic process.
+`,
+  },
+
+  // ─── Week 1 · Monday · Lesson 3 (Ground Zero) ────────────────────────────
+  'w1-dmon-l3-who-uses-forex-every-day-banks-businesses-travelers-traders': {
+    title: 'Who Uses Forex Every Day: Banks, Businesses, Travelers, Traders',
+    summary:
+      'A detailed real-world map of the participants behind forex flows, explaining how each group creates demand and supply and why this matters directly to beginner trading decisions.',
+    difficulty_level: 'Beginner',
+    is_assignment: false,
+    assignment: '',
+    sections: [
+      'Introduction',
+      'The Participant Map',
+      'Commercial Businesses and Trade Flows',
+      'Banks and Interbank Liquidity',
+      'Asset Managers and Hedge Funds',
+      'Central Banks and Sovereign Flows',
+      'Travelers, Remittances, and Retail Conversion',
+      'Retail Traders: Position and Limitations',
+      'How Participant Interaction Creates Price Behavior',
+      'Practical Trading Implications',
+      'Extended Case Study',
+      'Key Takeaways',
+    ],
+    image_prompt:
+      'A clean ecosystem diagram of forex participants with arrows: corporates, banks, hedge funds, central banks, travelers, and retail traders feeding into exchange-rate movement on a central chart.',
+    example:
+      'During month-end, a global asset manager rebalances by selling foreign equity exposure and buying domestic currency. Simultaneously, exporters convert foreign receipts into local currency, while a central bank passively smooths volatility. A retail trader observing only chart patterns sees sudden directional persistence and then a late-day fade. The informed trader recognizes institutional calendar flow and adjusts entry timing and expectations accordingly.',
+    content: `# Who Uses Forex Every Day: Banks, Businesses, Travelers, Traders
+
+## Introduction
+
+A beginner who thinks forex is "just traders versus traders" is operating with incomplete information.
+
+Forex prices are formed by a broad ecosystem of participants with different goals, different time horizons, and different constraints.
+
+Some participants are not trying to speculate at all.
+They are simply trying to pay invoices, hedge currency risk, manage reserves, or rebalance global portfolios.
+
+To trade better, you need to know who is in the market, why they transact, and when they are most active.
+
+---
+
+## The Participant Map
+
+Think of forex as a system with layered participants:
+
+1. Real economy users
+- importers, exporters, multinational corporations.
+
+2. Financial intermediaries
+- banks, market makers, prime brokers.
+
+3. Institutional allocators
+- pension funds, asset managers, hedge funds, insurers.
+
+4. Policy institutions
+- central banks, sovereign wealth entities, state-linked funds.
+
+5. Consumer and retail layer
+- travelers, remittance users, small businesses, retail traders.
+
+Each layer creates recurring flow patterns.
+Those patterns are visible in volatility structure, time-of-day behavior, and reaction around data events.
+
+---
+
+## Commercial Businesses and Trade Flows
+
+Commercial flow is one of the most stable sources of currency demand and supply.
+
+Examples:
+
+- A U.S. importer buying machinery from Germany must buy EUR.
+- A Japanese exporter receiving USD revenue may sell USD to convert into JPY.
+- A multinational with global payroll obligations converts currencies on fixed schedules.
+
+These transactions are not primarily speculative.
+They are operational necessities.
+
+Practical impact:
+
+- Commercial hedging flow can absorb volatility.
+- In some pairs, exporter conversion creates repeated selling pressure at certain levels.
+- Corporate flow often clusters around month-end and quarter-end settlement periods.
+
+For beginners, this explains why price can "stall" at levels even when chart momentum appears strong.
+
+---
+
+## Banks and Interbank Liquidity
+
+Banks are the core liquidity engine.
+
+They do several jobs simultaneously:
+
+- quote bid/ask prices,
+- warehouse and hedge client flow,
+- route transactions across venues,
+- manage short-term inventory risk.
+
+Important beginner insight:
+
+Liquidity is not constant.
+
+Bank quoting behavior changes by:
+
+- session,
+- event risk,
+- depth conditions,
+- volatility regime.
+
+Why spread widens on major news:
+
+- uncertainty increases adverse selection risk,
+- liquidity providers reduce size or widen quotes,
+- the market becomes thinner temporarily.
+
+This is structural behavior, not broker conspiracy.
+
+---
+
+## Asset Managers and Hedge Funds
+
+Institutional funds create large directional and rebalancing flows.
+
+Typical drivers:
+
+- macro views on rates and inflation,
+- portfolio reallocation across regions,
+- hedging foreign asset exposure,
+- tactical event positioning.
+
+Two flow types matter:
+
+1. Conviction directional flow
+- can sustain trends when macro thesis remains valid.
+
+2. Mechanical rebalancing flow
+- often tied to calendar events (month-end, quarter-end).
+
+Why this matters for beginners:
+
+Some moves are not "new signal." They are balance-sheet maintenance flow.
+If you do not know that, you misclassify market behavior and overfit your setup logic.
+
+---
+
+## Central Banks and Sovereign Flows
+
+Central banks influence forex through two channels:
+
+1. Policy channel
+- rate decisions,
+- forward guidance,
+- balance sheet policy.
+
+2. Direct intervention channel
+- buying or selling currency to stabilize or influence exchange rate behavior.
+
+Intervention is less frequent in some majors and more common in selected currencies, but policy signaling affects all major pairs continuously.
+
+Practical meaning:
+
+- central bank communication can move price without immediate hard data,
+- policy divergence is a core multi-week trend driver,
+- ignoring policy context produces fragile trade plans.
+
+---
+
+## Travelers, Remittances, and Retail Conversion
+
+Consumer-level flow may be smaller per transaction but is globally large in aggregate.
+
+Examples:
+
+- tourism conversion,
+- worker remittances,
+- tuition and healthcare payments abroad,
+- cross-border e-commerce settlement.
+
+These flows matter more in some corridors than others and can contribute to structural currency demand over time.
+
+For beginners, the key lesson is conceptual:
+
+Forex is tied to human and business reality, not only trading screens.
+
+---
+
+## Retail Traders: Position and Limitations
+
+Retail traders are real participants, but typically with less information, less speed, and smaller balance sheets than institutions.
+
+This does not mean retail cannot succeed.
+It means retail must choose battles intelligently.
+
+Retail advantages:
+
+- flexibility,
+- no mandate constraints,
+- ability to stay flat,
+- fast adaptation.
+
+Retail disadvantages:
+
+- weaker data access,
+- higher relative transaction friction,
+- emotional pressure,
+- overleverage temptation.
+
+Practical rule:
+
+Retail edge comes from process discipline and selective participation, not from trying to out-muscle institutional flow.
+
+---
+
+## How Participant Interaction Creates Price Behavior
+
+Price is where flows meet.
+
+Common interaction patterns:
+
+- Commercial demand supports one side while macro funds push the other.
+- Policy communication changes expected yield path and shifts institutional allocation.
+- Session transition changes liquidity density and accelerates existing moves.
+- Stop clusters around obvious levels create temporary overshoots.
+
+This is why two identical candle patterns can have opposite outcomes in different contexts.
+
+Context is participant interaction.
+
+---
+
+## Practical Trading Implications
+
+Use participant-aware thinking before execution.
+
+1. Ask who is likely active now.
+- Asia session, London open, New York overlap, or dead zone?
+
+2. Ask what flow category is dominant.
+- event repricing, commercial hedging, rebalancing, or intervention risk?
+
+3. Ask whether your setup aligns with or fights probable flow.
+
+4. Ask whether current spread and depth match your strategy type.
+
+5. Ask where invalidation is if participant behavior changes.
+
+This framework reduces impulsive entries and improves trade selection quality.
+
+---
+
+## Extended Case Study
+
+Consider EUR/USD around month-end:
+
+- European exporters convert USD receipts to EUR.
+- A U.S. asset manager hedges eurozone equity exposure by buying USD.
+- A macro fund reduces euro longs after weaker PMI.
+- ECB officials deliver mixed messaging in speeches.
+
+Observed chart behavior:
+
+- directional push in London,
+- choppy consolidation into New York,
+- late-session fade.
+
+Uninformed interpretation:
+
+- "market manipulated"
+- "my strategy broken"
+
+Informed interpretation:
+
+- competing flow categories produced alternating dominance.
+- edge exists only when one flow set clearly overpowers others.
+
+Trading lesson:
+
+When flow conflict is high, reduce size or stand aside.
+No-trade is often the highest-quality decision.
+
+---
+
+## Key Takeaways
+
+- Forex is driven by a multi-layer participant ecosystem, not just retail speculation.
+- Commercial, banking, institutional, and policy flows all shape price behavior.
+- Session and calendar effects often reflect participant timing, not random noise.
+- Retail success improves when decisions align with likely dominant flow.
+- Knowing who is active is often as important as knowing where support or resistance sits.
+- Participant awareness turns chart reading from pattern-chasing into context-based execution.
+
+When you understand who is transacting and why, forex becomes far more readable, and your decisions become far more professional.
+`,
+  },
+
+  // ─── Week 1 · Tuesday · Lesson 1 (Ground Zero) ───────────────────────────
+  'w1-dtue-l1-currency-pairs-in-plain-language-base-quote-and-value': {
+    title: 'Currency Pairs in Plain Language: Base, Quote, and Value',
+    summary:
+      'A comprehensive long-form beginner guide to currency pair mechanics: base and quote logic, real-money interpretation, quote conventions, pair behavior by category, and the practical decision framework traders use to avoid common interpretation errors.',
+    difficulty_level: 'Beginner',
+    is_assignment: false,
+    assignment: '',
+    sections: [
+      'Introduction',
+      'Why Pair Literacy Comes Before Strategy',
+      'What a Currency Pair Is',
+      'Base Currency vs Quote Currency',
+      'Relative Value: The Core Forex Lens',
+      'How to Read Price Movement Correctly',
+      'Pips, Percentage, and Economic Meaning',
+      'Direct, Indirect, and Cross Quotes',
+      'Pair Categories and Why They Matter',
+      'Correlation and Hidden Double Exposure',
+      'Real Money Interpretation',
+      'How Quotes Connect to Flow and Macro Context',
+      'Frequent Beginner Mistakes',
+      'Worked Examples',
+      'Decision Framework Before Entering Any Pair',
+      'Advanced Beginner Notes',
+      'Practical Trading Application',
+      'Key Takeaways',
+    ],
+    image_prompt:
+      'A clean educational visual showing base and quote currency labels on multiple forex pairs with arrows indicating rising and falling pair outcomes in plain-language terms.',
+    example:
+      'If GBP/USD rises from 1.2500 to 1.2650, the market is paying more dollars for one pound, so GBP strengthened relative to USD. If USD/JPY rises from 148.20 to 149.10, one dollar buys more yen, so USD strengthened relative to JPY. Both charts moved up, but the economic interpretation is pair-dependent. A trader who ignores orientation can make technically clean but directionally wrong macro assumptions.',
+    content: `# Currency Pairs in Plain Language: Base, Quote, and Value
+
+## Introduction
+
+Most beginners do not fail because they cannot read candles. They fail because they cannot correctly interpret what a currency pair is saying.
+
+They see a chart moving up and call it bullish without asking the only question that matters first:
+
+**Bullish for which currency?**
+
+If you get this wrong, every later decision becomes fragile. If you get it right, your analysis becomes cleaner, your risk logic improves, and your journal quality rises immediately.
+
+This lesson gives you a full, practical, no-confusion framework.
+
+Forex pairs are not abstract symbols. They are explicit relative-value statements between two monetary systems.
+
+---
+
+## Why Pair Literacy Comes Before Strategy
+
+Many people want to jump into:
+
+- pattern recognition,
+- setup rules,
+- entry triggers,
+- indicator combinations.
+
+But strategy quality depends on interpretation quality.
+
+If your interpretation is wrong:
+
+- you choose wrong directional bias,
+- you misread news impact,
+- you overestimate edge in correlated pairs,
+- you place risk where macro pressure is against you.
+
+Pair literacy is the grammar of forex. Strategy is the essay. Without grammar, the essay collapses.
+
+---
+
+## What a Currency Pair Is
+
+A currency pair compares two currencies.
+
+Example: EUR/USD
+
+- First currency: EUR
+- Second currency: USD
+
+The quote tells you how many units of the second currency are needed to buy one unit of the first.
+
+If EUR/USD = 1.1000, then 1 euro costs 1.10 dollars.
+
+Forex always works this way: one currency priced in another currency.
+
+Think of it as a fraction:
+
+EUR/USD = EUR divided by USD
+
+When that fraction rises, numerator side (EUR) is winning versus denominator side (USD). When it falls, denominator side is winning.
+
+---
+
+## Base Currency vs Quote Currency
+
+The first currency is the **base**.
+The second currency is the **quote**.
+
+Rule:
+
+- If pair rises: base is strengthening relative to quote.
+- If pair falls: base is weakening relative to quote.
+
+This simple rule prevents a huge percentage of beginner confusion.
+
+Examples:
+
+- EUR/USD up: EUR stronger or USD weaker (or both).
+- USD/CHF down: USD weaker or CHF stronger (or both).
+
+The pair is always relational. Never analyze one side in isolation.
+
+Plain-language shortcut:
+
+- Pair up = base buy pressure relative to quote.
+- Pair down = base sell pressure relative to quote.
+
+That does not mean one currency is absolutely strong in every context. It means relative strength shifted in that pair at that time.
+
+---
+
+## Relative Value: The Core Forex Lens
+
+Forex is a relative market, not an absolute market.
+
+In equities, you can think "this company is good" and buy that stock directly.
+In forex, you must think in relative terms:
+
+- stronger than what?
+- weaker than what?
+- over what horizon?
+
+This is why a currency can appear strong in one pair and weak in another at the same time.
+
+Example:
+
+- EUR may rise versus GBP,
+- but fall versus USD,
+- while both EUR and USD can rise versus JPY.
+
+This is normal. Relative relationships differ by counterpart.
+
+---
+
+## How to Read Price Movement Correctly
+
+Suppose AUD/USD moves from 0.6600 to 0.6700.
+
+Interpretation:
+
+- It now takes more USD to buy 1 AUD.
+- AUD gained value relative to USD.
+
+Suppose USD/CAD moves from 1.3500 to 1.3400.
+
+Interpretation:
+
+- It now takes fewer CAD to buy 1 USD.
+- USD lost value relative to CAD.
+
+The chart direction alone is not enough. You must map the direction to the base and quote relationship.
+
+Beginner-safe interpretation template:
+
+1. Name the pair.
+2. Identify base and quote.
+3. State move direction.
+4. Translate move into relative value statement.
+5. Add likely context driver (rates, risk, data, flow).
+
+Do this in your journal every time until it becomes automatic.
+
+---
+
+## Pips, Percentage, and Economic Meaning
+
+A move can be measured in pips and in percentage terms. Both matter.
+
+Example:
+
+- EUR/USD from 1.1000 to 1.1100 = 100 pips.
+- Percentage move is about 0.91%.
+
+Why this matters:
+
+- Pip size helps with stop/target and execution.
+- Percentage size helps compare moves across instruments and regimes.
+
+Economic meaning depends on context:
+
+- A 0.9% move on a quiet day is unusually large.
+- The same move during a major policy shock may be normal.
+
+Do not evaluate movement without regime context.
+
+---
+
+## Direct, Indirect, and Cross Quotes
+
+### Direct quote
+
+From a U.S. perspective, EUR/USD is often treated as direct in retail workflow because USD is quote.
+
+### Indirect quote
+
+USD/JPY can feel indirect to some beginners because USD is base and JPY is quote. The same directional logic still applies.
+
+### Cross pairs
+
+Pairs without USD (EUR/GBP, AUD/NZD, GBP/JPY) are crosses.
+
+They can move strongly when one non-USD economy reprices quickly versus another.
+
+Practical note:
+
+Do not avoid crosses blindly. But understand their spread behavior and session liquidity before trading them.
+
+Extra practical point:
+
+Crosses can display cleaner relative narratives when USD is not the core driver that day. But they can also become expensive to trade in thinner windows. Context and cost must be considered together.
+
+---
+
+## Pair Categories and Why They Matter
+
+1. Majors
+- Usually deepest liquidity and tighter spreads.
+- Best for beginners learning execution discipline.
+
+2. Minors/Crosses
+- Useful for relative-value ideas between non-USD currencies.
+- Can have wider spread and sharper session-dependent behavior.
+
+3. Exotics
+- Higher spread, thinner liquidity, larger gap risk.
+- Generally poor choice for early-stage consistency building.
+
+Pair choice is not cosmetic. It directly affects risk, slippage, and trade expectancy.
+
+For beginner consistency, a focused watchlist usually outperforms a broad random list. Fewer pairs, deeper understanding.
+
+---
+
+## Correlation and Hidden Double Exposure
+
+Many beginners accidentally take the same macro bet multiple times.
+
+Example:
+
+- Long EUR/USD
+- Long GBP/USD
+
+Both often imply USD weakness exposure. If USD strengthens unexpectedly, both trades can lose together.
+
+Another example:
+
+- Long USD/JPY
+- Short EUR/USD
+
+Both can align with USD strength thesis.
+
+Correlation is not always stable, but ignoring it creates concentrated risk.
+
+Simple protection rule:
+
+Before opening a second trade, ask whether it is genuinely independent or a disguised duplicate thesis.
+
+---
+
+## Real Money Interpretation
+
+If you buy EUR/USD, you are effectively:
+
+- long EUR,
+- short USD.
+
+If you sell EUR/USD, you are effectively:
+
+- short EUR,
+- long USD.
+
+Every trade is a two-sided currency view.
+
+This is why macro context matters. You are always expressing a relative belief between two economies, not just drawing lines on a chart.
+
+If your thesis says USD will strengthen broadly, pair selection determines expression quality:
+
+- EUR/USD short,
+- GBP/USD short,
+- USD/JPY long,
+- AUD/USD short.
+
+These are not identical in behavior, volatility, and event sensitivity. Choose expression, do not just choose direction.
+
+---
+
+## How Quotes Connect to Flow and Macro Context
+
+Every pair move can be linked to one or more flow narratives:
+
+- rate differential repricing,
+- inflation surprise,
+- growth slowdown risk,
+- geopolitical hedging,
+- month-end portfolio rebalance,
+- commodity-linked currency demand.
+
+When EUR/USD rises, ask:
+
+- Is EUR repricing more hawkish?
+- Is USD repricing more dovish?
+- Is this temporary risk-on USD softness?
+- Is this positioning squeeze rather than fresh macro conviction?
+
+The chart is the output; the flow is the cause.
+
+---
+
+## Frequent Beginner Mistakes
+
+1. Treating all rising charts as the same signal.
+
+2. Forgetting pair orientation and mislabeling currency strength.
+
+3. Trading too many pairs without understanding correlation.
+
+4. Ignoring spread and liquidity differences across pairs.
+
+5. Confusing "pair is up" with "both currencies are strong."
+
+6. Forcing one interpretation across all sessions.
+
+7. Ignoring counterpart-specific behavior (for example JPY session sensitivity).
+
+8. Treating all 100-pip moves as equivalent regardless of volatility regime.
+
+Correction:
+
+Always ask:
+
+- Which side is base?
+- Which side is quote?
+- What does this move imply about relative strength?
+
+Then add one line:
+
+- What is the most likely driver category right now?
+
+---
+
+## Worked Examples
+
+Example 1:
+
+- EUR/USD: 1.0820 to 1.0905
+- EUR gained relative to USD.
+
+Example 2:
+
+- USD/JPY: 150.10 to 149.40
+- USD lost relative to JPY.
+
+Example 3:
+
+- GBP/CHF: 1.1300 to 1.1460
+- GBP gained relative to CHF.
+
+Example 4:
+
+- AUD/NZD: 1.0760 to 1.0690
+- AUD lost relative to NZD.
+
+Do this translation every time until it becomes automatic.
+
+Example 5 (context-rich):
+
+- Pre-event: EUR/USD at 1.0960
+- U.S. CPI prints below forecast
+- Post-event: EUR/USD at 1.1045
+
+Interpretation:
+
+- USD repriced weaker after lower inflation surprise,
+- Fed hike expectations softened,
+- EUR strengthened relative to USD in this window.
+
+Example 6 (session effect):
+
+- GBP/JPY drifts in Asia, expands sharply in London.
+
+Interpretation:
+
+- Pair sensitivity changed with session liquidity and participant mix,
+- same pair, different behavior regime.
+
+Example 7 (correlation trap):
+
+- Trader long EUR/USD and long AUD/USD ahead of U.S. payrolls.
+- Strong payroll print -> broad USD rally -> both trades lose.
+
+Interpretation:
+
+- not two independent ideas,
+- one clustered USD thesis with doubled downside.
+
+---
+
+## Decision Framework Before Entering Any Pair
+
+Use this framework in order:
+
+1. Orientation check
+- Base? Quote? Correct directional interpretation?
+
+2. Context check
+- Session, event calendar, and spread acceptable?
+
+3. Driver check
+- What is likely moving this pair now (macro, flow, technical squeeze)?
+
+4. Exposure check
+- Is this new risk or duplicate risk of existing positions?
+
+5. Execution check
+- Stop location, size, and invalidation defined?
+
+6. Review check
+- What will prove this thesis wrong quickly?
+
+This framework reduces low-quality trades and raises analytical consistency.
+
+---
+
+## Advanced Beginner Notes
+
+As you progress, add these layers:
+
+- Relative rate expectation table for major currencies.
+- Event surprise tracker by currency.
+- Session-based pair behavior profile.
+- Correlation map for your active watchlist.
+
+None of these replace price action; they improve interpretation quality.
+
+Aim:
+
+From "I see an up candle" to "I understand why this pair is repricing now."
+
+---
+
+## Practical Trading Application
+
+Before placing any trade:
+
+1. Write pair orientation in one line.
+2. Write your strength thesis for each side.
+3. Confirm session suitability for that pair.
+4. Check spread and expected volatility.
+5. Define invalidation and risk in account currency.
+
+This pre-trade protocol prevents mechanical entries with weak understanding.
+
+Upgraded journal template for this lesson:
+
+- Pair:
+- Base/Quote:
+- Directional read:
+- Driver hypothesis:
+- Session condition:
+- Event risk nearby:
+- Correlation conflict:
+- Entry reason:
+- Invalidation reason:
+- Post-trade reality vs hypothesis:
+
+Repeat this process for 20-30 trades and your pair-reading accuracy will improve materially.
+
+---
+
+## Key Takeaways
+
+- A forex pair is a relative value statement between two currencies.
+- Base and quote roles determine correct interpretation of movement.
+- Rising pair means base stronger vs quote; falling pair means base weaker vs quote.
+- Pair category affects execution quality and risk profile.
+- Correlation awareness prevents hidden duplicate exposure.
+- Clear pair interpretation is foundational to all later strategy work.
+
+If you can consistently translate pair movement into correct relative-value language and context, you are already operating above typical beginner level.
+`,
+  },
+
+  // ─── Week 1 · Tuesday · Lesson 2 (Ground Zero) ───────────────────────────
+  'w1-dtue-l2-bid-ask-and-spread-the-real-cost-of-getting-in-and-out': {
+    title: 'Bid, Ask, and Spread: The Real Cost of Getting In and Out',
+    summary:
+      'A deep practical lesson on bid/ask mechanics, spread behavior across sessions and events, and how execution friction changes real performance for beginner and intermediate traders alike.',
+    difficulty_level: 'Beginner',
+    is_assignment: false,
+    assignment: '',
+    sections: [
+      'Introduction',
+      'Bid and Ask in Plain Terms',
+      'What Spread Really Represents',
+      'Why Spread Changes',
+      'Session and News Effects',
+      'Spread vs Slippage vs Commission',
+      'How Spread Distorts Bad Strategies',
+      'Execution Quality Framework',
+      'Worked Examples',
+      'Checklist Before Entry',
+      'Key Takeaways',
+    ],
+    image_prompt:
+      'A clear forex order book style visual showing bid and ask ladders, spread gap, and how the gap widens during news and narrows during peak liquidity sessions.',
+    example:
+      'A trader buys EUR/USD during low-liquidity rollover with a 2.5 pip spread instead of London overlap with a 0.6 pip spread. Over 40 trades per month, the additional friction becomes a major drag on expectancy, turning a marginally profitable system into a losing one.',
+    content: `# Bid, Ask, and Spread: The Real Cost of Getting In and Out
+
+## Introduction
+
+Many beginners think risk is only stop-loss size.
+
+That is incomplete.
+
+Your first loss on every trade is often spread and execution friction.
+
+If you do not understand bid, ask, and spread behavior, you can build a strategy that looks good in theory but fails in live conditions.
+
+---
+
+## Bid and Ask in Plain Terms
+
+- **Bid**: price you can sell at now.
+- **Ask**: price you can buy at now.
+
+Ask is normally above bid.
+The difference is spread.
+
+If EUR/USD bid is 1.10000 and ask is 1.10008, spread is 0.8 pips.
+
+When you buy, you enter at ask.
+When you sell, you enter at bid.
+
+This means your position often starts slightly negative because you must first overcome spread.
+
+---
+
+## What Spread Really Represents
+
+Spread is not random punishment. It reflects:
+
+- liquidity conditions,
+- risk taken by liquidity providers,
+- market uncertainty,
+- venue and broker routing model.
+
+In liquid calm conditions, spread is tighter.
+In uncertain thin conditions, spread widens.
+
+This is normal market microstructure behavior.
+
+---
+
+## Why Spread Changes
+
+Spread is dynamic, not fixed.
+
+It changes by:
+
+1. Time of day
+- London/New York overlap: usually tighter.
+- rollover/dead hours: usually wider.
+
+2. Event risk
+- major releases can widen spread rapidly.
+
+3. Instrument
+- majors tighter than many exotics/crosses.
+
+4. Volatility regime
+- unstable markets can cause persistent widening.
+
+---
+
+## Session and News Effects
+
+Best beginner habit:
+
+Log spread by time window for your main pairs.
+
+You will quickly see patterns:
+
+- stable tight windows,
+- unstable expensive windows,
+- event windows with poor fill quality.
+
+Trading high-frequency setups in wide-spread periods is often mathematically self-defeating.
+
+---
+
+## Spread vs Slippage vs Commission
+
+- Spread: gap between bid and ask.
+- Slippage: fill price deviation from intended price.
+- Commission: explicit broker fee (if applicable).
+
+Total transaction friction is all three combined.
+
+Ignoring this combined cost is one of the most common reasons beginners overestimate edge.
+
+---
+
+## How Spread Distorts Bad Strategies
+
+Strategies with tiny average profit targets are highly vulnerable.
+
+If your average target is 6 pips and your all-in friction is 1.8 pips, a huge share of theoretical edge is already consumed.
+
+By contrast, a strategy targeting 40-80 pips with disciplined entries is less sensitive to small spread variation.
+
+This is why many new scalpers fail: not because scalping is impossible, but because they underestimate execution friction.
+
+---
+
+## Execution Quality Framework
+
+Use this framework:
+
+1. Define max acceptable spread per pair.
+2. Define no-trade windows (rollover, major event spikes).
+3. Track average slippage by setup type.
+4. Include friction in backtest assumptions.
+5. Reject setups that are only profitable under idealized spread.
+
+Execution quality is part of strategy design, not an afterthought.
+
+---
+
+## Worked Examples
+
+Example A:
+
+- Pair: EUR/USD
+- Strategy target: 12 pips
+- Typical spread: 0.7 pips
+- Event spread: 2.4 pips
+
+During event spread, breakeven threshold rises materially, reducing expectancy.
+
+Example B:
+
+- Pair: GBP/JPY
+- Average spread in active hours: 1.6 pips
+- Rollover spread: 4.5 pips
+
+A tight-stop intraday setup can be invalidated by friction alone in rollover.
+
+---
+
+## Checklist Before Entry
+
+1. Is current spread within your allowed threshold?
+2. Is this a known low-liquidity window?
+3. Any high-impact event in the next 15-30 minutes?
+4. Is expected move size large enough to justify friction?
+5. Is your stop/target ratio still valid after costs?
+
+If two or more answers are unfavorable, skip the trade.
+
+---
+
+## Key Takeaways
+
+- Spread is a core cost driver and must be treated as part of risk.
+- Bid/ask mechanics determine real entry and exit quality.
+- Spread is dynamic and often regime-dependent.
+- Execution friction can erase weak strategy edge.
+- Professional traders design around friction, not after it.
+
+The trader who respects spread survives longer than the trader who ignores it.
+`,
+  },
+
+  // ─── Week 1 · Tuesday · Lesson 3 (Ground Zero) ───────────────────────────
+  'w1-dtue-l3-pips-lot-size-and-leverage-without-confusion': {
+    title: 'Pips, Lot Size, and Leverage Without Confusion',
+    summary:
+      'A detailed practical guide to translating chart distance into money risk using pip value, lot sizing, and leverage control, with beginner-safe formulas and real examples.',
+    difficulty_level: 'Beginner',
+    is_assignment: false,
+    assignment: '',
+    sections: [
+      'Introduction',
+      'What a Pip Is',
+      'Pip Value in Money Terms',
+      'Lot Sizes Explained',
+      'Leverage and Margin Reality',
+      'Position Sizing Formula',
+      'Worked Numerical Examples',
+      'Common Sizing Errors',
+      'Risk Framework for Beginners',
+      'Pre-Trade Risk Checklist',
+      'Key Takeaways',
+    ],
+    image_prompt:
+      'An educational forex risk-sizing worksheet visual with pip distance, account risk percentage, pip value, and resulting lot size calculations in a clean professional style.',
+    example:
+      'A $2,000 account risking 1% allows $20 risk. If stop distance is 25 pips and pip value per 0.10 lot is about $1 per pip, risk would be $25, which is too high. Proper size is around 0.08 lots so risk is near $20.',
+    content: `# Pips, Lot Size, and Leverage Without Confusion
+
+## Introduction
+
+Most beginner accounts fail because of sizing errors, not because of entry logic.
+
+A decent setup with bad size becomes account damage.
+A mediocre setup with disciplined size can be survivable.
+
+This lesson gives you practical control:
+
+- how to convert pips into money,
+- how lot size changes real exposure,
+- how leverage amplifies outcomes,
+- and how to size every trade from risk first.
+
+---
+
+## What a Pip Is
+
+A pip is a standardized minimum price movement unit.
+
+- Most pairs: 1 pip = 0.0001
+- Many JPY pairs: 1 pip = 0.01
+
+If EUR/USD moves from 1.1000 to 1.1010, that is 10 pips.
+If USD/JPY moves from 149.20 to 149.35, that is 15 pips.
+
+Pips measure movement. They do not by themselves tell you money impact.
+
+---
+
+## Pip Value in Money Terms
+
+Pip value depends on:
+
+- pair,
+- account currency,
+- position size.
+
+Approximate intuition for many USD-quoted majors:
+
+- 1.00 lot -> about $10 per pip
+- 0.10 lot -> about $1 per pip
+- 0.01 lot -> about $0.10 per pip
+
+Do not memorize blindly for every pair. Use broker calculator when uncertain.
+
+---
+
+## Lot Sizes Explained
+
+- Standard lot: 100,000 units
+- Mini lot: 10,000 units
+- Micro lot: 1,000 units
+
+Lot size is your exposure dial.
+
+Bigger lot size means:
+
+- bigger gain if right,
+- bigger loss if wrong,
+- faster emotional instability if oversized.
+
+Beginner survival usually improves with micro-to-small mini sizing until process is stable.
+
+---
+
+## Leverage and Margin Reality
+
+Leverage lets you control larger notional value with smaller margin.
+
+Important truth:
+
+Leverage does not create edge.
+It only magnifies result variance.
+
+High leverage with weak risk rules usually accelerates failure.
+
+Margin is not maximum safe size.
+It is minimum collateral requirement.
+
+Never size from "how much margin is available." Size from defined risk.
+
+---
+
+## Position Sizing Formula
+
+Practical formula:
+
+1. Decide account risk in money:
+
+RiskMoney = AccountBalance x RiskPercent
+
+2. Measure stop distance in pips.
+
+3. Compute position size:
+
+PositionSize = RiskMoney / (StopPips x PipValuePerLotUnit)
+
+If resulting size exceeds your comfort or liquidity conditions, reduce it.
+
+---
+
+## Ten Worked Numerical Examples
+
+Below are ten different examples with different account sizes, stop distances, and risk plans. The purpose is to train intuition, not memorization.
+
+### Example 1: Balanced Beginner Setup on EUR/USD
+
+- Balance: $5,000
+- Risk: 1% = $50
+- Stop: 20 pips
+- Approx pip value at 0.10 lot: about $1/pip
+
+At 0.10 lot, total risk is 20 x $1 = $20, which is below planned risk. To align closer to $50 risk, size can be around 0.25 lot (rough estimate), assuming execution quality is normal and spread is stable.
+
+### Example 2: Small Account, Wide Stop on GBP/USD
+
+- Balance: $1,200
+- Risk: 1% = $12
+- Stop: 30 pips
+- Approx pip value at 0.01 lot: about $0.10/pip
+
+At 0.01 lot, risk is 30 x $0.10 = $3. To approach $12 risk, size is roughly 0.04 lot. This is a classic micro-account example where the stop is realistic but size remains controlled.
+
+### Example 3: Conservative Trader During News Week
+
+- Balance: $10,000
+- Normal risk: 1% = $100
+- Event-week risk reduction: 0.5% = $50
+- Stop: 25 pips
+- Approx pip value target: $2/pip
+
+To hold near $50 risk with a 25-pip stop, position should imply about $2/pip. This demonstrates that professionals reduce risk during unstable conditions instead of trying to "trade bigger because volatility is bigger."
+
+### Example 4: USD/JPY with JPY Pip Convention
+
+- Balance: $3,000
+- Risk: 1% = $30
+- Stop: 18 pips (JPY pip is 0.01)
+
+Trader calculates lot so total stop loss equals about $30, then verifies with broker calculator before entry. This example matters because many beginners confuse JPY pip definition and mis-size exposure.
+
+### Example 5: Tight Stop Does Not Mean Free Size
+
+- Balance: $8,000
+- Risk: 1% = $80
+- Stop: 8 pips
+
+Because stop is tight, formula may allow larger size. However, if spread is 1.8 pips and session is choppy, effective room is too thin. Professional decision: reduce size or avoid trade, because friction can consume too much of the stop.
+
+### Example 6: Same Pair, Different Session, Different Size
+
+- Pair: EUR/USD
+- London spread: 0.7 pips
+- Late rollover spread: 2.6 pips
+
+Setup and stop distance are identical, but position size during rollover is cut because trading cost and execution risk are materially higher. This example teaches that "same chart" does not mean "same trade conditions."
+
+### Example 7: Correlated Exposure Control
+
+- Account: $6,000
+- Risk cap per idea cluster: 1% total
+- Trade A: EUR/USD long
+- Trade B: GBP/USD long
+
+Both trades are highly USD-correlated. If each is sized at 1% risk independently, effective USD thesis risk may exceed 2%. Better approach: split total cluster risk (for example 0.5% each) so one macro shock does not hit both full-size positions simultaneously.
+
+### Example 8: Recover-Mode After Losing Streak
+
+- Account before streak: $4,000
+- Drawdown: -6%
+- New temporary risk rule: 0.5% until five clean executions
+
+Even if formula allows larger size, trader deliberately halves risk while rebuilding discipline. This example teaches process recovery and protects psychology from desperation sizing.
+
+### Example 9: Position Too Large for Emotional Stability
+
+- Balance: $2,500
+- Risk plan: 1% = $25
+- Trader enters size that risks $60 because setup "looks perfect"
+
+Price moves against entry by half stop and trader panics, exits early, then re-enters worse. Even if trade later wins, behavior is unstable. Correct lesson: acceptable risk is not only mathematical; it must be emotionally executable.
+
+### Example 10: Formula Says Trade, Quality Filter Says Skip
+
+- Balance: $15,000
+- Risk: 0.75% = $112.50
+- Stop: 22 pips
+- Calculated lot size fits risk rule
+
+But the pair is entering a high-impact release in minutes, spreads are widening, and first impulse direction is uncertain. Best decision is no trade. The edge is in selectivity, not in forcing every formula-qualified setup.
+
+---
+
+## Common Sizing Errors
+
+1. Sizing from emotion after a loss instead of from fixed risk rules.
+2. Increasing size to recover quickly, which usually deepens drawdown.
+3. Using the same lot on every pair despite different volatility and spread structure.
+4. Ignoring spread, commissions, and slippage when calculating true risk.
+5. Moving stop farther after entry without proportionally reducing size.
+6. Treating available margin as permission rather than collateral.
+7. Doubling correlated trades as if they were independent ideas.
+8. Scaling up too early before any statistically meaningful sample.
+
+These errors do not look dramatic at first. They accumulate quietly and usually explain why otherwise "good entries" still produce poor account curves.
+
+---
+
+## Risk Framework for Beginners
+
+Suggested starter policy:
+
+- Risk 0.5% to 1% per trade.
+- Hard daily loss cap (for example 2%).
+- Hard weekly loss cap (for example 5%).
+- Maximum correlated exposure cap across similar USD ideas.
+- Pause after two consecutive rule violations.
+- No size increase until at least 30-50 well-documented, rule-compliant trades.
+
+This framework protects both money and decision quality while skill is developing.
+
+---
+
+## Pre-Trade Risk Checklist
+
+1. What is exact risk in account currency for this trade?
+2. Is stop distance based on structure, not convenience?
+3. Does computed lot size match risk policy and session quality?
+4. Are spread and slippage assumptions realistic right now?
+5. Is this trade highly correlated with other open exposure?
+6. If stop is hit, can I take the loss calmly and continue process?
+
+If any answer is unclear, do not execute.
+
+---
+
+## Key Takeaways
+
+- Pips measure movement, while lot size converts movement into money impact.
+- Leverage magnifies both outcomes and mistakes; it must be governed by strict rules.
+- Position sizing is the most practical survival skill in early trading development.
+- Formula output is a starting point; market-quality filters determine final execution size.
+- Ten different examples should all point to one principle: risk consistency beats prediction confidence.
+
+Traders who master risk arithmetic early build a durable edge long before they master advanced entries.
+`,
+  },
+
   // ─── Week 1 · Monday · Lesson 1 ─────────────────────────────────────────────
   'w1-dmon-l1-macroeconomic-drivers-of-currency-value': {
     title: 'Macroeconomic Drivers of Currency Value',
@@ -3516,6 +5455,899 @@ This is a high-quality Week 1 close. She enters Week 2 with a specific process g
 - The pattern scan is the most important part of the weekly review. Distributing 10 minutes to reading your entries side by side will surface repeating behaviors that you missed in real time.
 - One improvement goal per week is enough. Adding ten new journal habits at once causes all of them to collapse. Identify the single gap and close it.
 - Traders who maintain and review their journals consistently outperform traders who journal inconsistently even when the inconsistent traders had better entry signals. The review process is where edge compounds over time.
+`,
+  },
+
+  // --- Week 1 (Ground Zero, updated curriculum) ---
+  'w1-dwed-l1-the-24-hour-forex-clock-asia-london-and-new-york-sessions': {
+    title: 'The 24-Hour Forex Clock: Asia, London, and New York Sessions',
+    summary:
+      'A deep beginner-first guide to the three core forex sessions, what actually changes between them, and how session timing should control when you trade and when you stand aside.',
+    difficulty_level: 'Beginner',
+    is_assignment: false,
+    assignment: '',
+    sections: [
+      'Introduction',
+      'Why Session Timing Matters',
+      'Asia Session Personality',
+      'London Session Personality',
+      'New York Session Personality',
+      'Session-to-Session Transition',
+      'Common Beginner Errors',
+      'Practical Application',
+      'Key Takeaways',
+    ],
+    image_prompt:
+      'Educational world-clock graphic showing Asia, London, and New York forex sessions with liquidity intensity bands and pair activity examples.',
+    example:
+      'A new trader watches EUR/USD at 03:00 UTC, 08:00 UTC, and 14:00 UTC on the same day. At 03:00, candles are tighter and less impulsive. At 08:00, range expands rapidly as London opens. At 14:00, volatility spikes again when New York data hits. The pair did not become random. It behaved differently because participation changed by session.',
+    content: `# The 24-Hour Forex Clock: Asia, London, and New York Sessions
+
+## Introduction
+
+Forex is open almost continuously, but market quality is not constant. Beginners often think "the market is open" means "all hours are equally tradeable." That assumption is expensive.
+
+The same setup can perform very differently depending on when it appears. A breakout that follows through during active London hours can fail in thin pre-session conditions. A clean trend in one session can become choppy during handover into the next.
+
+If you learn one professional habit early, learn this: time is part of trade quality.
+
+## Why Session Timing Matters
+
+Session changes are really participation changes. When major banks, funds, and corporates in a region are active, order flow deepens. When they are inactive, liquidity thins and price behavior can become slower or less reliable.
+
+This affects three things immediately:
+
+- average candle size,
+- spread behavior,
+- likelihood of directional follow-through.
+
+You are not only reading price structure. You are reading structure inside a participation window.
+
+## Asia Session Personality
+
+Asia often starts the daily cycle with measured movement. JPY, AUD, and NZD pairs may be most responsive, especially around scheduled regional events. Many majors can remain range-bound unless a clear catalyst appears.
+
+Typical beginner mistake: forcing trend trades in a quiet environment. Quiet conditions are not bad, but they demand different expectations. Range behavior and selective entries matter more.
+
+## London Session Personality
+
+London is usually the most structurally important session for many pairs. Liquidity increases sharply, spreads are often competitive, and direction can establish early.
+
+For beginners, London teaches two lessons:
+
+- the first impulse is not always the true move,
+- level reaction quality improves when participation is broad.
+
+The open can create fake early pushes before cleaner directional continuation appears.
+
+## New York Session Personality
+
+New York adds another major participation block and often introduces U.S. economic data risk. Existing London direction may extend, reverse, or stall depending on incoming information.
+
+This is where many beginners get trapped: they assume New York must confirm London. Sometimes it does. Sometimes New York reprices the day.
+
+## Session-to-Session Transition
+
+Transitions matter as much as session centers. In handover windows, spread, pace, and reaction quality can shift quickly. A setup that looked stable 20 minutes ago may deteriorate as participation mix changes.
+
+A practical rule: if a setup requires immediate momentum, avoid entering right before a major transition unless you have a catalyst and clear invalidation.
+
+## Common Beginner Errors
+
+- Trading any hour as if it has equal opportunity.
+- Ignoring session context when reviewing wins and losses.
+- Entering late in exhausted session moves expecting fresh expansion.
+- Mislabeling time-based underperformance as "strategy failure."
+
+## Practical Application
+
+For one week, annotate every trade idea with session label: Asia, London, New York, or transition. Track entry quality, spread, and follow-through by label. At week end, compare outcomes.
+
+You will often discover your process does better in one or two windows. That insight is immediate edge.
+
+## Key Takeaways
+
+- Forex is 24-hour access, not 24-hour equal quality.
+- Session participation changes price behavior in predictable ways.
+- London and New York usually carry the strongest directional potential for many majors.
+- Your strategy should include a time filter, not only a pattern filter.
+`,
+  },
+
+  'w1-dwed-l2-london-new-york-overlap-when-most-big-moves-happen': {
+    title: 'London-New York Overlap: When Most Big Moves Happen',
+    summary:
+      'Explains why the overlap window often produces the cleanest liquidity and strongest expansions, plus a practical framework for beginners to use this period safely.',
+    difficulty_level: 'Beginner',
+    is_assignment: false,
+    assignment: '',
+    sections: [
+      'Introduction',
+      'Why Overlap Is Different',
+      'Liquidity and Execution',
+      'Catalyst Sensitivity',
+      'Best and Worst Setup Types',
+      'Risk Management in Fast Conditions',
+      'Practical Application',
+      'Key Takeaways',
+    ],
+    image_prompt:
+      'Forex chart with highlighted London-New York overlap window and increased volume/volatility markers, educational style.',
+    example:
+      'EUR/USD spends early London rotating in a 22-pip box. During overlap, a U.S. data surprise hits and price breaks the box with expansion, retests once, and trends for 70 pips. The setup quality changed because overlap combined deep liquidity with a clear catalyst.',
+    content: `# London-New York Overlap: When Most Big Moves Happen
+
+## Introduction
+
+The London-New York overlap is one of the most important windows in retail forex trading. Many beginners hear this but do not understand why. The reason is structural, not magical.
+
+During overlap, two major financial centers are active together. That increases participation density, improves quote competition, and often amplifies response to macro news.
+
+## Why Overlap Is Different
+
+When only one center is active, order flow can still be strong. When both are active, the market has more two-way interest and faster repricing.
+
+You typically see:
+
+- stronger breakouts from pre-overlap ranges,
+- quicker invalidation of weak levels,
+- clearer continuation once genuine momentum appears.
+
+This does not guarantee trend. It improves the environment for decisive movement.
+
+## Liquidity and Execution
+
+Deeper liquidity can reduce slippage in normal conditions, but speed can still punish late entries. Beginners often confuse liquidity with safety. Overlap is better for execution quality than thin hours, yet bad timing still costs.
+
+Rule: let structure and confirmation lead, not urgency.
+
+## Catalyst Sensitivity
+
+Overlap commonly contains U.S. releases or follow-through from European developments. The same number can produce a muted response in quiet hours but a sharp move in overlap because participation is high.
+
+Treat overlap as a high-information window. If no catalyst appears, range continuation can persist. If a catalyst appears, expansion probability rises.
+
+## Best and Worst Setup Types
+
+Often better during overlap:
+
+- breakout plus retest from well-defined session range,
+- continuation after confirmed pullback in established trend,
+- rejection at major higher-timeframe level with catalyst alignment.
+
+Often worse during overlap:
+
+- chasing second or third extension candle,
+- random mid-range entries without invalidation,
+- "it moved so I must enter" impulse trades.
+
+## Risk Management in Fast Conditions
+
+Overlap can reward good plans and punish emotional speed. Use explicit limits:
+
+- fixed risk per trade,
+- predefined invalidation,
+- no widening stop after entry,
+- no revenge trade inside the same volatility burst.
+
+## Practical Application
+
+For five trading days, capture one screenshot before overlap and one after overlap on your chosen pair. Mark range, breakout point, catalyst (if any), and outcome. This builds objective pattern memory.
+
+## Key Takeaways
+
+- Overlap is powerful because participation from two centers is simultaneous.
+- Movement quality often improves, but discipline requirements increase.
+- Use overlap with structure, confirmation, and strict risk controls.
+- The window is an opportunity filter, not an automatic buy/sell signal.
+`,
+  },
+
+  'w1-dwed-l3-low-liquidity-traps-why-beginners-get-caught-in-choppy-hours': {
+    title: 'Low-Liquidity Traps: Why Beginners Get Caught in Choppy Hours',
+    summary:
+      'A practical anti-trap lesson on thin-market behavior, false movement, spread distortion, and how beginners can avoid low-quality entries during dead hours.',
+    difficulty_level: 'Beginner',
+    is_assignment: false,
+    assignment: '',
+    sections: ['Introduction', 'What Low Liquidity Looks Like', 'Trap Patterns', 'Execution Risks', 'Avoidance Framework', 'Key Takeaways'],
+    image_prompt:
+      'Side-by-side forex chart comparison of low-liquidity chop versus high-liquidity directional movement with educational annotations.',
+    example:
+      'A trader enters a breakout at 01:20 UTC on GBP/USD after two small candles poke above range highs. Spread widens, momentum disappears, price re-enters range, and stop is hit. The same structure during active London later breaks and follows through. The difference was liquidity context, not chart line color.',
+    content: `# Low-Liquidity Traps: Why Beginners Get Caught in Choppy Hours
+
+## Introduction
+
+Most early losses in forex are not because beginners are unintelligent. They are often because beginners trade low-quality hours as if they were prime hours.
+
+Low liquidity does not always mean no movement. It often means unreliable movement.
+
+## What Low Liquidity Looks Like
+
+Common signs:
+
+- uneven candle pacing,
+- repeated whipsaw around nearby levels,
+- weaker follow-through after breakout attempts,
+- occasional spread widening relative to normal session behavior.
+
+In these windows, the market can poke levels without commitment.
+
+## Trap Patterns
+
+Three frequent beginner traps:
+
+1. Micro breakout trap: price breaks a nearby high/low by a few pips, attracts entries, then snaps back.
+2. Mid-range impatience trap: trader enters in the center of a box because "it must move soon."
+3. Delayed confirmation trap: signal appears, but by the time entry happens momentum has already decayed.
+
+## Execution Risks
+
+Thin windows can increase total trade friction:
+
+- wider effective costs,
+- poorer fill quality,
+- stop-outs from noise instead of true invalidation.
+
+Beginners then blame strategy, when the larger issue was timing quality.
+
+## Avoidance Framework
+
+Use a simple decision gate before every trade:
+
+- Is this an active session or transition with participation?
+- Is spread normal for this pair and time?
+- Is the setup at a meaningful level, not in the middle?
+- Do I have clear invalidation if this is only a liquidity poke?
+
+If two or more answers are weak, skip.
+
+Skipping bad hours is a performance skill, not passivity.
+
+## Key Takeaways
+
+- Low liquidity often produces false movement and poor follow-through.
+- Many "bad setups" are actually bad timing.
+- Treat dead hours as observation time unless your strategy is specifically designed for them.
+- Protect capital by filtering for environment quality first.
+`,
+  },
+
+  'w1-dthu-l1-candlesticks-for-complete-beginners-what-each-candle-tells-you': {
+    title: 'Candlesticks for Complete Beginners: What Each Candle Tells You',
+    summary:
+      'A full plain-language candlestick primer that teaches body, wick, close location, and how to read a candle in context rather than in isolation.',
+    difficulty_level: 'Beginner',
+    is_assignment: false,
+    assignment: '',
+    sections: ['Introduction', 'Candle Anatomy', 'Close Location Logic', 'Context Rules', 'Common Misreads', 'Practice Framework', 'Key Takeaways'],
+    image_prompt:
+      'Clear candlestick anatomy diagram labeling open, high, low, close, body, and wicks with bullish and bearish examples.',
+    example:
+      'Two bearish candles can look similar but mean different things. Candle A closes near its low after rejecting resistance in London. Candle B has a long upper wick but closes mid-range inside chop. Candle A shows stronger seller control. Candle B shows indecision and noise.',
+    content: `# Candlesticks for Complete Beginners: What Each Candle Tells You
+
+## Introduction
+
+Candles are not decoration. Each candle is a compressed argument between buyers and sellers over a period of time.
+
+Beginners often memorize names first. Names can help, but meaning comes from structure and context.
+
+## Candle Anatomy
+
+Every candle has four prices: open, high, low, close.
+
+- Body: distance between open and close.
+- Upper wick: highest rejection above the body.
+- Lower wick: lowest rejection below the body.
+
+Large body often signals directional acceptance. Long wick often signals rejection or failed extension. Small body often signals balance or hesitation.
+
+## Close Location Logic
+
+Close location is one of the most useful beginner filters.
+
+- Bullish candle closing near high: buyers held control into the close.
+- Bearish candle closing near low: sellers held control into the close.
+- Candle closing mid-range with long wicks: conflict, not commitment.
+
+This is probability information, not certainty.
+
+## Context Rules
+
+Never interpret a candle alone. Ask three context questions:
+
+1. Where did it form? At support, resistance, breakout level, or mid-noise?
+2. When did it form? Active session or quiet hour?
+3. What came before it? Trend leg, pullback, or random overlap?
+
+Same shape, different context, different meaning.
+
+## Common Misreads
+
+- Treating every pin bar as reversal.
+- Ignoring higher-timeframe structure.
+- Entering on candle color without level context.
+- Confusing one dramatic candle with confirmed trend change.
+
+## Practice Framework
+
+For 20 chart examples, write one sentence per candle:
+"This candle suggests X because it formed at Y during Z context."
+
+If you cannot fill X, Y, Z clearly, do not trade from that candle.
+
+## Key Takeaways
+
+- Candles communicate pressure, rejection, and acceptance.
+- Close location often matters more than candle name.
+- Context converts candle shape into trading meaning.
+- Read candles as part of structure and session, not as isolated signals.
+`,
+  },
+
+  'w1-dthu-l2-trend-range-and-breakout-in-plain-terms': {
+    title: 'Trend, Range, and Breakout in Plain Terms',
+    summary:
+      'Defines the three core market states for beginners and gives a practical decision model for matching behavior and execution to each state.',
+    difficulty_level: 'Beginner',
+    is_assignment: false,
+    assignment: '',
+    sections: ['Introduction', 'Trend State', 'Range State', 'Breakout State', 'State-Selection Rules', 'Common Delusions', 'Key Takeaways'],
+    image_prompt:
+      'Educational chart panel showing trend, range, and breakout market states with simple labels and arrows.',
+    example:
+      'USD/JPY rises in higher highs and higher lows: trend. It then oscillates for two sessions between two clear boundaries: range. After U.S. CPI, it closes above range high and retests: breakout transition. One pair, three states, three different entry logics.',
+    content: `# Trend, Range, and Breakout in Plain Terms
+
+## Introduction
+
+Many beginners fail because they use one trade style in every market state. A breakout method in a range gets chopped. A range fade method in a trend gets run over.
+
+Market state recognition is not advanced theory. It is survival.
+
+## Trend State
+
+Plain meaning: price is moving directionally with structure.
+
+Typical features:
+
+- repeated higher highs/higher lows (uptrend) or lower highs/lower lows (downtrend),
+- pullbacks that respect structure,
+- continuation after retracement.
+
+Beginner approach: prefer pullback entries into directional structure rather than chasing extension.
+
+## Range State
+
+Plain meaning: price is rotating between boundaries without sustained break.
+
+Typical features:
+
+- repeated rejection near top and bottom,
+- failed mid-zone continuation,
+- lower directional reliability.
+
+Beginner approach: act near edges, avoid center noise.
+
+## Breakout State
+
+Plain meaning: price exits a known structure and seeks new value.
+
+Typical features:
+
+- decisive close beyond boundary,
+- momentum expansion,
+- retest and continuation (in strong breaks) or quick failure (in weak breaks).
+
+Beginner approach: demand confirmation and invalidation, not impulse.
+
+## State-Selection Rules
+
+Before entry, label current state in one word: trend, range, breakout.
+
+Then ask: "Is my setup designed for this state?"
+
+If no, skip.
+
+## Common Delusions
+
+- "My signal works everywhere."
+- "Any break equals true breakout."
+- "If I miss first candle, I should chase second and third."
+- "Range means no opportunity." Range has opportunity at edges if managed correctly.
+
+## Key Takeaways
+
+- Correct state identification often matters more than indicator choice.
+- Trend, range, and breakout require different behavior.
+- Label the state first, choose setup second.
+- State mismatch is a major cause of beginner inconsistency.
+`,
+  },
+
+  'w1-dthu-l3-how-news-becomes-price-movement-practical-example-walkthrough': {
+    title: 'How News Becomes Price Movement (Practical Example Walkthrough)',
+    summary:
+      'Step-by-step walkthrough of how an economic release changes expectations, reprices rates, shifts order flow, and prints visible movement on the chart.',
+    difficulty_level: 'Beginner',
+    is_assignment: false,
+    assignment: '',
+    sections: ['Introduction', 'From Data to Expectation', 'From Expectation to Flow', 'Chart-Level Behavior', 'Risk Around News', 'Walkthrough', 'Key Takeaways'],
+    image_prompt:
+      'Infographic flow from economic release to expectations, yields, order flow, and forex chart movement.',
+    example:
+      'Consensus expects weaker U.S. labor data. Actual release beats strongly. Rate-cut expectations reduce, U.S. yields rise, USD demand increases, and EUR/USD drops sharply in seconds. A retracement follows, then continuation as participants rebalance.',
+    content: `# How News Becomes Price Movement (Practical Example Walkthrough)
+
+## Introduction
+
+Beginners often think news moves price "because everyone panics." A more useful view is mechanical: news changes expectations, expectations change relative yield outlook, and that shifts currency demand.
+
+## From Data to Expectation
+
+Markets do not price the headline alone. They price the difference between expected and actual.
+
+If expected inflation is 2.8 and actual is 3.2, that surprise can alter policy expectations. Currencies respond to expectation change, not to the number in isolation.
+
+## From Expectation to Flow
+
+When expectations shift, institutions reprice positions:
+
+- rates market reprices,
+- fixed income adjusts,
+- FX desks rebalance,
+- macro funds update directional exposure.
+
+The chart move is the visible output of that repricing process.
+
+## Chart-Level Behavior
+
+News windows often show a sequence:
+
+1. immediate impulse,
+2. short pullback or spread normalization,
+3. continuation or full rejection depending on conviction.
+
+This is why waiting for post-release structure can be safer than blind pre-release guessing.
+
+## Risk Around News
+
+Even good analysis can fail in high-speed conditions.
+
+Protect yourself with:
+
+- smaller risk sizing around scheduled high-impact events,
+- no market orders at random milliseconds,
+- predefined invalidation that accepts volatility,
+- readiness to skip if structure is chaotic.
+
+## Walkthrough
+
+Pair: EUR/USD.
+
+- Pre-release: pair ranges near intraday support; consensus expects soft U.S. print.
+- Release: print is stronger than expected.
+- Repricing: market reduces near-term easing expectations, USD strengthens.
+- Price action: sharp downside impulse, quick 30 percent retracement, then lower low as flow continues.
+- Trader behavior: professional waits for pullback failure at broken support, then executes with defined risk. Beginner chases first candle and often enters at worst location.
+
+## Key Takeaways
+
+- News moves price through expectation change and flow, not magic.
+- Surprise versus consensus is the core variable.
+- Post-release structure often offers cleaner entries than pre-release prediction.
+- Around news, risk control is more important than being first.
+`,
+  },
+
+  'w1-dfri-l1-the-biggest-forex-beginner-delusions-and-why-they-fail': {
+    title: 'The Biggest Forex Beginner Delusions and Why They Fail',
+    summary:
+      'A direct, practical breakdown of the most dangerous beginner beliefs in forex and how each one translates into recurring losses.',
+    difficulty_level: 'Beginner',
+    is_assignment: false,
+    assignment: '',
+    sections: ['Introduction', 'Delusion 1 Fast Money', 'Delusion 2 High Leverage', 'Delusion 3 Indicator Addiction', 'Delusion 4 Constant Trading', 'Delusion 5 No Process', 'Key Takeaways'],
+    image_prompt:
+      'Clean educational poster contrasting common beginner forex myths with professional realities.',
+    example:
+      'A trader doubles lot size after two wins because he believes momentum means skill. One normal loss erases both wins and more. The problem was not the setup. The problem was the delusion that short winning streaks justify risk expansion without process.',
+    content: `# The Biggest Forex Beginner Delusions and Why They Fail
+
+## Introduction
+
+Most beginner losses are not caused by missing secret indicators. They are caused by wrong beliefs. Beliefs shape behavior. Behavior shapes account curve.
+
+## Delusion 1: "Forex is fast money"
+
+Reality: forex is a skill market. Skills compound slowly through repetition, review, and risk control. Urgency pushes traders into overexposure.
+
+## Delusion 2: "High leverage is the edge"
+
+Reality: leverage is an amplifier, not an edge. It magnifies both good and bad decisions. Without robust process, leverage accelerates failure.
+
+## Delusion 3: "More indicators means more certainty"
+
+Reality: indicator stacking often hides indecision. Conflicting signals create paralysis, late entries, and rule bending. Clean structure plus clear risk rules beats indicator overload.
+
+## Delusion 4: "I should trade every day and every setup"
+
+Reality: opportunity is uneven. Professionals pass constantly. Selectivity protects capital and emotional stability.
+
+## Delusion 5: "If I feel confident, I can size up"
+
+Reality: confidence is not probability. Process consistency must determine risk, not emotion.
+
+## Delusion 6: "I can skip journaling for now"
+
+Reality: no journal means no feedback loop. Without records, mistakes repeat and progress stalls.
+
+## Key Takeaways
+
+- Wrong beliefs create expensive habits.
+- Trading is a process business, not an adrenaline business.
+- Consistency beats intensity.
+- The fastest path forward is abandoning fantasy and adopting disciplined routine.
+`,
+  },
+
+  'w1-dfri-l2-risk-first-thinking-how-professionals-protect-capital-first': {
+    title: 'Risk-First Thinking: How Professionals Protect Capital First',
+    summary:
+      'Introduces a survival-first risk model for beginners: fixed risk, clear invalidation, position sizing discipline, and drawdown control.',
+    difficulty_level: 'Beginner',
+    is_assignment: false,
+    assignment: '',
+    sections: ['Introduction', 'Why Capital Protection Comes First', 'Core Risk Rules', 'Position Size Logic', 'Drawdown Behavior', 'Practical Checklist', 'Key Takeaways'],
+    image_prompt:
+      'Risk management worksheet next to forex chart showing position size, stop distance, and fixed risk per trade.',
+    example:
+      'Trader A risks 5 percent per trade and loses four in a row, down nearly 19 percent. Trader B risks 1 percent per trade and loses four in a row, down about 4 percent. Same signal quality, different survival probability.',
+    content: `# Risk-First Thinking: How Professionals Protect Capital First
+
+## Introduction
+
+Professionals do not begin by asking "How much can I make today?" They begin with "How much can I lose if I am wrong?"
+
+That is not fear. It is operational intelligence.
+
+## Why Capital Protection Comes First
+
+You need capital to continue learning. A strategy can be improved over time, but a blown account ends the learning cycle.
+
+Risk-first thinking preserves two assets:
+
+- money,
+- psychological stability.
+
+## Core Risk Rules
+
+Use these baseline rules as a beginner:
+
+- fixed percentage risk per trade,
+- stop-loss defined before entry,
+- no stop widening after entry,
+- daily max loss limit,
+- weekly max drawdown pause.
+
+Rules are only useful when pre-committed.
+
+## Position Size Logic
+
+Position size should be calculated from risk amount and stop distance, not from excitement.
+
+If stop needs to be wider for market structure, size must be smaller. If size cannot be smaller due to constraints, skip trade.
+
+## Drawdown Behavior
+
+Drawdown is guaranteed in real trading. Professional response is controlled reduction of activity, not emotional escalation.
+
+After a losing streak:
+
+- reduce risk,
+- reduce frequency,
+- review journal,
+- return only when process quality is restored.
+
+## Practical Checklist
+
+Before any entry:
+
+1. What invalidates this idea?
+2. What is my exact risk amount?
+3. Is this within daily and weekly limits?
+4. If stopped out, will I still be process-stable?
+
+If any answer is unclear, do not enter.
+
+## Key Takeaways
+
+- Capital protection is the first performance target.
+- Position size follows risk rules, not confidence.
+- Drawdown response should be procedural, not emotional.
+- Traders survive first, then optimize.
+`,
+  },
+
+  'w1-dfri-l3-your-first-practical-forex-framework-observe-plan-execute-review': {
+    title: 'Your First Practical Forex Framework: Observe, Plan, Execute, Review',
+    summary:
+      'Builds a complete beginner operating loop that turns random chart watching into a repeatable process with pre-market prep and post-trade learning.',
+    difficulty_level: 'Beginner',
+    is_assignment: false,
+    assignment: '',
+    sections: ['Introduction', 'Observe Phase', 'Plan Phase', 'Execute Phase', 'Review Phase', 'Weekly Iteration', 'Key Takeaways'],
+    image_prompt:
+      'Four-step process diagram for forex workflow: Observe, Plan, Execute, Review, with notebook and chart visuals.',
+    example:
+      'A trader observes EUR/USD in London session at a higher-timeframe support zone, plans a pullback-confirmation entry with fixed risk, executes only if confirmation appears, and reviews whether rules were followed regardless of P and L. This loop converts single trades into process data.',
+    content: `# Your First Practical Forex Framework: Observe, Plan, Execute, Review
+
+## Introduction
+
+The difference between random trading and professional growth is process. A simple framework reduces impulsive decisions and increases learning speed.
+
+Use this four-step loop every day.
+
+## Observe Phase
+
+Goal: understand environment before acting.
+
+Tasks:
+
+- label market state,
+- mark key levels,
+- note session and upcoming high-impact events,
+- define directional bias hypothesis.
+
+No trades in this phase.
+
+## Plan Phase
+
+Goal: convert observation into executable criteria.
+
+Tasks:
+
+- define entry trigger,
+- define invalidation,
+- calculate position size,
+- predefine target logic,
+- define skip conditions.
+
+If plan cannot be written in 4 to 6 lines, it is too vague.
+
+## Execute Phase
+
+Goal: follow plan, not emotion.
+
+Rules:
+
+- enter only on predefined trigger,
+- respect stop and risk,
+- no mid-trade improvisation unless rule-based,
+- one decision log note at entry and at exit.
+
+Execution quality is measured by rule adherence.
+
+## Review Phase
+
+Goal: convert outcome into learning.
+
+Review questions:
+
+1. Did I follow the plan exactly?
+2. Was the setup aligned with market state and session?
+3. Was risk correctly sized?
+4. What one improvement applies tomorrow?
+
+## Weekly Iteration
+
+At week end, review all entries and choose one process upgrade only. Trying to fix everything at once usually fixes nothing.
+
+## Key Takeaways
+
+- Process creates consistency before profits stabilize.
+- Observation and planning reduce emotional execution.
+- Review converts wins and losses into training data.
+- One disciplined loop repeated daily outperforms random effort.
+`,
+  },
+
+  'w1-dsat-l1-create-your-forex-glossary-50-terms-in-plain-english': {
+    title: 'Create Your Forex Glossary: 50 Terms in Plain English',
+    summary:
+      'A structured assignment that builds language fluency by defining 50 essential forex terms in your own words with practical usage examples.',
+    difficulty_level: 'Beginner',
+    is_assignment: true,
+    assignment: `**Assignment: Build Your 50-Term Forex Glossary**
+
+Create a personal glossary with exactly 50 terms.
+
+For each term, include:
+- Plain-English definition in one or two sentences.
+- Why it matters in real trading decisions.
+- One short example sentence using the term correctly.
+
+Minimum categories:
+- Pricing terms (at least 10): pair, base, quote, bid, ask, spread, pip, point, tick, cross.
+- Execution terms (at least 10): market order, limit order, stop order, slippage, fill, stop-loss, take-profit, position size, leverage, margin.
+- Structure terms (at least 10): trend, range, breakout, pullback, support, resistance, swing high, swing low, volatility, momentum.
+- Risk terms (at least 10): risk-reward, drawdown, exposure, correlation, overtrading, max daily loss, invalidation, expectancy, variance, discipline.
+- Macro terms (at least 10): inflation, interest rate, central bank, GDP, CPI, employment, hawkish, dovish, yield, risk sentiment.
+
+Submission quality rule: definitions must be in your own words. Copy-paste dictionary text gets zero credit.`,
+    sections: ['Objective', 'Why This Matters', 'Required Structure', 'Submission Standard', 'Key Takeaways'],
+    image_prompt:
+      'Clean study desk with forex glossary notebook and highlighted key terms, minimal educational style.',
+    example:
+      'Term: Spread. Definition: The difference between bid and ask, representing immediate transaction cost. Why it matters: if spread is wide, short-term entries need more movement to break even. Example sentence: I skipped the trade because spread widened during low-liquidity hours.',
+    content: `# Create Your Forex Glossary: 50 Terms in Plain English
+
+## Objective
+
+Build vocabulary fluency so charts, broker screens, and lessons are understandable without hesitation.
+
+## Why This Matters
+
+If you do not own the language, you cannot own the process. Traders who misunderstand terms misread risk, execution, and context.
+
+## Required Structure
+
+Use a table with columns: Term, Definition, Why It Matters, Example Sentence.
+
+Write in plain language. If a 14-year-old could not follow your sentence, simplify it.
+
+## Submission Standard
+
+- Exactly 50 terms.
+- Every term includes all three components.
+- No copy-paste definitions.
+- At least 10 terms in each required category.
+
+## Key Takeaways
+
+- Terminology precision reduces execution mistakes.
+- Plain-English definitions prove true understanding.
+- This glossary becomes your reference for all future modules.
+`,
+  },
+
+  'w1-dsat-l2-one-day-pair-observation-session-by-session-behavior-notes': {
+    title: 'One-Day Pair Observation: Session-by-Session Behavior Notes',
+    summary:
+      'A practical observation assignment where you track one major pair across Asia, London, and New York to internalize timing-driven behavior differences.',
+    difficulty_level: 'Beginner',
+    is_assignment: true,
+    assignment: `**Assignment: Session-by-Session Pair Study**
+
+Choose one major pair (EUR/USD, GBP/USD, or USD/JPY) and observe it across one full trading day.
+
+For each session (Asia, London, New York), record:
+- Approximate range size.
+- Spread behavior at key moments.
+- Dominant candle behavior (compression, expansion, rejection).
+- Whether directional follow-through was strong or weak.
+- One screenshot with 2-3 annotated notes.
+
+Then write a short conclusion:
+- Which session gave the cleanest structure?
+- Which session was most dangerous for impulsive entries?
+- What timing rule will you adopt next week?
+
+Minimum output: 3 session notes + 3 screenshots + 1 concluding paragraph.`,
+    sections: ['Objective', 'Data Collection', 'Comparison Method', 'Conclusion Format', 'Key Takeaways'],
+    image_prompt:
+      'Trading journal worksheet with three labeled session blocks (Asia, London, New York) and chart snapshots.',
+    example:
+      'Student records EUR/USD: Asia range 24 pips, London range 62 pips with breakout continuation, New York initial extension then pullback and stabilization. Conclusion: best entries appear in London continuation windows, avoid forcing trades during late Asia compression.',
+    content: `# One-Day Pair Observation: Session-by-Session Behavior Notes
+
+## Objective
+
+Train your eye to see how the same pair behaves differently by session.
+
+## Data Collection
+
+Use one pair only. Switching pairs reduces pattern clarity.
+
+Create three blocks in your journal: Asia, London, New York. Fill each block using the same fields so comparison is objective.
+
+## Comparison Method
+
+After all sessions, compare:
+
+- volatility profile,
+- spread quality,
+- setup reliability,
+- frequency of fake moves.
+
+Your job is observation, not prediction.
+
+## Conclusion Format
+
+Write one paragraph with three statements:
+
+1. The session where your pair behaved most cleanly.
+2. The session where traps were most frequent.
+3. One timing rule you will apply from now on.
+
+## Key Takeaways
+
+- Session behavior is measurable, not subjective.
+- One-day focused observation can remove weeks of confusion.
+- Timing filters are part of edge construction.
+`,
+  },
+
+  'w1-dsat-l3-write-your-one-page-forex-operating-guide-for-week-2': {
+    title: 'Write Your One-Page Forex Operating Guide for Week 2',
+    summary:
+      'A capstone Week 1 assignment that converts your lessons into a one-page personal operating guide for structure, timing, risk, and execution behavior in Week 2.',
+    difficulty_level: 'Beginner',
+    is_assignment: true,
+    assignment: `**Assignment: One-Page Operating Guide**
+
+Write a single-page document titled "My Week 2 Forex Operating Guide".
+
+Required sections:
+1. Market Hours Rule: when you will trade and when you will not.
+2. Setup Rule: what conditions must exist before entry.
+3. Risk Rule: max risk per trade, daily stop, weekly stop.
+4. Execution Rule: what you do at entry, during trade, and at exit.
+5. Review Rule: how you will journal and what metric you will track.
+6. No-Trade Rule: explicit conditions that force you to stand down.
+
+Quality bar:
+- Must fit on one page.
+- Every rule must be specific and testable.
+- No vague language like "trade carefully" or "follow trend maybe".
+
+This guide becomes your behavioral contract for Week 2.`,
+    sections: ['Objective', 'Document Structure', 'Specificity Test', 'How to Use It Daily', 'Key Takeaways'],
+    image_prompt:
+      'Single-page forex trading rules sheet on a desk beside charts, showing concise headings and checklist format.',
+    example:
+      'Rule example: "I trade only between 07:30 and 11:00 UTC unless a high-impact event is scheduled; if spread is above my normal threshold, I skip." This is specific, measurable, and enforceable. "I will trade good setups" is not.',
+    content: `# Write Your One-Page Forex Operating Guide for Week 2
+
+## Objective
+
+Turn knowledge into behavior by codifying your rules before Week 2 begins.
+
+## Document Structure
+
+Your guide must be one page and contain six sections:
+
+- market hours,
+- setup criteria,
+- risk limits,
+- execution behavior,
+- review routine,
+- no-trade conditions.
+
+## Specificity Test
+
+Every sentence should answer: "Could a third person verify whether I followed this?"
+
+If not, rewrite it.
+
+Weak rule: "Use good risk management."
+Strong rule: "Risk 1 percent per trade, stop trading after 2 losses in a day."
+
+## How to Use It Daily
+
+Print or pin the guide where you can see it before each session.
+
+Before trading, read it once.
+After trading, score yourself on adherence, not on profit.
+
+## Key Takeaways
+
+- Clear rules reduce emotional decision-making.
+- One page forces clarity and removes noise.
+- A guide used consistently becomes your process backbone.
 `,
   },
 };

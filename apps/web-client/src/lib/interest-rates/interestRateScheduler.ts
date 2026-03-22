@@ -14,9 +14,9 @@
  * Pattern mirrors `exchangeRateScheduler.ts`.
  */
 
-import { prisma } from '@/lib/prisma';
-import { G8_CURRENCIES, type G8Currency } from './types';
-import { upsertManualInterestRateDecision } from './store';
+import { prisma } from '../prisma.ts';
+import { G8_CURRENCIES, type G8Currency } from './types.ts';
+import { upsertManualInterestRateDecision } from './store.ts';
 
 // ---------------------------------------------------------------------------
 // Constants

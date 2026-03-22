@@ -48,14 +48,14 @@ export type ChapterQuiz = {
 const REGISTRY: Record<number, ChapterQuiz> = {
 
   // ══════════════════════════════════════════════════════════════════════════
-  // WEEK 1 · Forex Foundations · Beginner
+  // WEEK 1 · Forex Ground Zero · Beginner
   // ══════════════════════════════════════════════════════════════════════════
   1: {
     week: 1,
-    chapterTitle: 'Forex Foundations',
+    chapterTitle: 'Forex Ground Zero',
     level: 'Beginner',
     description:
-      'Test your understanding of Week 1 core concepts: macroeconomic drivers, currency pairs, trading sessions, pip and lot sizing, and candlestick fundamentals.',
+      'Test your beginner-first understanding of what forex is, why it exists, how pricing works, when liquidity moves, and the core risk realities every new trader must know.',
     estimatedMinutes: 25,
     questions: [
 

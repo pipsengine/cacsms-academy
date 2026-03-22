@@ -1,5 +1,11 @@
 export type LearningAnalyticsEvent = {
-  eventType: 'lesson_opened' | 'lesson_completed' | 'topic_opened' | 'keyboard_navigation_used' | 'resume_clicked';
+  eventType:
+    | 'lesson_opened'
+    | 'lesson_completed'
+    | 'topic_opened'
+    | 'keyboard_navigation_used'
+    | 'resume_clicked'
+    | 'lesson_navigation_clicked';
   route: string;
   lessonSlug?: string;
   week?: number;
