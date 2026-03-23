@@ -60,7 +60,7 @@ export default function OurCoursesPage() {
         <div className="rounded-2xl border border-emerald-200 bg-white p-6 shadow-sm">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.35em] text-emerald-500">IntelTrader Academy</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.35em] text-emerald-500">Cacsms Academy Academy</p>
               <h1 className="mt-2 text-2xl font-bold text-zinc-900">Professional Forex Trading Course</h1>
               <p className="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-600">
                 A standard, modern learning environment with clear progression: Chapters, Topics, Subtopics, and Lessons.

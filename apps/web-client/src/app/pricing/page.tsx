@@ -68,7 +68,7 @@ export default function PricingPage() {
       {/* Feature Comparison Highlight */}
       <section className="py-16 bg-zinc-50 border-y border-zinc-200">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-zinc-900 mb-8 text-center">Why Choose Intel Trader?</h2>
+          <h2 className="text-3xl font-bold text-zinc-900 mb-8 text-center">Why Choose Cacsms Academy?</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white rounded-xl p-6 border border-zinc-200">
@@ -141,7 +141,7 @@ export default function PricingPage() {
               Talk to Sales
             </a>
             <a
-              href="mailto:support@inteltrader.com"
+              href="mailto:support@cacsms.com"
               className="inline-flex items-center justify-center px-6 py-3 rounded-xl border border-zinc-300 text-zinc-900 font-semibold hover:bg-zinc-50 transition-colors"
             >
               Email Support

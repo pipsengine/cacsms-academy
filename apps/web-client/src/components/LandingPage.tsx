@@ -33,42 +33,42 @@ const problemCards = [
     title: 'Manual Monitoring',
     desc: 'Most traders still depend on manually watching pairs, timeframes, and watchlists, which creates fatigue and causes strong setups to appear only after the best timing has passed.',
     detail:
-      'Intel Trader reduces that burden by continuously watching multiple market conditions at once and surfacing the setups that already meet meaningful structural filters.',
+      'Cacsms Academy reduces that burden by continuously watching multiple market conditions at once and surfacing the setups that already meet meaningful structural filters.',
   },
   {
     icon: <Clock />,
     title: 'Lagging Indicators',
     desc: 'Traditional indicators usually confirm what has already happened, leaving traders to react late rather than prepare early for structural movement.',
     detail:
-      'Intel Trader combines live market movement, breakout pressure, and ranked probability so users can see higher-quality context before the majority of traders recognize it.',
+      'Cacsms Academy combines live market movement, breakout pressure, and ranked probability so users can see higher-quality context before the majority of traders recognize it.',
   },
   {
     icon: <Layers />,
     title: 'Fragmented Signals',
     desc: 'Important decision inputs are often split across separate tools, tabs, and alert systems, forcing traders to combine conflicting information under time pressure.',
     detail:
-      'Intel Trader unifies those inputs into one intelligence workflow so currency strength, structure, alerts, and opportunity ranking can be read together without guesswork.',
+      'Cacsms Academy unifies those inputs into one intelligence workflow so currency strength, structure, alerts, and opportunity ranking can be read together without guesswork.',
   },
   {
     icon: <ShieldAlert />,
     title: 'Hidden Institutional Behavior',
     desc: 'Retail tools rarely explain where liquidity is concentrated, where sweeps are likely, or how institutional participants may be positioning around obvious zones.',
     detail:
-      'Intel Trader adds liquidity awareness and structural interpretation so users can understand where the market is likely to hunt, reject, or accelerate.',
+      'Cacsms Academy adds liquidity awareness and structural interpretation so users can understand where the market is likely to hunt, reject, or accelerate.',
   },
   {
     icon: <Target />,
     title: 'No Opportunity Ranking',
     desc: 'Without prioritization, traders spend too much time on average setups while stronger opportunities elsewhere receive less attention than they deserve.',
     detail:
-      'Intel Trader ranks opportunities so capital, focus, and execution energy can be directed toward the setups with stronger structural backing.',
+      'Cacsms Academy ranks opportunities so capital, focus, and execution energy can be directed toward the setups with stronger structural backing.',
   },
   {
     icon: <Network />,
     title: 'Isolated Analysis',
     desc: 'A single pair rarely tells the full story because broader currency relationships and cross-market pressure often drive the most important shifts.',
     detail:
-      'Intel Trader connects those relationships so users can trade the broader narrative rather than isolated candles with limited context.',
+      'Cacsms Academy connects those relationships so users can trade the broader narrative rather than isolated candles with limited context.',
   },
 ];
 
@@ -112,24 +112,24 @@ const whyChooseCards = [
 
 const faqItems = [
   {
-    question: 'What does Intel Trader do for forex traders?',
+    question: 'What does Cacsms Academy do for forex traders?',
     answer:
-      'Intel Trader gives forex traders a market-intelligence workspace that combines currency strength, structural scanning, breakout pressure, liquidity awareness, and AI-backed ranking into one environment. Instead of relying on disconnected chart tools, traders can read a more complete market picture before acting.',
+      'Cacsms Academy gives forex traders a market-intelligence workspace that combines currency strength, structural scanning, breakout pressure, liquidity awareness, and AI-backed ranking into one environment. Instead of relying on disconnected chart tools, traders can read a more complete market picture before acting.',
   },
   {
-    question: 'Who should use Intel Trader?',
+    question: 'Who should use Cacsms Academy?',
     answer:
-      'Intel Trader is suitable for retail beginners, serious independent traders, professional operators, and institutional teams. The platform is designed to scale from simple exploration into deeper operational use as the trader or firm grows.',
+      'Cacsms Academy is suitable for retail beginners, serious independent traders, professional operators, and institutional teams. The platform is designed to scale from simple exploration into deeper operational use as the trader or firm grows.',
   },
   {
-    question: 'How is Intel Trader different from an ordinary charting platform?',
+    question: 'How is Cacsms Academy different from an ordinary charting platform?',
     answer:
-      'A normal charting platform mainly shows price. Intel Trader adds structured interpretation around that price by ranking opportunities, identifying channel behavior, highlighting liquidity context, and surfacing higher-quality alerts that help users make more disciplined decisions.',
+      'A normal charting platform mainly shows price. Cacsms Academy adds structured interpretation around that price by ranking opportunities, identifying channel behavior, highlighting liquidity context, and surfacing higher-quality alerts that help users make more disciplined decisions.',
   },
   {
-    question: 'Does Intel Trader support traders in Nigeria?',
+    question: 'Does Cacsms Academy support traders in Nigeria?',
     answer:
-      'Yes. Intel Trader supports NGN pricing, Nigerian trading context, Lagos-friendly workflows, and a product experience designed for traders and teams operating in Nigeria as well as global FX markets.',
+      'Yes. Cacsms Academy supports NGN pricing, Nigerian trading context, Lagos-friendly workflows, and a product experience designed for traders and teams operating in Nigeria as well as global FX markets.',
   },
 ];
 
@@ -192,7 +192,7 @@ export default function LandingPage() {
                   Institutional Forex Intelligence for Modern Traders
                 </h1>
                 <p className="text-lg text-zinc-600 mb-8 leading-relaxed">
-                  Intel Trader is a forex market intelligence platform built to help traders interpret live market behavior with more structure, more confidence, and far less operational friction. Instead of forcing users to piece together signals from scattered charts and disconnected tools, Intel Trader brings the important layers of market context into one coordinated workspace.
+                  Cacsms Academy is a forex market intelligence platform built to help traders interpret live market behavior with more structure, more confidence, and far less operational friction. Instead of forcing users to piece together signals from scattered charts and disconnected tools, Cacsms Academy brings the important layers of market context into one coordinated workspace.
                 </p>
                 <p className="text-base text-zinc-500 mb-8 leading-relaxed">
                   The platform combines currency strength analysis, structural channel detection, breakout monitoring, liquidity context, AI-assisted probability scoring, and ranked opportunity discovery so traders can spend less time searching and more time acting with intention. It is designed for ambitious retail traders, serious professionals, and institutional teams that want a cleaner operating picture of the forex market.
@@ -277,7 +277,7 @@ export default function LandingPage() {
             <div className="text-center max-w-3xl mx-auto mb-16">
               <h2 className="text-3xl font-bold text-zinc-900 mb-6">Why Traditional Trading Workflows Break Down</h2>
               <p className="text-lg text-zinc-600">
-                The average trader is still expected to gather information manually, compare conflicting chart signals, and make fast decisions with limited structural clarity. Intel Trader was built to solve that by turning fragmented information into one coherent market-intelligence process.
+                The average trader is still expected to gather information manually, compare conflicting chart signals, and make fast decisions with limited structural clarity. Cacsms Academy was built to solve that by turning fragmented information into one coherent market-intelligence process.
               </p>
             </div>
 
@@ -302,7 +302,7 @@ export default function LandingPage() {
               <div>
                 <h2 className="text-3xl font-bold text-zinc-900 mb-6">A Multi-Engine Intelligence Architecture for Forex Analysis</h2>
                 <p className="text-lg text-zinc-600 mb-4 leading-relaxed">
-                  Intel Trader is built around a layered intelligence architecture that converts live forex market data into structured insights traders can actually use. Rather than asking users to interpret every signal from scratch, the platform organizes information into engines that measure strength, structure, volatility behavior, liquidity context, and ranked opportunity quality.
+                  Cacsms Academy is built around a layered intelligence architecture that converts live forex market data into structured insights traders can actually use. Rather than asking users to interpret every signal from scratch, the platform organizes information into engines that measure strength, structure, volatility behavior, liquidity context, and ranked opportunity quality.
                 </p>
                 <p className="text-lg text-zinc-600 mb-8 leading-relaxed">
                   This makes the platform useful not only for solo traders, but also for professional teams that need a shared market picture, clearer decision support, and a more repeatable way to evaluate what deserves attention in the forex market.
@@ -348,7 +348,7 @@ export default function LandingPage() {
             <div className="text-center max-w-3xl mx-auto mb-16">
               <h2 className="text-3xl font-bold mb-6">Live Forex Scanning and Ranked Market Awareness</h2>
               <p className="text-lg text-zinc-400">
-                Intel Trader continuously watches the forex market and converts that raw activity into structured signals traders can evaluate quickly. Instead of simply forwarding price changes, the platform organizes live monitoring into a decision-ready workflow that highlights structure, direction, signal quality, and relative opportunity strength.
+                Cacsms Academy continuously watches the forex market and converts that raw activity into structured signals traders can evaluate quickly. Instead of simply forwarding price changes, the platform organizes live monitoring into a decision-ready workflow that highlights structure, direction, signal quality, and relative opportunity strength.
               </p>
             </div>
 
@@ -376,7 +376,7 @@ export default function LandingPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="text-3xl font-bold text-zinc-900 mb-6">A Command Center Built for Serious Market Work</h2>
             <p className="text-lg text-zinc-600 max-w-3xl mx-auto mb-5">
-              Intel Trader is designed to feel like an operational command center rather than a simple watchlist. Each panel is built to reduce distraction, improve decision sequencing, and keep the most relevant market context visible without forcing the trader to reconstruct the story alone.
+              Cacsms Academy is designed to feel like an operational command center rather than a simple watchlist. Each panel is built to reduce distraction, improve decision sequencing, and keep the most relevant market context visible without forcing the trader to reconstruct the story alone.
             </p>
             <p className="text-base text-zinc-500 max-w-3xl mx-auto mb-12">
               That makes the platform useful for individual traders who want cleaner execution discipline and for teams that need a shared intelligence surface for review, communication, and coordinated market interpretation.
@@ -390,7 +390,7 @@ export default function LandingPage() {
                   <div className="h-3 w-3 rounded-full bg-amber-500" />
                   <div className="h-3 w-3 rounded-full bg-emerald-500" />
                   <div className="ml-4 text-xs font-mono uppercase tracking-[0.35em] text-zinc-500">
-                    Intel Trader forex intelligence dashboard
+                    Cacsms Academy forex intelligence dashboard
                   </div>
                 </div>
 
@@ -607,7 +607,7 @@ export default function LandingPage() {
 
         <section className="py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold text-zinc-900 mb-12 text-center">Why Traders Choose Intel Trader</h2>
+            <h2 className="text-3xl font-bold text-zinc-900 mb-12 text-center">Why Traders Choose Cacsms Academy</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {whyChooseCards.map((text, index) => (
                 <div key={text} className="flex items-start gap-4 bg-zinc-50 p-6 rounded-2xl border border-zinc-100">
@@ -626,7 +626,7 @@ export default function LandingPage() {
             <div className="text-center max-w-3xl mx-auto mb-14">
               <h2 className="text-3xl font-bold text-zinc-900 mb-5">Frequently Asked Questions</h2>
               <p className="text-lg text-zinc-600">
-                These are the questions most traders and evaluation teams ask when comparing Intel Trader with more traditional forex analysis tools.
+                These are the questions most traders and evaluation teams ask when comparing Cacsms Academy with more traditional forex analysis tools.
               </p>
             </div>
             <div className="space-y-5">
@@ -644,7 +644,7 @@ export default function LandingPage() {
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-4xl font-bold text-white mb-4">Start Using Institutional-Grade Forex Intelligence Today</h2>
             <p className="text-zinc-300 max-w-3xl mx-auto mb-8">
-              Whether you are evaluating the market as a solo trader, building a more disciplined daily workflow, or scaling intelligence across a team, Intel Trader gives you a more deliberate way to monitor, interpret, and rank the forex market.
+              Whether you are evaluating the market as a solo trader, building a more disciplined daily workflow, or scaling intelligence across a team, Cacsms Academy gives you a more deliberate way to monitor, interpret, and rank the forex market.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               {isAuthenticated ? (

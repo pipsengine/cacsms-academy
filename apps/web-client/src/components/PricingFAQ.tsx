@@ -17,7 +17,7 @@ const faqItems: FAQItem[] = [
   {
     question: 'Is there a free trial available?',
     answer:
-      'Yes. The Free plan is always available with no credit card required. It includes access to 5 major currency pairs, basic AI analysis (5/day), and all core features. Try it risk-free to see if Intel Trader works for your style.',
+      'Yes. The Free plan is always available with no credit card required. It includes access to 5 major currency pairs, basic AI analysis (5/day), and all core features. Try it risk-free to see if Cacsms Academy works for your style.',
   },
   {
     question: 'What payment methods do you accept?',
@@ -27,7 +27,7 @@ const faqItems: FAQItem[] = [
   {
     question: 'Can I get a refund? What is your cancellation policy?',
     answer:
-      'You can cancel your subscription anytime with no penalties. If you request a refund within 14 days of your first payment and the platform did not meet your expectations, we will refund you in full. Just contact support@inteltrader.com.',
+      'You can cancel your subscription anytime with no penalties. If you request a refund within 14 days of your first payment and the platform did not meet your expectations, we will refund you in full. Just contact support@cacsms.com.',
   },
   {
     question: 'What is included in the Elite (ProTrader) plan?',
@@ -37,12 +37,12 @@ const faqItems: FAQItem[] = [
   {
     question: 'How does the API work and what are the rate limits?',
     answer:
-      'The API provides programmatic access to Intel Trader data and analyses. Growth supports basic API access, while Elite (ProTrader) unlocks expanded API usage for integrations. Full API documentation is available in your dashboard.',
+      'The API provides programmatic access to Cacsms Academy data and analyses. Growth supports basic API access, while Elite (ProTrader) unlocks expanded API usage for integrations. Full API documentation is available in your dashboard.',
   },
   {
     question: 'Do you offer custom pricing for teams or enterprises?',
     answer:
-      'Yes! If you need custom features, higher API limits, white-label solutions, or multi-office deployments, contact our sales team at sales@inteltrader.com. We can work out tailored plans for organizations.',
+      'Yes! If you need custom features, higher API limits, white-label solutions, or multi-office deployments, contact our sales team at sales@cacsms.com. We can work out tailored plans for organizations.',
   },
   {
     question: 'Is my data secure? What security measures are in place?',
@@ -63,7 +63,7 @@ export default function PricingFAQ() {
             Frequently Asked Questions
           </h2>
           <p className="text-lg text-zinc-600">
-            Everything you need to know about Intel Trader pricing and plans. Have a question we didn't answer? Contact our support team.
+            Everything you need to know about Cacsms Academy pricing and plans. Have a question we didn't answer? Contact our support team.
           </p>
         </div>
 
@@ -111,7 +111,7 @@ export default function PricingFAQ() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
-              href="mailto:support@inteltrader.com"
+              href="mailto:support@cacsms.com"
               className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold transition-colors duration-200"
             >
               Email Support

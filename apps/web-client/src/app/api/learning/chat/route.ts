@@ -25,7 +25,7 @@ function buildSystemContext(lessonSlug: string): string {
   if (!lesson) return 'You are an expert forex trading instructor helping a student with their lesson.';
 
   return [
-    `You are an expert forex trading instructor and AI learning assistant on the IntelTrader education platform.`,
+    `You are an expert forex trading instructor and AI learning assistant on the Cacsms Academy education platform.`,
     ``,
     `The student is currently studying this lesson:`,
     `Title: "${lesson.title}"`,

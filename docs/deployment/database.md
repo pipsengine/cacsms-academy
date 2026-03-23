@@ -6,7 +6,7 @@ This repository uses **Prisma** as the ORM on top of a PostgreSQL database. The 
 
 1. PostgreSQL instance (local, cloud, or cPanel-built) with connectivity from the deployment host.
 2. Environment variables:
-   - `DATABASE_URL` - full Postgres connection string (`DATABASE_URL=postgresql://cacsms:Adm1n.c0m@localhost:5432/inteltrader_db?schema=public`).
+   - `DATABASE_URL` - full Postgres connection string (`DATABASE_URL=postgresql://cacsms:Adm1n.c0m@localhost:5432/cacsms_academy_db?schema=public`).
    - `OPEN_EXCHANGE_RATES_APP_ID` - optional but recommended for live USD/NGN pricing conversion in the admin pricing module and checkout flow.
    - `FOREX_DATA_PROVIDER` - forex market data source selector. The current implementation supports `twelvedata` and falls back to synthetic data if no live credentials are configured.
    - `TWELVE_DATA_API_KEY` - required for live forex quotes/candles from Twelve Data.
@@ -57,7 +57,7 @@ Before running `db:migrate` or `db:migrate:deploy`, ensure the local PostgreSQL 
 1. Install the PostgreSQL CLI (`psql`) or start a GUI like pgAdmin/TablePlus, and then connect with:
 
    ```bash
-   psql postgresql://cacsms:Adm1n.c0m@localhost:5432/inteltrader_db -c '\dt'
+   psql postgresql://cacsms:Adm1n.c0m@localhost:5432/cacsms_academy_db -c '\dt'
    ```
 
 2. If the command lists zero tables, the server is reachable and ready for Prisma; proceed with the migration and seed steps below. If you still see a `P1001` error, either start PostgreSQL on the configured port or update `DATABASE_URL` to match the exposed port.

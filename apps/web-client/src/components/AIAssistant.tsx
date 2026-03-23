@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageSquare, X, Send, Bot, User, Loader2 } from 'lucide-react';
@@ -17,7 +17,7 @@ export default function AIAssistant() {
     {
       id: '1',
       role: 'assistant',
-      content: 'Hello. I am the Intel Trader AI. I can analyze current market structures, explain probabilities, or assist with platform navigation. How can I help you today?'
+      content: 'Hello. I am the Cacsms Academy AI. I can analyze current market structures, explain probabilities, or assist with platform navigation. How can I help you today?'
     }
   ]);
   const [input, setInput] = useState('');
@@ -103,11 +103,11 @@ export default function AIAssistant() {
                   <Bot className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-zinc-900">Intel Trader AI</h3>
+                  <h3 className="text-sm font-bold text-zinc-900">Cacsms Academy AI</h3>
                   <div className="flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                     <span className="text-[10px] font-mono text-zinc-500 uppercase">
-                      System Online · {planLabel}
+                      System Online | {planLabel}
                     </span>
                   </div>
                 </div>

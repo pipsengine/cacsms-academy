@@ -14,7 +14,7 @@ export default function OurCoursesLayout({ children }: OurCoursesLayoutProps) {
       <header className="sticky top-0 z-40 border-b border-teal-100/80 bg-white/85 backdrop-blur">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
           <div className="min-w-0">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.32em] text-teal-700">IntelTrader Learning Space</p>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.32em] text-teal-700">Cacsms Academy Learning Space</p>
             <h1 className="truncate text-lg font-semibold text-zinc-900">Forex Academy Environment</h1>
           </div>
 

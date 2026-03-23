@@ -606,16 +606,16 @@ export class MarketDataService {
 }
 
 declare global {
-  var __intelTraderMarketService: MarketDataService | undefined;
+  var __cacsmsAcademyMarketService: MarketDataService | undefined;
 }
 
 export function getMarketDataService() {
   if (
-    !globalThis.__intelTraderMarketService
-    || typeof globalThis.__intelTraderMarketService.getStatus !== 'function'
+    !globalThis.__cacsmsAcademyMarketService
+    || typeof globalThis.__cacsmsAcademyMarketService.getStatus !== 'function'
   ) {
-    globalThis.__intelTraderMarketService = new MarketDataService();
+    globalThis.__cacsmsAcademyMarketService = new MarketDataService();
   }
 
-  return globalThis.__intelTraderMarketService;
+  return globalThis.__cacsmsAcademyMarketService;
 }

@@ -1,4 +1,4 @@
--- Migration 0001_init: initial schema for Intel Trader
+-- Migration 0001_init: initial schema for Cacsms Academy
 -- Run `prisma migrate deploy` to apply.
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 

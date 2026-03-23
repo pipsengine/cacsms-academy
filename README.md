@@ -24,7 +24,7 @@ View your app in AI Studio: https://ai.studio/apps/d6ce0674-8a32-4e85-ba2c-fcc4b
 This app uses Prisma with PostgreSQL.
 
 1. Set `DATABASE_URL` in `.env.local`:
-   `postgresql://USER:PASSWORD@HOST:5432/inteltrader_db?schema=public`
+   `postgresql://USER:PASSWORD@HOST:5432/cacsms_academy_db?schema=public`
 2. Generate Prisma client:
    `npm --workspace apps/web-client run db:generate`
 3. Apply schema to the database (pick one):

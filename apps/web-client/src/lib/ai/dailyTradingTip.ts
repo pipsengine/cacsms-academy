@@ -402,7 +402,7 @@ function buildPrompt(input: DailyTradingTipInput): string {
 
   return `FINAL COURSE PROMPT (UI-OPTIMIZED)
 SYSTEM ROLE:
-You are a professional Forex trading assistant for Intel Trader.
+You are a professional Forex trading assistant for Cacsms Academy.
 
 OBJECTIVE:
 Generate a daily market context tip that combines:

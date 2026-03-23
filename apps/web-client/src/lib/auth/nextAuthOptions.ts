@@ -7,7 +7,7 @@ import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
 
 const hasDatabase = !!process.env.DATABASE_URL;
-const authSecret = process.env.NEXTAUTH_SECRET || process.env.JWT_SECRET || process.env.SECRET || 'dev-intel-trader-secret';
+const authSecret = process.env.NEXTAUTH_SECRET || process.env.JWT_SECRET || process.env.SECRET || 'dev-cacsms-academy-secret';
 if (!process.env.NEXTAUTH_URL) {
   (process.env as any).NEXTAUTH_URL = process.env.APP_URL || 'http://localhost:3000';
 }

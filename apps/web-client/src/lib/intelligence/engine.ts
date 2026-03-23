@@ -4,7 +4,7 @@ import {
 } from './types';
 
 /**
- * Intel Trader - Advanced Intelligence Extension Layer
+ * Cacsms Academy - Advanced Intelligence Extension Layer
  * Note: In production, this interfaces with the Python/FastAPI backend via Redis/PostgreSQL.
  * This class serves as the Next.js data layer integration point.
  */

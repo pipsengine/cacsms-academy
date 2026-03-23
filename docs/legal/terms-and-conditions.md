@@ -1,6 +1,6 @@
 # Terms and Conditions
 
-This document is the master agreement that governs every individual and corporate interaction with the Intel Trader institutional intelligence platform. When you land on any Intel Trader page, register an account, connect via a web socket, or otherwise interact with the software, you are accepting these terms and committing to stay within the bounds of Nigerian law, international best practices, and the operational guardrails outlined below. The definition of “you” includes any person or entity that operates under a single login, shares devices, or acts on behalf of an organization that has been granted access by Intel Trader Technologies Limited, the entity behind the cacsms.com trading intelligence network.
+This document is the master agreement that governs every individual and corporate interaction with the Cacsms Academy institutional intelligence platform. When you land on any Cacsms Academy page, register an account, connect via a web socket, or otherwise interact with the software, you are accepting these terms and committing to stay within the bounds of Nigerian law, international best practices, and the operational guardrails outlined below. The definition of “you” includes any person or entity that operates under a single login, shares devices, or acts on behalf of an organization that has been granted access by Cacsms Academy Technologies Limited, the entity behind the cacsms.com trading intelligence network.
 
 ## 1. Eligibility and Legal Compliance
 
@@ -10,7 +10,7 @@ This document is the master agreement that governs every individual and corporat
 
 ## 2. Platform Scope and Restrictions
 
-Intel Trader offers an ecosystem of engines (currency strength, breakout, liquidity intelligence, probability analysis, AI assistants, dashboards, alerts) that synthesize public and licensed market data. The Platform:
+Cacsms Academy offers an ecosystem of engines (currency strength, breakout, liquidity intelligence, probability analysis, AI assistants, dashboards, alerts) that synthesize public and licensed market data. The Platform:
 
 - Is not a brokerage and does not execute trades, manage funds, or custody assets.
 - Does not provide bespoke financial, legal, tax, or investment advice; always consult licensed advisors before acting.
@@ -28,27 +28,27 @@ Repeated violations create grounds for immediate termination, report to relevant
 ## 3. Accounts, Credentials, and Security
 
 - All accounts are individually assigned, connected to a confirmed email address in the @cacsms.com domain, and optionally tied to two-factor authentication. Shared or forwarded credentials are expressly prohibited.
-- You must notify legal@cacsms.com as soon as you suspect unauthorized access. Intel Trader reserves the right to suspend accounts before notifying users when a high-risk compromise is detected, especially during suspicious activity relating to Nigerian trading hours.
-- Password management, multi-factor authenticator devices, and recovery methods remain your responsibility. Intel Trader maintains an MFA enforcement matrix and may require periodic revalidation.
+- You must notify legal@cacsms.com as soon as you suspect unauthorized access. Cacsms Academy reserves the right to suspend accounts before notifying users when a high-risk compromise is detected, especially during suspicious activity relating to Nigerian trading hours.
+- Password management, multi-factor authenticator devices, and recovery methods remain your responsibility. Cacsms Academy maintains an MFA enforcement matrix and may require periodic revalidation.
 
 ## 4. Pricing, Billing, and Subscriptions
 
-Subscriptions follow the Pricing Plans tab and may change with notice of no less than thirty (30) days, except when regulatory intervention demands urgent adjustment. You authorize Intel Trader to bill your selected payment method (local Nigerian debit/credit, ACH, or international card) for recurring fees. All Nigerian transactions include VAT as required by the Federal Inland Revenue Service (FIRS); failure to pay will result in automated suspension until fees and any penalties are cleared.
+Subscriptions follow the Pricing Plans tab and may change with notice of no less than thirty (30) days, except when regulatory intervention demands urgent adjustment. You authorize Cacsms Academy to bill your selected payment method (local Nigerian debit/credit, ACH, or international card) for recurring fees. All Nigerian transactions include VAT as required by the Federal Inland Revenue Service (FIRS); failure to pay will result in automated suspension until fees and any penalties are cleared.
 
 Billing Disputes:
 
 - Submit appeals within fifteen (15) calendar days at legal@cacsms.com with invoice reference, evidence, and required supporting documentation.
-- Intel Trader retains the right to audit the underlying usage and decision-making metrics, including API call logs, gauge concurrency, and identify misuse before granting a reversal.
+- Cacsms Academy retains the right to audit the underlying usage and decision-making metrics, including API call logs, gauge concurrency, and identify misuse before granting a reversal.
 
 ## 5. Intellectual Property and Feedback
 
-Intel Trader retains all IP rights for:
+Cacsms Academy retains all IP rights for:
 
 - Source code, dashboards, engine outputs, machine learning artifacts, and proprietary signals.
-- Branding, logos, and naming conventions (“Intel Trader,” “Cacsms,” etc.).
+- Branding, logos, and naming conventions (“Cacsms Academy,” “Cacsms,” etc.).
 - Documentation, knowledge base articles, and legal notices, including revisions.
 
-If you submit improvements, ideas, or feature requests via the support desk or legal@cacsms.com, you grant Intel Trader a perpetual, worldwide, royalty-free license to implement and commercialize such feedback.
+If you submit improvements, ideas, or feature requests via the support desk or legal@cacsms.com, you grant Cacsms Academy a perpetual, worldwide, royalty-free license to implement and commercialize such feedback.
 
 ## 6. Warranty Disclaimers; Risk Oversight
 
@@ -56,17 +56,17 @@ The Platform is provided “as is” without warranties of merchantability, fitn
 
 - Signal accuracy depends on third-party feed quality; occasional latency and outages may occur.
 - Historical performance does not guarantee future results. Decisions rest solely with your desk or management team.
-- Intel Trader is not a fiduciary and does not assume responsibility for trading profits or losses arising from your actions.
+- Cacsms Academy is not a fiduciary and does not assume responsibility for trading profits or losses arising from your actions.
 
 ## 7. Limitation of Liability and Indemnity
 
-Under Nigerian law, Intel Trader’s aggregate liability is capped at amounts you paid in the twelve (12) months preceding the claim. Neither Intel Trader nor its directors, affiliates, or vendors are liable for indirect, punitive, or consequential damages, including regulatory fines or reputational losses caused by your trading activity.
+Under Nigerian law, Cacsms Academy’s aggregate liability is capped at amounts you paid in the twelve (12) months preceding the claim. Neither Cacsms Academy nor its directors, affiliates, or vendors are liable for indirect, punitive, or consequential damages, including regulatory fines or reputational losses caused by your trading activity.
 
-You agree to indemnify Intel Trader and its partners against claims arising from breach of this Agreement, infringement on third-party rights, or violations of NDPR, SEC, or NCC regulations caused by your actions.
+You agree to indemnify Cacsms Academy and its partners against claims arising from breach of this Agreement, infringement on third-party rights, or violations of NDPR, SEC, or NCC regulations caused by your actions.
 
 ## 8. Modification, Termination, and Dispute Resolution
 
-Intel Trader may amend these terms by publishing a revised version with a “last updated” timestamp. Continued use after publication is acceptance. We may suspend or terminate services for breaches, non-payment, or regulatory orders. If terminated, data preservation follows data retention policies demanded by Nigerian regulators; we keep backups for at least eighteen (18) months.
+Cacsms Academy may amend these terms by publishing a revised version with a “last updated” timestamp. Continued use after publication is acceptance. We may suspend or terminate services for breaches, non-payment, or regulatory orders. If terminated, data preservation follows data retention policies demanded by Nigerian regulators; we keep backups for at least eighteen (18) months.
 
 Disputes:
 

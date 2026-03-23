@@ -1,6 +1,6 @@
 # Risk Disclosure
 
-Trading foreign exchange instruments is inherently risky, especially when driven by leveraged exposure, fast-moving liquidity, and geopolitical headlines that ripple through the Lagos bourse and global markets simultaneously. Intel Trader provides intelligence, not execution, which means:
+Trading foreign exchange instruments is inherently risky, especially when driven by leveraged exposure, fast-moving liquidity, and geopolitical headlines that ripple through the Lagos bourse and global markets simultaneously. Cacsms Academy provides intelligence, not execution, which means:
 
 - Historical signals, probabilities, and liquidity zones are only as reliable as the data they are built on, and past performance is not a guarantee of future outcomes.
 - Every signal is tagged with a confidence score and an NDPR-compliant audit trail, but we cannot guarantee zero slippage, full order execution, or absence of counterparty failure.
@@ -15,10 +15,10 @@ Trading foreign exchange instruments is inherently risky, especially when driven
 
 ## Use of Signals
 
-Intel Trader does not:
+Cacsms Academy does not:
 
 - Execute trades or manage custodial assets on your behalf.
-- Provide fiduciary oversight; you remain fully accountable for every order placed elsewhere, even if Intel Trader alerts you to a condition.
+- Provide fiduciary oversight; you remain fully accountable for every order placed elsewhere, even if Cacsms Academy alerts you to a condition.
 - Guarantee execution quality, restrict spreads, or deliver explicit price targets.
 
 Rely on our signals alongside your own risk management, regulatory monitoring, and capital controls. If you require additional guidance, contact legal@cacsms.com to coordinate third-party oversight or compliance advisory services that align with NCC and SEC expectations.

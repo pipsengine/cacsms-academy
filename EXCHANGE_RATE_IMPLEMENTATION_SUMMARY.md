@@ -365,7 +365,7 @@ Get free API key from: https://openexchangerates.org/
 
 ## 🎉 Summary
 
-Your Intel Trader platform now has **production-grade automatic exchange rate updates**:
+Your Cacsms Academy platform now has **production-grade automatic exchange rate updates**:
 
 ✅ **Permanent** - Stored in PostgreSQL, survives restarts  
 ✅ **Automatic** - Updates every 30 minutes without manual work  

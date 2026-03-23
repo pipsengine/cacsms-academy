@@ -93,19 +93,19 @@ export async function POST(request: Request) {
       const appUrl = process.env.NEXTAUTH_URL || process.env.APP_URL || 'http://localhost:3000';
       const thankYouPromise = sendEmail({
         to: email,
-        subject: 'Thank you for contacting Intel Trader',
+        subject: 'Thank you for contacting Cacsms Academy',
         text:
-          `Hello ${name},\n\nThank you for contacting Intel Trader. We have received your enquiry about "${subject}" and our team will review it carefully.\n\n` +
+          `Hello ${name},\n\nThank you for contacting Cacsms Academy. We have received your enquiry about "${subject}" and our team will review it carefully.\n\n` +
           `Your enquiry reference is ${inquiry.id}.\n\n` +
           `Summary:\nType: ${inquiryType}\nSubject: ${subject}\n\n` +
           `We appreciate the detail you provided. If we need any clarification, we will respond to this email address.\n\n` +
-          `Intel Trader\n${appUrl}`,
+          `Cacsms Academy\n${appUrl}`,
         html:
           `<p>Hello <strong>${name}</strong>,</p>` +
-          `<p>Thank you for contacting <strong>Intel Trader</strong>. We have received your enquiry and our team will review it carefully.</p>` +
+          `<p>Thank you for contacting <strong>Cacsms Academy</strong>. We have received your enquiry and our team will review it carefully.</p>` +
           `<p><strong>Reference:</strong> ${inquiry.id}<br /><strong>Type:</strong> ${inquiryType}<br /><strong>Subject:</strong> ${subject}</p>` +
           `<p>We appreciate the detail you provided. If we need clarification, we will respond to this same email address.</p>` +
-          `<p>Intel Trader<br /><a href="${appUrl}">${appUrl}</a></p>`,
+          `<p>Cacsms Academy<br /><a href="${appUrl}">${appUrl}</a></p>`,
       });
 
       const adminPromise = adminRecipients.length > 0

@@ -56,15 +56,15 @@ export async function POST(req: Request) {
 
     const apiKey = process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY;
     if (!apiKey) {
-      const fallback = 'Intel Trader AI is temporarily unavailable. Please check back shortly.';
+      const fallback = 'Cacsms Academy AI is temporarily unavailable. Please check back shortly.';
       return NextResponse.json({ response: fallback, chunks: chunkText(fallback) });
     }
 
     const ai = new GoogleGenAI({ apiKey });
 
-    const prompt = `You are the Intel Trader AI, an advanced institutional-grade financial intelligence assistant. 
+    const prompt = `You are the Cacsms Academy AI, an advanced institutional-grade financial intelligence assistant. 
     The user is on the ${plan} plan (userId: ${userId ?? 'guest'}).
-    You help forex traders analyze market structures, probabilities, and navigate the Intel Trader platform.
+    You help forex traders analyze market structures, probabilities, and navigate the Cacsms Academy platform.
     Keep your responses concise, professional, and focused on trading concepts like channels, breakouts, and liquidity.
     
     User: ${message}

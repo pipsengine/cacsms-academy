@@ -1,6 +1,6 @@
 # Disclaimer
 
-Intel Trader provides analytical solutions that are designed, developed, and hosted by Intel Trader Technologies Limited under the Cacsms brand. This disclaimer clarifies the scope of our responsibilities and draws a clear boundary between intelligence and advice.
+Cacsms Academy provides analytical solutions that are designed, developed, and hosted by Cacsms Academy Technologies Limited under the Cacsms brand. This disclaimer clarifies the scope of our responsibilities and draws a clear boundary between intelligence and advice.
 
 ## No Financial, Legal, or Tax Advice
 
@@ -13,7 +13,7 @@ All materials and recommendations are for informational purposes only. Nothing o
 
 ## Security and Integrity
 
-Intel Trader implements security measures (encryption, monitoring, rate limiting) but cannot promise absolute protection against sophisticated cyberattacks or state-sponsored threats. You are responsible for securing credentials, device access, and MFA tokens; Intel Trader logs all security events in accordance with SOC 2 readiness and can provide reports upon request via legal@cacsms.com.
+Cacsms Academy implements security measures (encryption, monitoring, rate limiting) but cannot promise absolute protection against sophisticated cyberattacks or state-sponsored threats. You are responsible for securing credentials, device access, and MFA tokens; Cacsms Academy logs all security events in accordance with SOC 2 readiness and can provide reports upon request via legal@cacsms.com.
 
 ## Operational Limits
 

@@ -1,4 +1,4 @@
-# Intel Trader: User Roles & Permissions Guide
+# Cacsms Academy: User Roles & Permissions Guide
 
 ## User Role Hierarchy
 

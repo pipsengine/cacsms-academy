@@ -30,7 +30,7 @@ const LEGAL_PAGES = {
     title: 'Terms and Conditions',
     heading: 'Agreement & Compliance',
     summary:
-      'Defines the contractual relationship, Nigerian eligibility requirements, and acceptable behaviors for every Intel Trader visitor.',
+      'Defines the contractual relationship, Nigerian eligibility requirements, and acceptable behaviors for every Cacsms Academy visitor.',
     file: 'terms-and-conditions.md',
     shortLabel: 'Terms',
   },
@@ -38,7 +38,7 @@ const LEGAL_PAGES = {
     title: 'Privacy Policy',
     heading: 'Privacy & Data Governance',
     summary:
-      'Details how Intel Trader processes and safeguards personal data in alignment with the NDPR and related Nigerian frameworks.',
+      'Details how Cacsms Academy processes and safeguards personal data in alignment with the NDPR and related Nigerian frameworks.',
     file: 'privacy-policy.md',
     shortLabel: 'Privacy',
   },
@@ -54,7 +54,7 @@ const LEGAL_PAGES = {
     title: 'Disclaimer',
     heading: 'Scope of Responsibility',
     summary:
-      'States the limitations of Intel Trader’s commitments, the absence of advice, and how third-party infrastructure is managed.',
+      'States the limitations of Cacsms Academy’s commitments, the absence of advice, and how third-party infrastructure is managed.',
     file: 'disclaimer.md',
     shortLabel: 'Disclaimer',
   },
@@ -142,13 +142,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const page = LEGAL_PAGES[slug as LegalSlug];
   if (!page) {
     return {
-      title: 'Intel Trader Legal',
-      description: 'Legal notices, privacy commitments, and risk disclosures for Intel Trader.',
+      title: 'Cacsms Academy Legal',
+      description: 'Legal notices, privacy commitments, and risk disclosures for Cacsms Academy.',
     };
   }
 
   return {
-    title: `${page.title} | Intel Trader`,
+    title: `${page.title} | Cacsms Academy`,
     description: page.summary,
   };
 }
@@ -172,7 +172,7 @@ export default async function LegalPage({ params }: { params: Promise<{ slug: st
             className="flex items-center gap-2 rounded-full border border-zinc-200 bg-emerald-50 px-3 py-2 text-sm font-semibold tracking-widest text-emerald-600 transition hover:border-emerald-300"
           >
             <Cpu className="h-5 w-5 text-emerald-500" />
-            <span>Back to Intel Trader</span>
+            <span>Back to Cacsms Academy</span>
           </Link>
           <div className="text-right text-xs uppercase tracking-[0.4em] text-zinc-400">
             {page.title}

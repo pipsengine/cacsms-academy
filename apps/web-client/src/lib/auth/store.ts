@@ -37,7 +37,7 @@ class Store {
     this.users.push({
       id: adminId,
       name: 'Admin User',
-      email: 'admin@inteltrader.com',
+      email: 'admin@cacsms.com',
       passwordHash: bcrypt.hashSync('admin123', 10),
       country: 'Nigeria',
       role: 'Super Admin',

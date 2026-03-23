@@ -118,10 +118,10 @@ export async function POST(req: Request) {
           price_data: {
             currency,
             product_data: {
-              name: charge.isUpgrade ? `Intel Trader ${charge.currentPlan} to ${plan} Upgrade` : `Intel Trader ${plan} Plan`,
+              name: charge.isUpgrade ? `Cacsms Academy ${charge.currentPlan} to ${plan} Upgrade` : `Cacsms Academy ${plan} Plan`,
               description: charge.isUpgrade
                 ? `Upgrade charge from ${charge.currentPlan} to ${plan} (${billingCycle}).`
-                : `Subscription to Intel Trader ${plan} tier.`,
+                : `Subscription to Cacsms Academy ${plan} tier.`,
             },
             unit_amount: unitAmount,
           },

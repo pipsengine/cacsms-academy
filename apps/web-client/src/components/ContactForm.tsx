@@ -64,7 +64,7 @@ export default function ContactForm() {
       <form onSubmit={submit} className="rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm">
         <div className="max-w-2xl">
           <p className="text-sm font-semibold uppercase tracking-[0.45em] text-emerald-600">Contact Form</p>
-          <h2 className="mt-3 text-3xl font-bold text-zinc-900">Send a detailed enquiry to the Intel Trader team</h2>
+          <h2 className="mt-3 text-3xl font-bold text-zinc-900">Send a detailed enquiry to the Cacsms Academy team</h2>
           <p className="mt-4 text-base leading-7 text-zinc-600">
             Use this form when you want a real follow-up from the team. The more precise your message is about your use case, objective, and challenge, the easier it is for us to respond with something useful rather than generic.
           </p>

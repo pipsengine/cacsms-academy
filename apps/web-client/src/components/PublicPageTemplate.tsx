@@ -95,7 +95,7 @@ export type PublicPageContent = {
 
 export function buildPublicMetadata(content: PublicPageContent): Metadata {
   return {
-    title: `${content.title} | Intel Trader`,
+    title: `${content.title} | Cacsms Academy`,
     description: content.description,
   };
 }

@@ -1,6 +1,6 @@
 # Privacy Policy
 
-Intel Trader respects your personal data rights as required by the Nigerian Data Protection Regulation (NDPR), the Federal Competition and Consumer Protection Act (FCCPA), and counterpart international data protection frameworks when applicable. This Policy governs how we collect, process, store, retain, transfer, and dispose of any data that identifies you directly or indirectly (personal data) as well as anonymized market telemetry.
+Cacsms Academy respects your personal data rights as required by the Nigerian Data Protection Regulation (NDPR), the Federal Competition and Consumer Protection Act (FCCPA), and counterpart international data protection frameworks when applicable. This Policy governs how we collect, process, store, retain, transfer, and dispose of any data that identifies you directly or indirectly (personal data) as well as anonymized market telemetry.
 
 ## 1. Data We Collect and Why
 
@@ -31,7 +31,7 @@ Processing is justified on the grounds of contractual necessity, legitimate inte
 
 ## 3. Data Sharing, Transfers, and Processors
 
-Intel Trader may share data with:
+Cacsms Academy may share data with:
 
 1. **Our trusted processors** that help run the platform—hosting providers, Prisma, Stripe, and monitoring services like Prometheus; each is contractually bound to maintain NDPR-compliant safeguards, encryption in transit (TLS 1.2+) and at rest (AES-256).
 2. **Affiliates** during risk investigations, e.g., sharing usage logs between Nigeria-based compliance and UK-based analytics when required.

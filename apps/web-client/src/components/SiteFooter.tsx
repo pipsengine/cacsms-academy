@@ -9,10 +9,10 @@ export default function SiteFooter() {
           <div className="col-span-2 lg:col-span-2">
             <div className="mb-6 flex items-center gap-2 text-emerald-500">
               <Cpu className="h-6 w-6" />
-              <span className="font-mono text-lg font-bold tracking-wider text-white">INTEL TRADER</span>
+              <span className="font-mono text-lg font-bold tracking-wider text-white">CACSMS ACADEMY</span>
             </div>
             <p className="max-w-sm text-sm text-zinc-500">
-              A forex market intelligence platform built to help traders move from fragmented chart watching to clearer, more disciplined market interpretation.
+              Think Like Institutions. Trade With Precision. A forex market intelligence platform built to help traders move from fragmented chart watching to clearer, more disciplined market interpretation.
             </p>
           </div>
 
@@ -56,16 +56,16 @@ export default function SiteFooter() {
           <div className="space-y-4">
             <div>
               <strong className="mb-1 block text-zinc-400">Legal Disclaimer</strong>
-              <p>Intel Trader provides analytical tools and market intelligence designed to assist traders in evaluating financial markets. The platform does not provide financial advice, investment recommendations, or guarantees of trading performance. All trading decisions remain the sole responsibility of the user. Trading foreign exchange markets involves substantial risk and may not be suitable for all investors.</p>
+              <p>Cacsms Academy provides analytical tools and market intelligence designed to assist traders in evaluating financial markets. The platform does not provide financial advice, investment recommendations, or guarantees of trading performance. All trading decisions remain the sole responsibility of the user. Trading foreign exchange markets involves substantial risk and may not be suitable for all investors.</p>
             </div>
             <div>
               <strong className="mb-1 block text-zinc-400">Nigeria Regulatory Notice</strong>
-              <p>Intel Trader operates as a financial technology platform providing analytical tools and market intelligence. The platform does not operate as a brokerage, financial advisory service, or investment management company. Users remain responsible for ensuring compliance with applicable Nigerian laws and regulations governing financial trading activities.</p>
+              <p>Cacsms Academy operates as a financial technology platform providing analytical tools and market intelligence. The platform does not operate as a brokerage, financial advisory service, or investment management company. Users remain responsible for ensuring compliance with applicable Nigerian laws and regulations governing financial trading activities.</p>
             </div>
           </div>
 
           <div className="flex items-center justify-between border-t border-zinc-900 pt-4">
-            <p>© {new Date().getFullYear()} Intel Trader. All rights reserved.</p>
+            <p>© {new Date().getFullYear()} Cacsms Academy. All rights reserved.</p>
           </div>
         </div>
       </div>

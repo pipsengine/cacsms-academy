@@ -55,7 +55,7 @@ export class YahooFinanceForexMarketProvider implements ForexMarketProvider {
 
     const response = await fetch(url.toString(), {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; Intel-Trader/1.0)',
+        'User-Agent': 'Mozilla/5.0 (compatible; Cacsms-Academy/1.0)',
         Accept: 'application/json',
       },
       cache: 'no-store',

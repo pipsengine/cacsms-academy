@@ -1,6 +1,6 @@
 # Cookie Policy
 
-This Cookie Policy explains how Intel Trader uses cookies, web beacons, and similar local storage technologies when you visit landing pages, dashboards, or embedded support tools at inteltrader.cacsms.com. Cookies are small text files stored on your browser, device, or local storage that help us deliver personalized experiences while respecting NDPR requirements.
+This Cookie Policy explains how Cacsms Academy uses cookies, web beacons, and similar local storage technologies when you visit landing pages, dashboards, or embedded support tools at academy.cacsms.com. Cookies are small text files stored on your browser, device, or local storage that help us deliver personalized experiences while respecting NDPR requirements.
 
 ## Types of Cookies We Use
 

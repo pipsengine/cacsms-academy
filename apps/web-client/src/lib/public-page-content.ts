@@ -2,10 +2,10 @@ import type { PublicPageContent } from '@/components/PublicPageTemplate';
 
 export const aboutPageContent: PublicPageContent = {
   title: 'About',
-  description: 'Learn what Intel Trader is building and why the platform focuses on structured forex intelligence.',
+  description: 'Learn what Cacsms Academy is building and why the platform focuses on structured forex intelligence.',
   eyebrow: 'Company',
-  heroTitle: 'Intel Trader was built to make market interpretation more structured, faster, and more professionally actionable.',
-  heroBody: 'Intel Trader exists because too many forex workflows still depend on fragmented chart watching, improvised analysis, and disconnected tools that force traders to rebuild context manually every session. That creates unnecessary delay, inconsistent judgment, and a higher likelihood of acting on partial information instead of a complete market view.',
+  heroTitle: 'Cacsms Academy was built to make market interpretation more structured, faster, and more professionally actionable.',
+  heroBody: 'Cacsms Academy exists because too many forex workflows still depend on fragmented chart watching, improvised analysis, and disconnected tools that force traders to rebuild context manually every session. That creates unnecessary delay, inconsistent judgment, and a higher likelihood of acting on partial information instead of a complete market view.',
   heroDetail: 'Our aim is not to replace trader judgment. It is to give judgment better structure. We want strength, structure, breakout pressure, liquidity context, and ranked opportunities to sit inside one operating environment that helps traders move from observation to decision with more discipline, continuity, and confidence.',
   stats: [
     { label: 'Mission', value: 'Clarity', detail: 'Help traders reduce noise, organize attention better, and work from clearer market context.' },
@@ -13,23 +13,23 @@ export const aboutPageContent: PublicPageContent = {
     { label: 'Audience', value: 'Serious Users', detail: 'Built for traders and teams who want a more operational workflow rather than another passive charting layer.' },
   ],
   highlights: [
-    { title: 'Built around workflow quality', body: 'Intel Trader is designed to improve how traders interpret markets session by session, not simply to display more data or more indicators.' },
+    { title: 'Built around workflow quality', body: 'Cacsms Academy is designed to improve how traders interpret markets session by session, not simply to display more data or more indicators.' },
     { title: 'Judgment remains with the user', body: 'The product is meant to strengthen decision structure and context, not replace trader discretion or flatten analysis into blind automation.' },
     { title: 'Long-term direction is operational depth', body: 'The platform is moving toward stronger review, explainability, and coordination between market intelligence and disciplined execution workflows.' },
   ],
   process: {
     eyebrow: 'Company Lens',
-    title: 'How to understand Intel Trader quickly',
+    title: 'How to understand Cacsms Academy quickly',
     intro: 'The simplest way to understand the product is to look at the problem first, the workflow second, and the long-term operating model third.',
     steps: [
-      { label: 'Problem', title: 'Start with the workflow gap', body: 'Intel Trader begins from the idea that many traders work with fragmented tools and weak prioritization, which leads to scattered interpretation and inconsistent decisions.' },
+      { label: 'Problem', title: 'Start with the workflow gap', body: 'Cacsms Academy begins from the idea that many traders work with fragmented tools and weak prioritization, which leads to scattered interpretation and inconsistent decisions.' },
       { label: 'Approach', title: 'Then look at the coordinated model', body: 'The platform combines multiple analytical layers so traders can form context, compare scenarios, and focus attention without rebuilding the same picture manually every session.' },
       { label: 'Direction', title: 'Finally, consider the operating ambition', body: 'The long-term goal is to support not only live interpretation, but stronger review, explainability, planning, and workflow discipline around the full decision cycle.' },
     ],
   },
   timeline: {
     eyebrow: 'Product Evolution',
-    title: 'How Intel Trader thinking has progressed',
+    title: 'How Cacsms Academy thinking has progressed',
     intro: 'The product direction matured from solving fragmented chart usage to building a full operating layer for clearer and more disciplined market interpretation.',
     items: [
       { phase: 'Stage One', title: 'Problem recognition', body: 'The initial focus was understanding why traders with abundant data still experienced weak prioritization and inconsistent decision structure.' },
@@ -43,7 +43,7 @@ export const aboutPageContent: PublicPageContent = {
       title: 'Why the product exists',
       intro: 'The platform was created because more data has not automatically led to better decisions. Traders often have too much information, too little prioritization, and no clean way to read the market as one evolving story across pressure, structure, timing, and opportunity quality.',
       cards: [
-        { title: 'Less manual scanning', body: 'Intel Trader continuously monitors the market so users can spend less time hunting through pair after pair and more time evaluating already-qualified setups with real decision value.' },
+        { title: 'Less manual scanning', body: 'Cacsms Academy continuously monitors the market so users can spend less time hunting through pair after pair and more time evaluating already-qualified setups with real decision value.' },
         { title: 'Better context', body: 'The product brings together market pressure, structural behavior, breakout awareness, liquidity context, and ranking so users can work from a stronger and more coherent market narrative instead of isolated signals.' },
         { title: 'More disciplined attention', body: 'By prioritizing what deserves focus first, the platform helps traders avoid spreading attention across too many average ideas and encourages a more selective, process-driven session workflow.' },
       ],
@@ -60,8 +60,8 @@ export const aboutPageContent: PublicPageContent = {
     },
     {
       eyebrow: 'Direction',
-      title: 'How we want Intel Trader to evolve',
-      intro: 'Long term, we want Intel Trader to mature into a platform that supports not just interpretation in the moment, but review, governance, workflow consistency, and stronger coordination between market intelligence and trade execution discipline.',
+      title: 'How we want Cacsms Academy to evolve',
+      intro: 'Long term, we want Cacsms Academy to mature into a platform that supports not just interpretation in the moment, but review, governance, workflow consistency, and stronger coordination between market intelligence and trade execution discipline.',
       cards: [
         { title: 'Deeper historical intelligence', body: 'We want users to understand not only what the system is showing now, but how similar market conditions and alerts behaved over time so review becomes part of the workflow instead of an afterthought.' },
         { title: 'Stronger explainability', body: 'The best intelligence systems do not only produce outputs. They help users understand why attention is being directed somewhere, what conditions matter, and what changed in the underlying market picture.' },
@@ -71,16 +71,16 @@ export const aboutPageContent: PublicPageContent = {
   ],
   faqs: [
     {
-      question: 'Is Intel Trader trying to replace trader discretion?',
+      question: 'Is Cacsms Academy trying to replace trader discretion?',
       answer: 'No. The platform is meant to improve the structure around trader discretion, not remove it. It helps organize context, prioritize attention, and make the analytical process more repeatable, but final judgment still belongs to the user.',
     },
     {
       question: 'Why focus so heavily on structure instead of just speed?',
-      answer: 'Speed without structure often produces fast but inconsistent decisions. Intel Trader is designed around the idea that better process quality leads to better action quality, especially when the market is active and attention is limited.',
+      answer: 'Speed without structure often produces fast but inconsistent decisions. Cacsms Academy is designed around the idea that better process quality leads to better action quality, especially when the market is active and attention is limited.',
     },
     {
       question: 'What makes the product different from a generic trading dashboard?',
-      answer: 'The difference is coordination. Instead of presenting isolated tools, Intel Trader is organized around multiple intelligence layers that work together so pressure, structure, liquidity, and ranking can be interpreted as one evolving picture.',
+      answer: 'The difference is coordination. Instead of presenting isolated tools, Cacsms Academy is organized around multiple intelligence layers that work together so pressure, structure, liquidity, and ranking can be interpreted as one evolving picture.',
     },
   ],
   cta: {
@@ -95,10 +95,10 @@ export const aboutPageContent: PublicPageContent = {
 
 export const contactPageContent: PublicPageContent = {
   title: 'Contact',
-  description: 'Contact Intel Trader for product, commercial, or operational enquiries.',
+  description: 'Contact Cacsms Academy for product, commercial, or operational enquiries.',
   eyebrow: 'Company',
-  heroTitle: 'Contact Intel Trader for product questions, partnerships, support direction, or platform discussions.',
-  heroBody: 'This page is for users, teams, and prospective customers who need the right path into the Intel Trader team. Different requests need different handling, and a structured contact path leads to faster, more useful responses with less back-and-forth and less ambiguity.',
+  heroTitle: 'Contact Cacsms Academy for product questions, partnerships, support direction, or platform discussions.',
+  heroBody: 'This page is for users, teams, and prospective customers who need the right path into the Cacsms Academy team. Different requests need different handling, and a structured contact path leads to faster, more useful responses with less back-and-forth and less ambiguity.',
   heroDetail: 'The best enquiries explain the use case, the objective, and any constraints such as team size, country, billing context, workflow maturity, or operational requirement. That helps us route the conversation correctly from the start and respond with guidance that is specific rather than generic.',
   stats: [
     { label: 'General', value: 'Product Enquiries', detail: 'Questions about capability, fit, workflow, onboarding, or plan selection.' },
@@ -136,7 +136,7 @@ export const contactPageContent: PublicPageContent = {
       title: 'Choose the contact route that matches your need',
       intro: 'Not every request should go into the same queue. Product evaluation, support, and commercial discussions each benefit from different context and different responders. Using the right route early usually means a faster reply and a much more useful first conversation.',
       cards: [
-        { title: 'Product and onboarding', body: 'Use this path for questions about what Intel Trader does, how the platform fits your current trading workflow, which plan is appropriate, and what a sensible onboarding path looks like for your level of experience.' },
+        { title: 'Product and onboarding', body: 'Use this path for questions about what Cacsms Academy does, how the platform fits your current trading workflow, which plan is appropriate, and what a sensible onboarding path looks like for your level of experience.' },
         { title: 'Commercial and team deployment', body: 'Use this path for team rollouts, partnership discussions, strategic relationships, higher-touch onboarding, or conversations that involve scaling the platform beyond one user or one account.' },
         { title: 'Operational and technical direction', body: 'Use this route when the issue involves platform behavior, access, configuration, workflow inconsistency, or something that appears to be behaving incorrectly and needs investigation or clarification.' },
       ],
@@ -188,10 +188,10 @@ export const contactPageContent: PublicPageContent = {
 
 export const careersPageContent: PublicPageContent = {
   title: 'Careers',
-  description: 'Understand how Intel Trader thinks about hiring, product quality, and working on serious trading software.',
+  description: 'Understand how Cacsms Academy thinks about hiring, product quality, and working on serious trading software.',
   eyebrow: 'Company',
-  heroTitle: 'Careers at Intel Trader are about building a serious market-intelligence product with long-term value.',
-  heroBody: 'We are interested in people who care about clarity, user trust, and the quality of systems under real usage. Intel Trader is not just a front-end project or a chart wrapper. It is a decision-support platform that must be reliable, understandable, and professionally useful under conditions where users are working with time pressure and real financial consequence.',
+  heroTitle: 'Careers at Cacsms Academy are about building a serious market-intelligence product with long-term value.',
+  heroBody: 'We are interested in people who care about clarity, user trust, and the quality of systems under real usage. Cacsms Academy is not just a front-end project or a chart wrapper. It is a decision-support platform that must be reliable, understandable, and professionally useful under conditions where users are working with time pressure and real financial consequence.',
   heroDetail: 'That means we value ownership, product judgment, clear communication, and people who can improve the system itself rather than only complete isolated tasks. We care about the quality of decisions behind the work, not only the speed of shipping it.',
   stats: [
     { label: 'Culture', value: 'Ownership', detail: 'We value contributors who think about outcomes, tradeoffs, and long-term system quality, not only tasks.' },
@@ -199,14 +199,14 @@ export const careersPageContent: PublicPageContent = {
     { label: 'Focus', value: 'Usefulness', detail: 'The product must remain valuable under real trading pressure, real support conditions, and real workflows.' },
   ],
   highlights: [
-    { title: 'The bar is product seriousness', body: 'Intel Trader is built for contributors who care about clarity, trust, and outcomes, not just visible activity or isolated feature delivery.' },
+    { title: 'The bar is product seriousness', body: 'Cacsms Academy is built for contributors who care about clarity, trust, and outcomes, not just visible activity or isolated feature delivery.' },
     { title: 'Cross-functional quality matters', body: 'Engineering, design, documentation, support, and operations all contribute directly to how trustworthy the product feels in real use.' },
     { title: 'Good judgment compounds over time', body: 'The strongest contributors are the ones who improve system quality in durable ways, not only those who move quickly in the short term.' },
   ],
   process: {
     eyebrow: 'Working Here',
     title: 'How contribution quality is evaluated',
-    intro: 'Strong work at Intel Trader usually follows a simple pattern: understand the user reality, improve the system thoughtfully, and leave behind something others can build on.',
+    intro: 'Strong work at Cacsms Academy usually follows a simple pattern: understand the user reality, improve the system thoughtfully, and leave behind something others can build on.',
     steps: [
       { label: 'Understand', title: 'Start with real user pressure', body: 'The product serves traders working under time pressure, so good work begins by understanding how confusion, delay, or weak reliability affects that environment.' },
       { label: 'Improve', title: 'Solve the system, not only the task', body: 'The best contributors strengthen product clarity, runtime trust, and workflow quality rather than treating each piece of work as an isolated ticket.' },
@@ -257,7 +257,7 @@ export const careersPageContent: PublicPageContent = {
   ],
   faqs: [
     {
-      question: 'What kinds of roles matter most at Intel Trader?',
+      question: 'What kinds of roles matter most at Cacsms Academy?',
       answer: 'Roles that improve product clarity, runtime trust, workflow quality, and operational usefulness matter most. That can include engineering, design, support, operations, and other contributors who strengthen the system in durable ways.',
     },
     {
@@ -266,12 +266,12 @@ export const careersPageContent: PublicPageContent = {
     },
     {
       question: 'Why is product judgment emphasized so much?',
-      answer: 'Because Intel Trader operates in a context where clarity, reliability, and timing matter. Good judgment reduces avoidable product debt and leads to systems users can trust more consistently under pressure.',
+      answer: 'Because Cacsms Academy operates in a context where clarity, reliability, and timing matter. Good judgment reduces avoidable product debt and leads to systems users can trust more consistently under pressure.',
     },
   ],
   cta: {
     title: 'Understand the product direction first.',
-    body: 'If you want better context before a career conversation, the About and Technology pages explain what Intel Trader is trying to build and why.',
+    body: 'If you want better context before a career conversation, the About and Technology pages explain what Cacsms Academy is trying to build and why.',
     primaryHref: '/about',
     primaryLabel: 'Read About Us',
     secondaryHref: '/technology',
@@ -281,10 +281,10 @@ export const careersPageContent: PublicPageContent = {
 
 export const platformPageContent: PublicPageContent = {
   title: 'Platform',
-  description: 'Review how Intel Trader organizes its command-center workflow and analytical layers.',
+  description: 'Review how Cacsms Academy organizes its command-center workflow and analytical layers.',
   eyebrow: 'Platform',
   heroTitle: 'The platform is designed as one coordinated intelligence environment, not a scattered collection of tools.',
-  heroBody: 'Intel Trader is organized around a command workflow that helps users move from broad market awareness to ranked action. The goal is to make multiple analytical engines work together inside one readable operating surface so the trader can form context, compare possibilities, and prioritize attention without rebuilding the same picture manually across separate screens and tools.',
+  heroBody: 'Cacsms Academy is organized around a command workflow that helps users move from broad market awareness to ranked action. The goal is to make multiple analytical engines work together inside one readable operating surface so the trader can form context, compare possibilities, and prioritize attention without rebuilding the same picture manually across separate screens and tools.',
   heroDetail: 'This structure matters because traders often need to compare currencies, read structure, assess breakout pressure, evaluate liquidity, and prioritize opportunities within the same session. A platform that keeps forcing context switching increases friction and lowers consistency right where discipline matters most.',
   stats: [
     { label: 'Structure', value: 'Unified', detail: 'The main modules are intended to reinforce one another rather than compete for attention or duplicate effort.' },
@@ -299,7 +299,7 @@ export const platformPageContent: PublicPageContent = {
   process: {
     eyebrow: 'Workflow Sequence',
     title: 'How the platform is meant to be used',
-    intro: 'Intel Trader is most valuable when the user moves through it in a deliberate sequence rather than consuming isolated modules out of context.',
+    intro: 'Cacsms Academy is most valuable when the user moves through it in a deliberate sequence rather than consuming isolated modules out of context.',
     steps: [
       { label: 'Context', title: 'Form the broad market picture first', body: 'Use strength and broad context to understand where directional pressure may be building before focusing on specific pairs or setups.' },
       { label: 'Qualification', title: 'Test that picture against structure and liquidity', body: 'Channel behavior, breakout conditions, and liquidity context help determine whether the broader idea is stable, fragile, or worth monitoring more closely.' },
@@ -308,10 +308,10 @@ export const platformPageContent: PublicPageContent = {
   },
   comparison: {
     eyebrow: 'Workflow Difference',
-    title: 'Fragmented workflow versus Intel Trader workflow',
+    title: 'Fragmented workflow versus Cacsms Academy workflow',
     intro: 'The platform is designed to reduce repeated context rebuilding and help traders preserve consistency across a full session.',
     leftLabel: 'Fragmented Approach',
-    rightLabel: 'Intel Trader Approach',
+    rightLabel: 'Cacsms Academy Approach',
     rows: [
       {
         topic: 'Context formation',
@@ -345,7 +345,7 @@ export const platformPageContent: PublicPageContent = {
     {
       eyebrow: 'Audience',
       title: 'Who the platform is built to support',
-      intro: 'Intel Trader is intended to remain understandable for newer users while still supporting deeper workflows for advanced traders and teams. That means the platform has to balance readability with depth and avoid becoming either too shallow for serious use or too opaque for onboarding.',
+      intro: 'Cacsms Academy is intended to remain understandable for newer users while still supporting deeper workflows for advanced traders and teams. That means the platform has to balance readability with depth and avoid becoming either too shallow for serious use or too opaque for onboarding.',
       cards: [
         { title: 'Retail traders', body: 'Retail users benefit from stronger context, better prioritization, and a cleaner analytical workflow than they would get from disconnected chart tools alone. The platform helps reduce avoidable noise and indecision.' },
         { title: 'Advanced independents', body: 'Serious independent traders can use the platform as an operating layer for faster monitoring, earlier context, stronger setup qualification, and a more repeatable session routine.' },
@@ -389,9 +389,9 @@ export const platformPageContent: PublicPageContent = {
 
 export const featuresPageContent: PublicPageContent = {
   title: 'Features',
-  description: 'Review the major features inside Intel Trader and how they support market interpretation.',
+  description: 'Review the major features inside Cacsms Academy and how they support market interpretation.',
   eyebrow: 'Platform',
-  heroTitle: 'Intel Trader features are built to improve decision quality, not simply to add more indicators.',
+  heroTitle: 'Cacsms Academy features are built to improve decision quality, not simply to add more indicators.',
   heroBody: 'Each core feature solves a real workflow problem, whether that problem is weak context, slow prioritization, poor alert discipline, fragmented review, or unclear structural interpretation. The platform is designed to improve the quality of what a trader notices, how quickly they notice it, and how consistently they can act on it.',
   heroDetail: 'The features are designed to remain useful individually while also creating much more value when combined inside one command-center workflow. The combined system matters because the market rarely presents one clean variable at a time.',
   stats: [
@@ -401,7 +401,7 @@ export const featuresPageContent: PublicPageContent = {
   ],
   highlights: [
     { title: 'Each feature solves a workflow problem', body: 'The design priority is not feature quantity. It is whether each module improves clarity, prioritization, timing, or review discipline in practice.' },
-    { title: 'The combined workflow matters more than any single module', body: 'Intel Trader is strongest when users treat the feature set as a coordinated system rather than a collection of independent widgets.' },
+    { title: 'The combined workflow matters more than any single module', body: 'Cacsms Academy is strongest when users treat the feature set as a coordinated system rather than a collection of independent widgets.' },
     { title: 'Better attention allocation is a core outcome', body: 'Many of the features exist to help users decide what deserves focus first, which often matters more than discovering yet another possible setup.' },
   ],
   process: {
@@ -417,7 +417,7 @@ export const featuresPageContent: PublicPageContent = {
   comparison: {
     eyebrow: 'Feature Value',
     title: 'Standalone signal tools versus coordinated intelligence layers',
-    intro: 'Intel Trader feature design is centered on connected decision support rather than isolated indicator output.',
+    intro: 'Cacsms Academy feature design is centered on connected decision support rather than isolated indicator output.',
     leftLabel: 'Standalone Signals',
     rightLabel: 'Coordinated Features',
     rows: [
@@ -499,10 +499,10 @@ export const featuresPageContent: PublicPageContent = {
 
 export const technologyPageContent: PublicPageContent = {
   title: 'Technology',
-  description: 'Understand the analytical and architectural thinking behind Intel Trader.',
+  description: 'Understand the analytical and architectural thinking behind Cacsms Academy.',
   eyebrow: 'Platform',
-  heroTitle: 'The technology behind Intel Trader is focused on live interpretation, modular intelligence, and operational trust.',
-  heroBody: 'Intel Trader is meant to be more than a front-end around market data. The platform is organized around services and analytical layers that translate live information into more readable and actionable market context. The technology story is therefore about interpretation quality, system reliability, workflow continuity, and how raw market movement becomes something operationally useful.',
+  heroTitle: 'The technology behind Cacsms Academy is focused on live interpretation, modular intelligence, and operational trust.',
+  heroBody: 'Cacsms Academy is meant to be more than a front-end around market data. The platform is organized around services and analytical layers that translate live information into more readable and actionable market context. The technology story is therefore about interpretation quality, system reliability, workflow continuity, and how raw market movement becomes something operationally useful.',
   heroDetail: 'That means the technology discussion includes how data is handled, how intelligence is derived, how state is surfaced to the user, and how the interface exposes analytical work without overwhelming the trader or hiding reliability conditions that affect trust.',
   stats: [
     { label: 'Architecture', value: 'Modular', detail: 'Different responsibilities are separated into focused analytical services, data paths, and presentation layers.' },
@@ -592,7 +592,7 @@ export const technologyPageContent: PublicPageContent = {
 
 export const helpCenterPageContent: PublicPageContent = {
   title: 'Help Center',
-  description: 'Find guidance for onboarding, workflow understanding, and common support questions in Intel Trader.',
+  description: 'Find guidance for onboarding, workflow understanding, and common support questions in Cacsms Academy.',
   eyebrow: 'Support',
   heroTitle: 'The Help Center is meant to make common product questions easier to resolve without friction.',
   heroBody: 'A good help experience should reduce confusion quickly and leave the user with a clearer next step. This page is for users who need structured guidance around onboarding, product understanding, plan expectations, and routine workflow interpretation before opening a more specific support case.',
@@ -792,9 +792,9 @@ export const accountSupportPageContent: PublicPageContent = {
 
 export const faqPageContent: PublicPageContent = {
   title: 'FAQ',
-  description: 'Read frequently asked questions about Intel Trader, its workflow, support, pricing, and user fit.',
+  description: 'Read frequently asked questions about Cacsms Academy, its workflow, support, pricing, and user fit.',
   eyebrow: 'Support',
-  heroTitle: 'The FAQ page answers the questions serious users ask before they adopt Intel Trader fully.',
+  heroTitle: 'The FAQ page answers the questions serious users ask before they adopt Cacsms Academy fully.',
   heroBody: 'A useful FAQ should reduce uncertainty, not just repeat marketing lines. This page is meant to help users understand what the platform does, who it is for, how it fits into real trading workflows, and how support and subscriptions work in practice once a user moves beyond initial curiosity.',
   heroDetail: 'It is especially useful for first-time evaluators who want enough context to move forward confidently without needing immediate direct support, while still understanding where to go next if their case becomes more specific.',
   stats: [
@@ -847,9 +847,9 @@ export const faqPageContent: PublicPageContent = {
       title: 'What users usually want to know first',
       intro: 'Before adoption, traders usually want to know what the platform really does, who it is for, and how it differs from normal charting software. Those questions matter because clarity of fit is often more important than raw feature count.',
       cards: [
-        { title: 'What does Intel Trader actually do?', body: 'It helps traders interpret live forex markets through a combined workflow of strength, structure, breakout context, liquidity awareness, ranking, alerts, and review continuity so attention can be directed more intelligently.' },
+        { title: 'What does Cacsms Academy actually do?', body: 'It helps traders interpret live forex markets through a combined workflow of strength, structure, breakout context, liquidity awareness, ranking, alerts, and review continuity so attention can be directed more intelligently.' },
         { title: 'Who is the platform for?', body: 'It supports ambitious retail traders, more advanced independent operators, and team workflows that need stronger structure, more consistent interpretation, and better coordination around what deserves attention.' },
-        { title: 'How is it different from charting software?', body: 'A charting platform mainly displays price and leaves interpretation largely to the user. Intel Trader adds organized interpretation, prioritization, and workflow structure so the market is easier to evaluate with discipline.' },
+        { title: 'How is it different from charting software?', body: 'A charting platform mainly displays price and leaves interpretation largely to the user. Cacsms Academy adds organized interpretation, prioritization, and workflow structure so the market is easier to evaluate with discipline.' },
       ],
     },
     {
@@ -859,7 +859,7 @@ export const faqPageContent: PublicPageContent = {
       cards: [
         { title: 'How do I choose the right plan?', body: 'The right plan depends on how much market coverage, dashboard depth, alert flexibility, and operational workflow support you need. Simpler needs suit entry tiers, while advanced users and teams usually need broader access.' },
         { title: 'Where do I go for account problems?', body: 'If the issue involves billing, login state, plan access, role state, redirect behavior, or payment behavior, Account Support is the correct route because the answer depends on your specific account state.' },
-        { title: 'Can the platform support Nigerian and international users?', body: 'Yes. Intel Trader supports both Nigerian and international usage, including NGN pricing context alongside broader global workflow needs and support pathways designed for different user types.' },
+        { title: 'Can the platform support Nigerian and international users?', body: 'Yes. Cacsms Academy supports both Nigerian and international usage, including NGN pricing context alongside broader global workflow needs and support pathways designed for different user types.' },
       ],
     },
     {
@@ -867,7 +867,7 @@ export const faqPageContent: PublicPageContent = {
       title: 'What people want to understand before committing',
       intro: 'Before adopting a platform fully, most serious users want to understand whether it will improve their process, not just whether it has an attractive feature list.',
       cards: [
-        { title: 'Will this replace my charting platform?', body: 'Intel Trader is best understood as an intelligence and decision-support layer. It can improve context, prioritization, and workflow discipline, but users may still maintain separate execution or charting tools depending on their process.' },
+        { title: 'Will this replace my charting platform?', body: 'Cacsms Academy is best understood as an intelligence and decision-support layer. It can improve context, prioritization, and workflow discipline, but users may still maintain separate execution or charting tools depending on their process.' },
         { title: 'Is this useful for newer traders?', body: 'Yes, provided the user wants more structure and is willing to learn from the workflow. The platform is designed to remain understandable, but it is still built around serious interpretation rather than oversimplified signals.' },
         { title: 'Does this help with discipline?', body: 'The platform cannot replace discipline, but it can support it by reducing unnecessary noise, improving prioritization, and making it easier to work from a more consistent market-reading process.' },
       ],
@@ -876,7 +876,7 @@ export const faqPageContent: PublicPageContent = {
   faqs: [
     {
       question: 'What is the best first step if I am still evaluating the product?',
-      answer: 'Start by understanding whether the platform matches your workflow needs. The Platform, Features, and Pricing pages help clarify how Intel Trader is organized and which level of access is likely to fit your use case.',
+      answer: 'Start by understanding whether the platform matches your workflow needs. The Platform, Features, and Pricing pages help clarify how Cacsms Academy is organized and which level of access is likely to fit your use case.',
     },
     {
       question: 'Does the product target beginners or advanced traders?',
@@ -891,7 +891,7 @@ export const faqPageContent: PublicPageContent = {
     title: 'Need something more specific than a frequently asked question?',
     body: 'If your situation is tied to your account or your commercial use case, Contact and Account Support are the right follow-up pages.',
     primaryHref: '/contact',
-    primaryLabel: 'Contact Intel Trader',
+    primaryLabel: 'Contact Cacsms Academy',
     secondaryHref: '/account-support',
     secondaryLabel: 'Account Support',
   },

@@ -27,7 +27,10 @@ export default function SiteHeader() {
         <div className="flex h-20 items-center justify-between">
           <Link href="/" className="flex items-center gap-2 text-emerald-600">
             <Cpu className="h-8 w-8" />
-            <span className="font-mono text-xl font-bold tracking-wider text-zinc-900">INTEL TRADER</span>
+            <div className="leading-tight">
+              <span className="block font-mono text-xl font-bold tracking-wider text-zinc-900">CACSMS ACADEMY</span>
+              <span className="hidden text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-500 md:block">Think Like Institutions. Trade With Precision</span>
+            </div>
           </Link>
 
           <nav className="hidden items-center gap-8 md:flex">

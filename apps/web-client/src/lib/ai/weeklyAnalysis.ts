@@ -171,7 +171,7 @@ function normalizeOutput(raw: Partial<WeeklyAnalysisOutput>, fallback: WeeklyAna
 function buildPrompt(input: WeeklyAnalysisInput, fallback: WeeklyAnalysisOutput) {
   return `🟣 FINAL WEEKLY ANALYSIS PROMPT (UPGRADED)
 SYSTEM ROLE:
-You are an institutional Forex analyst for Intel Trader.
+You are an institutional Forex analyst for Cacsms Academy.
 
 OBJECTIVE:
 Generate a weekly analysis for a currency pair with directional bias and reasoning.

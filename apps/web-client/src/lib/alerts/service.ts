@@ -193,7 +193,7 @@ function renderAlertEmail(alert: AlertInput) {
   const timeframe = alert.timeframe ?? 'N/A';
 
   if (alert.alertType === 'CHANNEL') {
-    const title = `[Intel Trader] Channel Alert: ${pair} ${timeframe}`;
+    const title = `[Cacsms Academy] Channel Alert: ${pair} ${timeframe}`;
     const text = [
       'Channel Formation Alert',
       `Pair: ${pair}`,
@@ -220,7 +220,7 @@ function renderAlertEmail(alert: AlertInput) {
   }
 
   if (alert.alertType === 'BREAKOUT') {
-    const title = `[Intel Trader] Breakout Alert: ${pair} ${timeframe}`;
+    const title = `[Cacsms Academy] Breakout Alert: ${pair} ${timeframe}`;
     const text = [
       'Breakout Alert',
       `Pair: ${pair}`,
@@ -247,7 +247,7 @@ function renderAlertEmail(alert: AlertInput) {
   }
 
   if (alert.alertType === 'AI_DECISION') {
-    const title = `[Intel Trader] AI Trade Decision: ${pair} ${timeframe}`;
+    const title = `[Cacsms Academy] AI Trade Decision: ${pair} ${timeframe}`;
     const text = [
       'AI Trade Decision Alert',
       `Pair: ${pair}`,
@@ -273,7 +273,7 @@ function renderAlertEmail(alert: AlertInput) {
     return { title, text, html };
   }
 
-  const title = `[Intel Trader] ${alert.title}`;
+  const title = `[Cacsms Academy] ${alert.title}`;
   const text = [
     `Alert Type: ${alert.alertType}`,
     `Pair: ${pair}`,

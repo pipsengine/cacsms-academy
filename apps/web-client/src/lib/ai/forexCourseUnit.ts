@@ -672,7 +672,7 @@ function normalizeOutput(raw: Partial<ForexCourseUnitOutput>, input: ForexCourse
 
 function buildPrompt(input: ForexCourseUnitInput): string {
   return `SYSTEM ROLE:
-You are a professional Forex educator and curriculum expert for Intel Trader. You are responsible for generating structured, high-quality educational content for a daily learning system.
+You are a professional Forex educator and curriculum expert for Cacsms Academy. You are responsible for generating structured, high-quality educational content for a daily learning system.
 
 OBJECTIVE:
 Generate ONE learning unit that includes:

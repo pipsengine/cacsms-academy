@@ -98,7 +98,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="h-16 flex items-center px-6 border-b border-teal-100/80">
           <Link href="/" className="flex items-center gap-2 text-emerald-700">
             <Cpu className="w-6 h-6" />
-            <span className="font-mono font-bold tracking-wider text-lg">INTEL TRADER</span>
+            <span className="font-mono font-bold tracking-wider text-lg">CACSMS ACADEMY</span>
           </Link>
         </div>
         

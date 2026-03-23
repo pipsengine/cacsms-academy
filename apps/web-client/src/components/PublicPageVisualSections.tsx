@@ -64,22 +64,22 @@ export function FeaturesCapabilityMatrixSection() {
     {
       capability: 'Signal Source',
       traditional: 'Mostly single-indicator interpretation',
-      intelTrader: 'Multi-engine context across strength, structure, liquidity, and ranking',
+      academy: 'Multi-engine context across strength, structure, liquidity, and ranking',
     },
     {
       capability: 'Attention Allocation',
       traditional: 'Manual scanning across many charts',
-      intelTrader: 'Ranked setup prioritization with workflow-level filtering',
+      academy: 'Ranked setup prioritization with workflow-level filtering',
     },
     {
       capability: 'Session Consistency',
       traditional: 'Interpretation shifts with chart order and fatigue',
-      intelTrader: 'Structured sequence designed for repeatable daily decision flow',
+      academy: 'Structured sequence designed for repeatable daily decision flow',
     },
     {
       capability: 'Review Quality',
       traditional: 'Mostly memory and fragmented notes',
-      intelTrader: 'Alert continuity and context-linked review support',
+      academy: 'Alert continuity and context-linked review support',
     },
   ];
 
@@ -98,7 +98,7 @@ export function FeaturesCapabilityMatrixSection() {
           <div className="grid grid-cols-1 bg-zinc-100/80 text-sm font-semibold text-zinc-700 md:grid-cols-3">
             <div className="px-5 py-4 uppercase tracking-[0.2em] text-xs text-zinc-500">Capability</div>
             <div className="border-t border-zinc-200 px-5 py-4 md:border-l md:border-t-0">Typical Tooling</div>
-            <div className="border-t border-zinc-200 px-5 py-4 md:border-l md:border-t-0">Intel Trader</div>
+            <div className="border-t border-zinc-200 px-5 py-4 md:border-l md:border-t-0">Cacsms Academy</div>
           </div>
 
           {rows.map((row) => (
@@ -108,7 +108,7 @@ export function FeaturesCapabilityMatrixSection() {
                 {row.traditional}
               </div>
               <div className="border-t border-zinc-200 px-5 py-4 text-sm leading-7 text-zinc-600 md:border-l md:border-t-0">
-                {row.intelTrader}
+                {row.academy}
               </div>
             </div>
           ))}
@@ -316,7 +316,7 @@ export function FaqQuickNavigationSection() {
   const groups = [
     {
       title: 'Product Fit',
-      items: ['What Intel Trader actually does', 'Who the platform is for', 'How it differs from standard charting tools'],
+      items: ['What Cacsms Academy actually does', 'Who the platform is for', 'How it differs from standard charting tools'],
     },
     {
       title: 'Plan & Access',

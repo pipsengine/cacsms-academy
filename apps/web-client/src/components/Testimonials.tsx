@@ -14,7 +14,7 @@ const testimonials: Testimonial[] = [
     name: 'Alex Chen',
     title: 'FX Trader • Singapore',
     content:
-      'Intel Trader completely transformed my trading workflow. The AI probability engine gives me the edge I needed. Went from manual channel detection to fully automated setups in minutes.',
+      'Cacsms Academy completely transformed my trading workflow. The AI probability engine gives me the edge I needed. Went from manual channel detection to fully automated setups in minutes.',
   },
   {
     name: 'Maria Rodriguez',
@@ -46,7 +46,7 @@ export default function Testimonials() {
             Trusted by professional traders worldwide
           </h2>
           <p className="text-xl text-zinc-600">
-            Join thousands of forex traders who use Intel Trader to identify high-probability setups faster and trade with institutional-grade intelligence.
+            Join thousands of forex traders who use Cacsms Academy to identify high-probability setups faster and trade with institutional-grade intelligence.
           </p>
         </div>
 

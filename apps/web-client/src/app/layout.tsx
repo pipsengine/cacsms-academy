@@ -17,8 +17,8 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'INTEL TRADER | AI Market Intelligence',
-  description: 'Institutional Channel, Strength & Liquidity Intelligence System',
+  title: 'Cacsms Academy | Think Like Institutions. Trade With Precision',
+  description: 'Think Like Institutions. Trade With Precision',
 };
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
