@@ -51,6 +51,8 @@ Set these in `.env.local`:
 - `NEXTAUTH_SECRET`
 - `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`
 - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`
+- `NEXT_PUBLIC_INACTIVITY_TIMEOUT_MS` (optional, defaults to `300000`)
+- `NEXT_PUBLIC_INACTIVITY_WARNING_WINDOW_MS` (optional, defaults to `30000`)
 
 GitHub OAuth callback URL to configure in your GitHub OAuth App:
 - `http://localhost:3000/api/auth/callback/github`
