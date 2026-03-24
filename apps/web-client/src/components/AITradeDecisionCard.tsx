@@ -58,7 +58,7 @@ export default function AITradeDecisionCard() {
 
     const load = async () => {
       try {
-        const res = await fetch('/api/market/decisions?minConfidence=95', { cache: 'no-store' });
+        const res = await fetch('/api/market/decisions?minConfidence=80', { cache: 'no-store' });
         const data = await res.json().catch(() => null);
         if (!active || !res.ok || !data) return;
         setPayload(data);
@@ -97,7 +97,7 @@ export default function AITradeDecisionCard() {
           <h3 className="text-sm font-medium text-zinc-700 uppercase tracking-wider">AI Trade Decision</h3>
         </div>
         <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded px-2 py-1">
-          {payload?.minimumConfidence ?? 95}%+ FILTER
+          {payload?.minimumConfidence ?? 80}%+ FILTER
         </span>
       </div>
 
@@ -178,7 +178,7 @@ export default function AITradeDecisionCard() {
             ) : (
               <div className="rounded border border-zinc-200 bg-slate-50 px-3 py-2 text-xs text-zinc-500 flex items-center gap-2">
                 <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
-                No setup passed the {payload?.minimumConfidence ?? 95}% confidence and condition gate.
+                No setup passed the {payload?.minimumConfidence ?? 80}% confidence and condition gate.
               </div>
             )}
           </div>

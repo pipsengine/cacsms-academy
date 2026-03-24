@@ -26,7 +26,7 @@ async function buildDerivedAlerts() {
     getMarketDataService().getSnapshot(),
     getLiquidityOverview(),
     getLiveRankedOpportunities(),
-    getAIDecisionSignals(95),
+    getAIDecisionSignals(80),
   ]);
 
   const bucketKey = getBucketKey();
