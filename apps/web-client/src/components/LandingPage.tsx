@@ -21,11 +21,7 @@ import { useAuth } from '@/components/AuthProvider';
 import PricingPlans from '@/components/PricingPlans';
 import DailyTradingTipPreview from '@/components/DailyTradingTipPreview';
 import WeeklyAnalysisOverview from '@/components/WeeklyAnalysisOverview';
-import {
-  forexCourseCurriculum,
-  getDayLessons,
-  type CurriculumDay,
-} from '@/lib/learning/curriculum';
+
 
 const problemCards = [
   {
@@ -133,34 +129,8 @@ const faqItems = [
   },
 ];
 
-const lessonDays: CurriculumDay[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-
-function getIsoWeekNumber(date: Date) {
-  const utcDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-  const dayNumber = utcDate.getUTCDay() || 7;
-  utcDate.setUTCDate(utcDate.getUTCDate() + 4 - dayNumber);
-  const yearStart = new Date(Date.UTC(utcDate.getUTCFullYear(), 0, 1));
-  return Math.ceil((((utcDate.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
-}
-
-function getCurriculumDayFromDate(date: Date): CurriculumDay {
-  const jsDay = date.getDay();
-
-  if (jsDay === 0) return 'Monday';
-  if (jsDay === 6) return 'Friday';
-
-  return lessonDays[jsDay - 1] ?? 'Monday';
-}
-
 export default function LandingPage() {
   const { user, isLoading } = useAuth();
-
-  const today = new Date();
-  const calendarWeek = getIsoWeekNumber(today);
-  const currentDay = getCurriculumDayFromDate(today);
-  const curriculumWeekNumber = ((calendarWeek - 1) % forexCourseCurriculum.length) + 1;
-  const visibleCourseTopics = getDayLessons(curriculumWeekNumber, currentDay);
-  const currentWeekMeta = forexCourseCurriculum.find((week) => week.week === curriculumWeekNumber);
   const isAuthenticated = !isLoading && Boolean(user);
 
   const faqSchema = {
@@ -505,65 +475,6 @@ export default function LandingPage() {
               <div className="rounded-2xl border border-emerald-200 bg-white p-6 shadow-sm">
                 <DailyTradingTipPreview compact />
               </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="our-courses" className="scroll-mt-28 py-24">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center max-w-3xl mx-auto mb-14">
-              <p className="text-sm font-semibold uppercase tracking-[0.35em] text-emerald-600">Our Courses</p>
-              <h2 className="mt-3 text-3xl font-bold text-zinc-900">Today is {currentDay} in Week {calendarWeek}</h2>
-              <p className="mt-4 text-lg text-zinc-600 leading-8">
-                Stay aligned with a structured learning flow that updates daily, delivering only the most relevant lessons for your current stage. As the week progresses from Monday to Friday, your learning advances with it, ensuring consistent growth without overwhelm. Each new week continues the sequence seamlessly, guiding you step-by-step from foundational concepts to advanced trading mastery.
-              </p>
-              {currentWeekMeta && (
-                <p className="mt-4 text-sm font-medium text-zinc-500">
-                  Current Curriculum Track: Week {currentWeekMeta.week} · {currentWeekMeta.module}
-                </p>
-              )}
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {visibleCourseTopics.map((topic) => (
-                <div key={topic.slug} className="flex h-full flex-col rounded-2xl border border-zinc-200 bg-zinc-50 p-6 shadow-sm">
-                  <div className="flex flex-wrap items-center gap-2 text-xs">
-                    <span className="rounded-full bg-emerald-50 px-2.5 py-1 font-semibold uppercase tracking-[0.2em] text-emerald-700">Week {topic.week}</span>
-                    <span className="rounded-full bg-white px-2.5 py-1 font-semibold text-zinc-500">{topic.day}</span>
-                    <span className="rounded-full bg-white px-2.5 py-1 font-semibold text-zinc-500">{topic.level}</span>
-                  </div>
-                  <p className="mt-4 text-xs font-semibold uppercase tracking-[0.25em] text-zinc-500">{topic.module}</p>
-                  <h3 className="mt-2 text-xl font-bold text-zinc-900">{topic.title}</h3>
-                  <p className="mt-3 flex-1 text-sm leading-7 text-zinc-600">{topic.summary}</p>
-                  <div className="mt-5">
-                    <Link
-                      href={
-                        isAuthenticated
-                          ? `/our-courses/lesson/${encodeURIComponent(topic.slug)}`
-                          : `/login?callbackUrl=${encodeURIComponent(`/our-courses/lesson/${encodeURIComponent(topic.slug)}`)}`
-                      }
-                      className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 hover:text-emerald-800"
-                    >
-                      Read More
-                      <ChevronRight className="h-4 w-4" />
-                    </Link>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-10 text-center">
-              <Link
-                href={
-                  isAuthenticated
-                    ? '/our-courses'
-                    : `/login?callbackUrl=${encodeURIComponent('/our-courses')}`
-                }
-                className="inline-flex items-center gap-2 rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-zinc-800 transition-colors"
-              >
-                Open Our Courses Section
-                <ChevronRight className="w-4 h-4" />
-              </Link>
             </div>
           </div>
         </section>

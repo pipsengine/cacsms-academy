@@ -10,7 +10,7 @@ const navItems = [
   { href: '/#platform', label: 'Platform' },
   { href: '/#how-it-works', label: 'How It Works' },
   { href: '/#daily-trading-tips', label: 'Daily Trading Tips' },
-  { href: '/#our-courses', label: 'Our Courses' },
+  { href: '/our-courses', label: 'Our Courses' },
   { href: '/#weekly-analysis', label: 'Weekly Analysis' },
   { href: '/pricing', label: 'Pricing' },
   { href: '/faq', label: 'FAQ' },
@@ -29,7 +29,7 @@ export default function SiteHeader() {
             <Cpu className="h-8 w-8" />
             <div className="leading-tight">
               <span className="block font-mono text-xl font-bold tracking-wider text-zinc-900">CACSMS ACADEMY</span>
-              <span className="hidden text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-500 md:block">Think Like Institutions. Trade With Precision</span>
+              <span className="hidden text-[8px] font-semibold uppercase tracking-[0.1em] text-zinc-500 md:block">Think Like Institutions. Trade With Precision</span>
             </div>
           </Link>
 

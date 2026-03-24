@@ -234,6 +234,13 @@ export default function AuthModal({
                 className="w-full bg-white border border-zinc-300 rounded px-3 py-2 text-zinc-900 focus:outline-none focus:border-emerald-500/60 transition-colors"
                 required
               />
+              {activeMode === "login" && (
+                <div className="mt-2 text-right">
+                  <Link href="/forgot-password" className="text-xs font-medium text-emerald-700 hover:underline">
+                    Forgot password?
+                  </Link>
+                </div>
+              )}
             </div>
 
             <button

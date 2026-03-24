@@ -37,7 +37,7 @@ function getLagosDateKey(now = new Date()) {
 
 function shouldRunNow(now = new Date()) {
   const p = getLagosParts(now);
-  return p.weekday.toLowerCase().startsWith('sun') && p.hour === '00' && p.minute === '00';
+  return p.weekday.toLowerCase().startsWith('sat') && p.hour === '00' && p.minute === '00';
 }
 
 async function getLastScheduledSyncDate(): Promise<string | null> {
@@ -90,7 +90,7 @@ export function startCotWeeklyScheduler() {
     return;
   }
 
-  console.info('[cot][scheduler] Enabled: Sunday 00:00 Africa/Lagos');
+  console.info('[cot][scheduler] Enabled: Saturday 00:00 Africa/Lagos');
 
   // Check immediately on start in case the process starts exactly at run time.
   void tryRunScheduledSync();
