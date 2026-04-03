@@ -56,6 +56,7 @@ export const PUBLIC_ROUTES = [
 export const PUBLIC_ROUTE_PREFIXES = [
   '/legal',
   '/api/auth',
+  '/api/checkout/webhook',
 ] as const;
 
 /**

@@ -23,6 +23,14 @@ const __dirname = path.dirname(__filename);
 const app = next({ dev, dir: __dirname });
 const handle = app.getRequestHandler();
 
+function getAllowedOrigins(): string[] {
+  const configured = process.env.WEB_CLIENT_CORS_ORIGINS || process.env.APP_URL || '';
+  return configured
+    .split(',')
+    .map((value) => value.trim())
+    .filter(Boolean);
+}
+
 app.prepare().then(() => {
   const server = createServer((req, res) => {
     try {
@@ -34,9 +42,10 @@ app.prepare().then(() => {
     }
   });
 
+  const allowedOrigins = getAllowedOrigins();
   const io = new Server(server, {
     cors: {
-      origin: '*',
+      origin: allowedOrigins,
       methods: ['GET', 'POST']
     }
   });

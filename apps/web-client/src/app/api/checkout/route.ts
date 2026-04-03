@@ -92,6 +92,9 @@ export async function POST(req: Request) {
     }
 
     if (!process.env.STRIPE_SECRET_KEY) {
+      if (process.env.NODE_ENV === 'production') {
+        return NextResponse.json({ error: 'Payments are temporarily unavailable' }, { status: 503 });
+      }
       return NextResponse.json({
         url: `/payment-success?plan=${encodeURIComponent(plan)}&region=${encodeURIComponent(resolvedRegion)}&billingCycle=${encodeURIComponent(billingCycle)}`
       });

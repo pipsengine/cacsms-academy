@@ -4,7 +4,11 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 const ADMIN_EMAIL = "admin@cacsms.com";
-const ADMIN_PASSWORD = "Adm1n.c0m";
+const ADMIN_PASSWORD = process.env.ADMIN_INITIAL_PASSWORD;
+
+if (!ADMIN_PASSWORD) {
+  throw new Error("ADMIN_INITIAL_PASSWORD is required to run setup-admin.");
+}
 
 async function setupSuperAdmin() {
   try {

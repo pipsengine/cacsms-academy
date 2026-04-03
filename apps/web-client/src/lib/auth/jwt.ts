@@ -7,12 +7,9 @@ export type AuthTokenPayload = {
 };
 
 export function getJwtSecret(): Uint8Array {
-  const secret = process.env.JWT_SECRET;
+  const secret = process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET;
   if (!secret) {
-    if (process.env.NODE_ENV === 'production') {
-      throw new Error('JWT_SECRET is not configured');
-    }
-    return new TextEncoder().encode('dev-only-insecure-jwt-secret-change-me');
+    throw new Error('JWT_SECRET or NEXTAUTH_SECRET is not configured');
   }
   return new TextEncoder().encode(secret);
 }

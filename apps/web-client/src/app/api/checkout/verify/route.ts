@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
+import { Prisma } from '@prisma/client';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/nextAuthOptions';
 import { prisma } from '@/lib/prisma';
@@ -19,6 +20,10 @@ function getPaidPlan(input: unknown): PaidPlan | null {
   return null;
 }
 
+function isUniqueConstraintError(error: unknown): boolean {
+  return error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002';
+}
+
 export async function POST(req: Request) {
   try {
     const authSession = await getServerSession(authOptions);
@@ -34,6 +39,9 @@ export async function POST(req: Request) {
     const resolvedRegion = resolveRegion(body?.region, user.country);
 
     if (!process.env.STRIPE_SECRET_KEY) {
+      if (process.env.NODE_ENV === 'production') {
+        return NextResponse.json({ error: 'Payments are temporarily unavailable' }, { status: 503 });
+      }
       if (!plan) return NextResponse.json({ error: 'Invalid plan' }, { status: 400 });
       const pricing = getPricingDetail(plan, resolvedRegion);
 
@@ -78,23 +86,40 @@ export async function POST(req: Request) {
     if (!finalPlan) return NextResponse.json({ error: 'Invalid plan' }, { status: 400 });
 
     const pricing = getPricingDetail(finalPlan, finalRegion);
+    const idempotencyKey = `stripe:verify:session:${session.id}`;
 
-    await prisma.subscription.updateMany({
-      where: { userId: user.id, status: 'Active' },
-      data: { status: 'Expired' },
-    });
+    try {
+      await prisma.$transaction(async (tx) => {
+        await tx.platformSetting.create({
+          data: {
+            key: idempotencyKey,
+            value: new Date().toISOString(),
+          },
+        });
 
-    await prisma.subscription.create({
-      data: {
-        userId: user.id,
-        planType: finalPlan,
-        price: pricing.priceValue,
-        currency: pricing.currencySymbol,
-        expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-        paymentProvider: 'Stripe',
-        status: 'Active',
-      },
-    });
+        await tx.subscription.updateMany({
+          where: { userId: user.id, status: 'Active' },
+          data: { status: 'Expired' },
+        });
+
+        await tx.subscription.create({
+          data: {
+            userId: user.id,
+            planType: finalPlan,
+            price: pricing.priceValue,
+            currency: pricing.currencySymbol,
+            expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+            paymentProvider: 'Stripe',
+            status: 'Active',
+          },
+        });
+      });
+    } catch (error) {
+      if (isUniqueConstraintError(error)) {
+        return NextResponse.json({ success: true, plan: finalPlan, duplicate: true });
+      }
+      throw error;
+    }
 
     return NextResponse.json({ success: true, plan: finalPlan });
   } catch (error) {

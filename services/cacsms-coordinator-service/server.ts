@@ -8,7 +8,14 @@ import { logRequest } from './logger';
 const app = express();
 const limiter = rateLimit(serviceConfig.rateLimit);
 
-app.use(cors({ origin: process.env.INTEL_COORDINATOR_CORS_ORIGIN || '*' }));
+function getAllowedOrigins(): string[] {
+  return (process.env.INTEL_COORDINATOR_CORS_ORIGIN || '')
+    .split(',')
+    .map((value) => value.trim())
+    .filter(Boolean);
+}
+
+app.use(cors({ origin: getAllowedOrigins() }));
 app.use(express.json({ limit: '1mb' }));
 app.use((req, _res, next) => {
   logRequest(req.method, req.path);
@@ -22,10 +29,10 @@ app.use((err: Error, _req: express.Request, res: express.Response, _next: expres
   res.status(500).json({ error: 'Internal server error' });
 });
 
-if (require.main === module) {
+if (typeof require !== 'undefined' && require.main === module) {
   const port = serviceConfig.port;
   app.listen(port, () => {
-    console.log([IntelCoordinator] listening on );
+    console.log(`[IntelCoordinator] listening on ${port}`);
   });
 }
 
