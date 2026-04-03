@@ -76,12 +76,12 @@ export default function AuthModal({
       const normalizedEmail = email.toLowerCase().trim();
       if (!normalizedEmail || !password) {
         setError("Email and password are required.");
-        if (!normalizedEmail || !password) {
-          setError("Email and password are required.");
-          setBusy(false);
-          return;
-        }
+        setBusy(false);
+        return;
+      }
 
+      if (activeMode === "register") {
+        const res = await fetch("/api/auth/register", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -95,8 +95,7 @@ export default function AuthModal({
         const data = await res.json().catch(() => null);
         if (!res.ok) {
           setError(data?.error || "Registration failed.");
-            const passwordHex = Array.from(password).map(c => c.charCodeAt(0).toString(16).padStart(2, '0')).join(' ');
-            console.log('[AuthModal] Password hex dump:', passwordHex);
+          setBusy(false);
           return;
         }
       }
@@ -106,8 +105,7 @@ export default function AuthModal({
         password,
         redirect: false,
         callbackUrl,
-
-        console.log('[AuthModal] signIn returned');
+      });
 
       if (!result) {
         setError("Sign-in failed. Please try again.");
@@ -124,7 +122,7 @@ export default function AuthModal({
       await refreshAuth();
       router.push(result.url || callbackUrl);
       router.refresh();
-    } catch (err) {
+    } catch {
       setError("Something went wrong. Please try again.");
       setBusy(false);
     }
