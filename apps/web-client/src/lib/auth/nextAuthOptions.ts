@@ -60,46 +60,52 @@ export const authOptions: NextAuthOptions = {
           async authorize(credentials) {
             const email = credentials?.email?.toLowerCase().trim();
             const password = credentials?.password;
+              const rawEmail = credentials?.email;
+            
+            console.log('[auth][credentials] attempt:', { email, hasPassword: !!password });
+              console.log('[DEBUG] Raw credentials received:', { rawEmail, passwordLength: password?.length });
+            
             if (!email || !password) {
-              if (process.env.NODE_ENV !== 'production') {
-                console.warn('[auth][credentials] rejected: missing email or password');
-              }
+              console.warn('[auth][credentials] rejected: missing email or password', { email, hasPassword: !!password });
               return null;
             }
 
-            const user = await prisma.user.findUnique({ where: { email } });
-            if (!user) {
-              if (process.env.NODE_ENV !== 'production') {
+            try {
+              const user = await prisma.user.findUnique({ where: { email } });
+              
+              if (!user) {
                 console.warn(`[auth][credentials] rejected: user not found for ${email}`);
+                return null;
               }
-              return null;
-            }
 
-            if (!user.passwordHash) {
-              if (process.env.NODE_ENV !== 'production') {
+              console.log('[auth][credentials] user found:', { id: user.id, email: user.email, hasHash: !!user.passwordHash });
+                console.log('[DEBUG] User hash field:', { hashValue: user.passwordHash, hashLength: user.passwordHash?.length, hashStart: user.passwordHash?.substring(0, 30) });
+
+              if (!user.passwordHash) {
                 console.warn(`[auth][credentials] rejected: passwordHash missing for ${email}`);
+                return null;
               }
-              return null;
-            }
 
-            const ok = await bcrypt.compare(password, user.passwordHash);
-            if (!ok) {
-              if (process.env.NODE_ENV !== 'production') {
+              const ok = await bcrypt.compare(password, user.passwordHash);
+              console.log('[auth][credentials] bcrypt compare result:', { ok, email });
+                console.log('[DEBUG] bcrypt inputs:', { passwordToCompare: password, hashToCompare: user.passwordHash, passwordHexStart: Buffer.from(password).toString('hex').substring(0, 20) });
+              
+              if (!ok) {
                 console.warn(`[auth][credentials] rejected: password mismatch for ${email}`);
+                return null;
               }
+
+              console.info(`[auth][credentials] success: ${email}`);
+              return {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                image: user.image,
+              };
+            } catch (error) {
+              console.error('[auth][credentials] error:', error instanceof Error ? error.message : String(error));
               return null;
             }
-
-            if (process.env.NODE_ENV !== 'production') {
-              console.info(`[auth][credentials] success: ${email}`);
-            }
-
-            return {
-              id: user.id,
-              name: user.name,
-              email: user.email,
-              image: user.image,
-            };
           },
         })
       : null,
