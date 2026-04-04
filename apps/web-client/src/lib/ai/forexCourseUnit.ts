@@ -12,6 +12,8 @@ export type ForexCourseUnitInput = {
   topic_type: TopicType;
 };
 
+export type DifficultyLevel = 'Beginner' | 'Intermediate' | 'Advanced' | 'Professional';
+
 export type ForexCourseUnitOutput = {
   title: string;
   summary: string;
@@ -20,7 +22,7 @@ export type ForexCourseUnitOutput = {
   example: string;
   is_assignment: boolean;
   assignment: string;
-  difficulty_level: 'Beginner' | 'Intermediate';
+  difficulty_level: DifficultyLevel;
   image_prompt: string;
 };
 
@@ -413,7 +415,7 @@ function buildExecutionChecklist(context: LessonContext, seed: number): string[]
 
 function buildLessonMarkdown(
   input: ForexCourseUnitInput,
-  difficulty: 'Beginner' | 'Intermediate',
+  difficulty: DifficultyLevel,
   context: LessonContext,
   variantSalt = 0
 ): string {
@@ -472,6 +474,17 @@ function buildLessonMarkdown(
     `- ${takeawayA}`,
     `- ${takeawayB}`,
   ].join('\n');
+}
+
+function resolveDifficultyLevel(context: LessonContext, weekNumber: number): DifficultyLevel {
+  if (context.lesson?.level) {
+    return context.lesson.level;
+  }
+
+  if (weekNumber <= 3) return 'Beginner';
+  if (weekNumber <= 6) return 'Intermediate';
+  if (weekNumber <= 13) return 'Advanced';
+  return 'Professional';
 }
 
 function buildAssignmentMarkdown(input: ForexCourseUnitInput, context: LessonContext, variantSalt = 0): { content: string; assignment: string } {
@@ -550,8 +563,8 @@ function buildAssignmentMarkdown(input: ForexCourseUnitInput, context: LessonCon
 
 function buildFallbackUnit(input: ForexCourseUnitInput, variantSalt = 0): ForexCourseUnitOutput {
   const isAssignment = input.day_of_week === 'Saturday' || input.topic_type === 'assignment';
-  const difficulty: 'Beginner' | 'Intermediate' = input.week_number <= 3 ? 'Beginner' : 'Intermediate';
   const context = resolveLessonContext(input);
+  const difficulty = resolveDifficultyLevel(context, input.week_number);
   const seed = buildSeed(input, context, variantSalt);
   const title = context.lesson?.title ?? input.topic_title;
   const summary = context.lesson?.summary;
@@ -633,10 +646,12 @@ function normalizeOutput(raw: Partial<ForexCourseUnitOutput>, input: ForexCourse
     ? (typeof raw.assignment === 'string' && raw.assignment.trim().length > 0 ? raw.assignment.trim() : fallback.assignment)
     : '';
 
-  const difficultyLevel: 'Beginner' | 'Intermediate' = raw.difficulty_level === 'Intermediate'
-    ? 'Intermediate'
-    : raw.difficulty_level === 'Beginner'
-      ? 'Beginner'
+  const difficultyLevel: DifficultyLevel =
+    raw.difficulty_level === 'Beginner' ||
+    raw.difficulty_level === 'Intermediate' ||
+    raw.difficulty_level === 'Advanced' ||
+    raw.difficulty_level === 'Professional'
+      ? raw.difficulty_level
       : fallback.difficulty_level;
 
   const imagePrompt = typeof raw.image_prompt === 'string' && raw.image_prompt.trim().length > 0
@@ -720,7 +735,7 @@ OUTPUT FORMAT (STRICT JSON):
 "example": "real-world forex scenario with explanation",
 "is_assignment": true,
 "assignment": "detailed task only if is_assignment = true",
-"difficulty_level": "Beginner | Intermediate",
+"difficulty_level": "Beginner | Intermediate | Advanced | Professional",
 "image_prompt": "A clean educational forex illustration showing charts, patterns, or annotated examples, minimal clutter, high-quality, professional style"
 }
 

@@ -1,28 +1,40 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
 const ADMIN_EMAIL = "admin@cacsms.com";
-const ADMIN_PASSWORD = process.env.ADMIN_INITIAL_PASSWORD;
+const userWithSubscriptions = Prisma.validator<Prisma.UserDefaultArgs>()({
+  include: { subscriptions: true },
+});
 
-if (!ADMIN_PASSWORD) {
-  throw new Error("ADMIN_INITIAL_PASSWORD is required to run setup-admin.");
+type UserWithSubscriptions = Prisma.UserGetPayload<typeof userWithSubscriptions>;
+
+function getRequiredAdminPassword(): string {
+  const adminPassword = process.env.ADMIN_INITIAL_PASSWORD;
+
+  if (!adminPassword) {
+    throw new Error("ADMIN_INITIAL_PASSWORD is required to run setup-admin.");
+  }
+
+  return adminPassword;
 }
 
 async function setupSuperAdmin() {
   try {
     console.log("🚀 Setting up Super Admin user...\n");
+    const adminPassword = getRequiredAdminPassword();
 
     // 1. Find or create the Super Admin user
-    let user = await prisma.user.findUnique({
+    let user: UserWithSubscriptions;
+    const existingUser = await prisma.user.findUnique({
       where: { email: ADMIN_EMAIL },
-      include: { subscriptions: true },
+      ...userWithSubscriptions,
     });
 
-    if (!user) {
+    if (!existingUser) {
       console.log(`📝 Creating new user: ${ADMIN_EMAIL}`);
-      const hashedPassword = await bcrypt.hash(ADMIN_PASSWORD, 10);
+      const hashedPassword = await bcrypt.hash(adminPassword, 10);
       user = await prisma.user.create({
         data: {
           email: ADMIN_EMAIL,
@@ -32,10 +44,11 @@ async function setupSuperAdmin() {
           passwordHash: hashedPassword,
           emailVerified: new Date(),
         },
-        include: { subscriptions: true },
+        ...userWithSubscriptions,
       });
       console.log(`✅ User created with ID: ${user.id}`);
     } else {
+      user = existingUser;
       console.log(`👤 Found existing user: ${ADMIN_EMAIL} (ID: ${user.id})`);
 
       // Update role to Super Admin if not already
@@ -44,7 +57,7 @@ async function setupSuperAdmin() {
         user = await prisma.user.update({
           where: { id: user.id },
           data: { role: "Super Admin", emailVerified: new Date() },
-          include: { subscriptions: true },
+          ...userWithSubscriptions,
         });
         console.log(`✅ Role updated to Super Admin`);
       } else {

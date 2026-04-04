@@ -15,7 +15,7 @@ type CourseUnit = {
   example: string;
   is_assignment: boolean;
   assignment: string;
-  difficulty_level: 'Beginner' | 'Intermediate';
+  difficulty_level: 'Beginner' | 'Intermediate' | 'Advanced' | 'Professional';
   image_prompt: string;
 };
 

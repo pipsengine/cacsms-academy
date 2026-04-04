@@ -9,6 +9,8 @@ import { courseCurriculum, getAllLessons, type LessonRecord } from '@/lib/learni
 const LEVEL_COLORS: Record<string, string> = {
   Beginner: 'text-emerald-700 border-emerald-200 bg-emerald-50',
   Intermediate: 'text-amber-700 border-amber-200 bg-amber-50',
+  Advanced: 'text-blue-700 border-blue-200 bg-blue-50',
+  Professional: 'text-violet-700 border-violet-200 bg-violet-50',
 };
 
 export default function OurCoursesPage() {
@@ -45,7 +47,7 @@ export default function OurCoursesPage() {
   }, [allLessons, progressData]);
 
   const overallPct = progressData?.enrolled
-    ? Math.round(((progressData.completedCount ?? 0) / (progressData.totalLessons ?? 108)) * 100)
+    ? Math.round(((progressData.completedCount ?? 0) / (progressData.totalLessons ?? allLessons.length)) * 100)
     : 0;
 
 
@@ -60,17 +62,17 @@ export default function OurCoursesPage() {
         <div className="rounded-2xl border border-emerald-200 bg-white p-6 shadow-sm">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.35em] text-emerald-500">Cacsms Academy Academy</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.35em] text-emerald-500">Cacsms Academy</p>
               <h1 className="mt-2 text-2xl font-bold text-zinc-900">Professional Forex Trading Course</h1>
               <p className="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-600">
                 A standard, modern learning environment with clear progression: Chapters, Topics, Subtopics, and Lessons.
                 Build confidence daily with structured theory, real chart context, and guided execution discipline.
               </p>
               <div className="mt-3 flex flex-wrap gap-2 text-xs">
-                <span className="rounded-full border border-zinc-200 bg-zinc-50 px-2.5 py-1 text-zinc-700">108 Lessons</span>
-                <span className="rounded-full border border-zinc-200 bg-zinc-50 px-2.5 py-1 text-zinc-700">6 Chapters</span>
-                <span className="rounded-full border border-zinc-200 bg-zinc-50 px-2.5 py-1 text-zinc-700">36 Topics</span>
-                <span className="rounded-full border border-zinc-200 bg-zinc-50 px-2.5 py-1 text-zinc-700">108 Subtopics</span>
+                <span className="rounded-full border border-zinc-200 bg-zinc-50 px-2.5 py-1 text-zinc-700">{lessonCount} Lessons</span>
+                <span className="rounded-full border border-zinc-200 bg-zinc-50 px-2.5 py-1 text-zinc-700">{chapterCount} Chapters</span>
+                <span className="rounded-full border border-zinc-200 bg-zinc-50 px-2.5 py-1 text-zinc-700">{topicCount} Topics</span>
+                <span className="rounded-full border border-zinc-200 bg-zinc-50 px-2.5 py-1 text-zinc-700">{subtopicCount} Subtopics</span>
                 <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-emerald-700">AI Learning Assistant</span>
               </div>
             </div>
@@ -147,7 +149,7 @@ export default function OurCoursesPage() {
           {todayLessons.length === 0 && progressData?.enrolled ? (
             <div className="mt-4 rounded-lg border border-emerald-200 bg-emerald-50 p-4">
               <p className="text-sm font-semibold text-emerald-700">Course Complete!</p>
-              <p className="mt-1 text-sm text-zinc-600">You have completed all 108 lessons. Excellent work.</p>
+              <p className="mt-1 text-sm text-zinc-600">You have completed all {lessonCount} lessons. Excellent work.</p>
             </div>
           ) : (
             <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">

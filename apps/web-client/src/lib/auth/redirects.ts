@@ -38,6 +38,8 @@ export const DASHBOARD_ROUTES = [
 export const PUBLIC_ROUTES = [
   '/login',
   '/register',
+  '/forgot-password',
+  '/reset-password',
   '/landing',
   '/pricing',
   '/about',

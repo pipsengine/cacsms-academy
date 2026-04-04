@@ -4,8 +4,14 @@ import { prisma } from '@/lib/prisma';
 import { sendEmail, isMailConfigured } from '@/lib/mail';
 import { getClientIp, rateLimit } from '@/lib/security/rateLimit';
 
-function getBaseUrl() {
-  return process.env.NEXTAUTH_URL || process.env.APP_URL || 'http://localhost:3000';
+function getBaseUrl(request: Request) {
+  const configured = process.env.NEXTAUTH_URL || process.env.APP_URL;
+  if (configured) {
+    return configured;
+  }
+
+  const url = new URL(request.url);
+  return `${url.protocol}//${url.host}`;
 }
 
 function genericResponse() {
@@ -58,9 +64,17 @@ export async function POST(request: Request) {
       },
     });
 
-    const resetLink = `${getBaseUrl()}/reset-password?token=${encodeURIComponent(rawToken)}`;
+    const resetLink = `${getBaseUrl(request)}/reset-password?token=${encodeURIComponent(rawToken)}`;
 
     const mailConfigured = isMailConfigured();
+    if (!mailConfigured && !isNonProduction()) {
+      console.error('[auth][forgot-password] SMTP not configured in production; cannot deliver reset emails.');
+      return NextResponse.json(
+        { error: 'Password reset service is temporarily unavailable. Please contact support.' },
+        { status: 503 },
+      );
+    }
+
     if (mailConfigured) {
       await sendEmail({
         to: normalizedEmail,
