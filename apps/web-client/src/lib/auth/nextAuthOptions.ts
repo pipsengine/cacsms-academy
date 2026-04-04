@@ -6,6 +6,16 @@ import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
 
+type AuthUser = {
+  id: string;
+  email: string;
+  name: string | null;
+  image: string | null;
+  passwordHash: string | null;
+  role: string | null;
+  country: string | null;
+};
+
 const hasDatabase = !!process.env.DATABASE_URL;
 const authSecret = process.env.NEXTAUTH_SECRET || process.env.JWT_SECRET || process.env.SECRET;
 if (!authSecret) {
@@ -16,10 +26,16 @@ if (!process.env.NEXTAUTH_URL) {
 }
 
 async function getPlanForUser(userId: string): Promise<'Scout' | 'Analyst' | 'Trader' | 'ProTrader'> {
-  const sub = await prisma.subscription.findFirst({
-    where: { userId, status: 'Active' },
-    orderBy: { startDate: 'desc' },
-  });
+  let sub: { planType: string } | null = null;
+  try {
+    sub = await prisma.subscription.findFirst({
+      where: { userId, status: 'Active' },
+      orderBy: { startDate: 'desc' },
+      select: { planType: true },
+    });
+  } catch {
+    return 'Scout';
+  }
   if (!sub) return 'Scout';
   const validPlans = ['Scout', 'Analyst', 'Trader', 'ProTrader'] as const;
   if (validPlans.includes(sub.planType as any)) return sub.planType as typeof validPlans[number];
@@ -29,6 +45,71 @@ async function getPlanForUser(userId: string): Promise<'Scout' | 'Analyst' | 'Tr
   if (sub.planType === 'Premium') return 'ProTrader';
   if (sub.planType === 'Institutional') return 'ProTrader';
   return 'Scout';
+}
+
+function mapRawUsersRow(row: any): AuthUser {
+  const firstName = typeof row.firstName === 'string' ? row.firstName : null;
+  const lastName = typeof row.lastName === 'string' ? row.lastName : null;
+  const joinedName = [firstName, lastName].filter(Boolean).join(' ').trim();
+  return {
+    id: String(row.id),
+    email: String(row.email),
+    name: (typeof row.name === 'string' && row.name) || joinedName || null,
+    image: (typeof row.image === 'string' && row.image) || (typeof row.avatarUrl === 'string' ? row.avatarUrl : null),
+    passwordHash: typeof row.passwordHash === 'string' ? row.passwordHash : null,
+    role: typeof row.role === 'string' ? row.role : null,
+    country: typeof row.country === 'string' ? row.country : null,
+  };
+}
+
+async function findAuthUserByEmail(email: string): Promise<AuthUser | null> {
+  try {
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) return null;
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      image: user.image,
+      passwordHash: user.passwordHash,
+      role: user.role,
+      country: user.country,
+    };
+  } catch {
+    const rows = await prisma.$queryRaw<any[]>`
+      SELECT id, email, "passwordHash", role, "firstName", "lastName", "avatarUrl"
+      FROM users
+      WHERE LOWER(email) = LOWER(${email})
+      LIMIT 1
+    `;
+    if (!rows.length) return null;
+    return mapRawUsersRow(rows[0]);
+  }
+}
+
+async function findAuthUserById(userId: string): Promise<AuthUser | null> {
+  try {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) return null;
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      image: user.image,
+      passwordHash: user.passwordHash,
+      role: user.role,
+      country: user.country,
+    };
+  } catch {
+    const rows = await prisma.$queryRaw<any[]>`
+      SELECT id, email, "passwordHash", role, "firstName", "lastName", "avatarUrl"
+      FROM users
+      WHERE id = ${userId}
+      LIMIT 1
+    `;
+    if (!rows.length) return null;
+    return mapRawUsersRow(rows[0]);
+  }
 }
 
 const microsoftClientId = process.env.MICROSOFT_CLIENT_ID || process.env.AZURE_AD_CLIENT_ID;
@@ -65,10 +146,7 @@ export const authOptions: NextAuthOptions = {
           async authorize(credentials) {
             const email = credentials?.email?.toLowerCase().trim();
             const password = credentials?.password;
-              const rawEmail = credentials?.email;
-            
             console.log('[auth][credentials] attempt:', { email, hasPassword: !!password });
-              console.log('[DEBUG] Raw credentials received:', { rawEmail, passwordLength: password?.length });
             
             if (!email || !password) {
               console.warn('[auth][credentials] rejected: missing email or password', { email, hasPassword: !!password });
@@ -76,7 +154,7 @@ export const authOptions: NextAuthOptions = {
             }
 
             try {
-              const user = await prisma.user.findUnique({ where: { email } });
+              const user = await findAuthUserByEmail(email);
               
               if (!user) {
                 console.warn(`[auth][credentials] rejected: user not found for ${email}`);
@@ -84,7 +162,6 @@ export const authOptions: NextAuthOptions = {
               }
 
               console.log('[auth][credentials] user found:', { id: user.id, email: user.email, hasHash: !!user.passwordHash });
-                console.log('[DEBUG] User hash field:', { hashValue: user.passwordHash, hashLength: user.passwordHash?.length, hashStart: user.passwordHash?.substring(0, 30) });
 
               if (!user.passwordHash) {
                 console.warn(`[auth][credentials] rejected: passwordHash missing for ${email}`);
@@ -93,7 +170,6 @@ export const authOptions: NextAuthOptions = {
 
               const ok = await bcrypt.compare(password, user.passwordHash);
               console.log('[auth][credentials] bcrypt compare result:', { ok, email });
-                console.log('[DEBUG] bcrypt inputs:', { passwordToCompare: password, hashToCompare: user.passwordHash, passwordHexStart: Buffer.from(password).toString('hex').substring(0, 20) });
               
               if (!ok) {
                 console.warn(`[auth][credentials] rejected: password mismatch for ${email}`);
@@ -121,7 +197,7 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
         if (hasDatabase) {
-          const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
+          const dbUser = await findAuthUserById(user.id);
           token.role = dbUser?.role ?? 'User';
           token.country = dbUser?.country ?? 'International';
           token.plan = await getPlanForUser(user.id);
@@ -146,13 +222,17 @@ export const authOptions: NextAuthOptions = {
   events: {
     async signIn({ user }) {
       if (user?.id) {
-        await prisma.usageLog.create({
-          data: {
-            userId: user.id,
-            featureName: 'login',
-            usageType: 'auth',
-          },
-        });
+        try {
+          await prisma.usageLog.create({
+            data: {
+              userId: user.id,
+              featureName: 'login',
+              usageType: 'auth',
+            },
+          });
+        } catch {
+          // Do not fail sign-in if telemetry tables are unavailable in current DB.
+        }
       }
     },
   },
