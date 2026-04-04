@@ -6130,11 +6130,23 @@ If your notes are vague, your setup is probably vague.
   'w1-dthu-l2-trend-range-and-breakout-in-plain-terms': {
     title: 'Trend, Range, and Breakout in Plain Terms',
     summary:
-      'Defines the three core market states for beginners and gives a practical decision model for matching behavior and execution to each state.',
+      'A complete beginner framework for identifying trend, range, and breakout states, understanding how each state behaves, and matching execution style to environment so you stop applying one strategy to every chart condition.',
     difficulty_level: 'Beginner',
     is_assignment: false,
     assignment: '',
-    sections: ['Introduction', 'Trend State', 'Range State', 'Breakout State', 'State-Selection Rules', 'Common Delusions', 'Key Takeaways'],
+    sections: [
+      'Introduction',
+      'Why Market State Comes First',
+      'Trend State in Plain Terms',
+      'Range State in Plain Terms',
+      'Breakout State in Plain Terms',
+      'State Transition: When One Becomes Another',
+      'Execution Style by State',
+      'Simple State-Selection Checklist',
+      'Common Delusions and Fixes',
+      'Practical Chart Classification Assignment',
+      'Key Takeaways',
+    ],
     image_prompt:
       'Educational chart panel showing trend, range, and breakout market states with simple labels and arrows.',
     example:
@@ -6143,11 +6155,27 @@ If your notes are vague, your setup is probably vague.
 
 ## Introduction
 
-Many beginners fail because they use one trade style in every market state. A breakout method in a range gets chopped. A range fade method in a trend gets run over.
+Many beginner traders are not failing because their indicators are terrible. They are failing because they use one behavior in every market state.
 
-Market state recognition is not advanced theory. It is survival.
+A breakout style in a range gets chopped.
+A range fade style in a trend gets run over.
+A trend pullback style in fake breakouts gets trapped.
 
-## Trend State
+Market state recognition is not advanced theory. It is a survival skill.
+
+## Why Market State Comes First
+
+Before selecting entry, you must label environment.
+
+Your chart usually sits in one of three dominant conditions:
+
+1. Trend: directional structure is leading.
+2. Range: rotation between boundaries is leading.
+3. Breakout: transition from one accepted area to another is leading.
+
+The same signal can be high quality in one state and low quality in another. That is why state-first thinking improves consistency faster than adding more indicators.
+
+## Trend State in Plain Terms
 
 Plain meaning: price is moving directionally with structure.
 
@@ -6157,9 +6185,15 @@ Typical features:
 - pullbacks that respect structure,
 - continuation after retracement.
 
-Beginner approach: prefer pullback entries into directional structure rather than chasing extension.
+What beginners should do:
 
-## Range State
+- prioritize entries on pullbacks at meaningful structure,
+- avoid chasing late extension candles,
+- define invalidation below/above structural reference rather than emotional distance.
+
+Core idea: in a trend, continuation probability is usually better than reversal probability until structure breaks.
+
+## Range State in Plain Terms
 
 Plain meaning: price is rotating between boundaries without sustained break.
 
@@ -6169,9 +6203,15 @@ Typical features:
 - failed mid-zone continuation,
 - lower directional reliability.
 
-Beginner approach: act near edges, avoid center noise.
+What beginners should do:
 
-## Breakout State
+- treat boundaries as decision zones,
+- avoid center entries where risk-to-reward is usually poor,
+- demand confirmation before fading edges.
+
+Core idea: in a range, mean-reversion behavior dominates until clear acceptance outside boundary appears.
+
+## Breakout State in Plain Terms
 
 Plain meaning: price exits a known structure and seeks new value.
 
@@ -6181,29 +6221,80 @@ Typical features:
 - momentum expansion,
 - retest and continuation (in strong breaks) or quick failure (in weak breaks).
 
-Beginner approach: demand confirmation and invalidation, not impulse.
+What beginners should do:
 
-## State-Selection Rules
+- look for acceptance evidence, not just one wick through level,
+- avoid first-click impulse entries without a risk plan,
+- respect failed breakout behavior quickly.
 
-Before entry, label current state in one word: trend, range, breakout.
+Core idea: breakouts are transition events, not automatic continuation guarantees.
 
-Then ask: "Is my setup designed for this state?"
+## State Transition: When One Becomes Another
 
-If no, skip.
+Markets are dynamic. A chart can move from trend to range, or range to breakout, within the same session.
 
-## Common Delusions
+Transition clues:
 
-- "My signal works everywhere."
-- "Any break equals true breakout."
-- "If I miss first candle, I should chase second and third."
-- "Range means no opportunity." Range has opportunity at edges if managed correctly.
+- trend to range: pullbacks deepen, continuation weakens, swings overlap.
+- range to breakout: boundary pressure builds, closes improve near edge, then acceptance appears beyond level.
+- breakout to range failure: quick re-entry inside old range after break.
+
+If conditions transition, your tactic must transition too.
+
+## Execution Style by State
+
+Use this mapping:
+
+1. Trend state: buy/sell pullbacks with structure, avoid countertrend hero trades.
+2. Range state: act at edges with confirmation, avoid center noise.
+3. Breakout state: require acceptance and invalidation plan, avoid blind chase.
+
+You do not need to trade every state equally. Most beginners perform better when they specialize in one or two clean contexts.
+
+## Simple State-Selection Checklist
+
+Before any order, ask:
+
+1. What is current state: trend, range, or breakout?
+2. Is my setup designed for this state?
+3. Is entry location aligned with state logic?
+4. Is invalidation clear if thesis fails?
+
+If any answer is unclear, reduce size or skip.
+
+## Common Delusions and Fixes
+
+Delusion: My signal works everywhere.
+Fix: every setup has state dependency; define where it is valid.
+
+Delusion: Any break equals true breakout.
+Fix: demand close-and-hold evidence beyond level.
+
+Delusion: If I miss first move, I must chase.
+Fix: wait for pullback/retest or skip; missing one move protects process.
+
+Delusion: Range means no opportunity.
+Fix: range has opportunity at edges with disciplined confirmation.
+
+## Practical Chart Classification Assignment
+
+For the next 30 chart screenshots:
+
+1. Label dominant state: trend, range, or breakout.
+2. Mark two pieces of evidence for that label.
+3. Write the best tactic for that state.
+4. Write one tactic you must avoid in that state.
+5. Review next 20 candles and score your label as correct or incorrect.
+
+After one week, measure your decision quality by state label accuracy. Better labeling usually improves execution quality even before strategy changes.
 
 ## Key Takeaways
 
-- Correct state identification often matters more than indicator choice.
-- Trend, range, and breakout require different behavior.
-- Label the state first, choose setup second.
-- State mismatch is a major cause of beginner inconsistency.
+- Market state recognition is a core beginner skill, not an advanced extra.
+- Trend, range, and breakout each require different behavior.
+- Label state first, choose setup second.
+- Most inconsistency comes from state-strategy mismatch.
+- Better environment labeling can improve results without adding new indicators.
 `,
   },
 

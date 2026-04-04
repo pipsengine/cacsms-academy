@@ -34,6 +34,15 @@ async function getPlanForUser(userId: string): Promise<'Scout' | 'Analyst' | 'Tr
       select: { planType: true },
     });
   } catch {
+    const rows = await prisma.$queryRaw<any[]>`
+      SELECT "subscriptionTier"
+      FROM users
+      WHERE id = ${userId}
+      LIMIT 1
+    `;
+    const tier = rows[0]?.subscriptionTier;
+    if (tier === 'PREMIUM') return 'ProTrader';
+    if (tier === 'PROFESSIONAL') return 'Trader';
     return 'Scout';
   }
   if (!sub) return 'Scout';
