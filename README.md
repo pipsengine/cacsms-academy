@@ -33,10 +33,10 @@ This app uses Prisma with PostgreSQL.
 
 If you want a local Postgres container, a compose file is available at [docker-compose.postgres.yml](infrastructure/docker-compose.postgres.yml). It maps the container's 5432 to your host port 5433 by default.
 
-## Auth (GitHub/Google + Email/Password)
+## Auth (Google/Microsoft + Email/Password)
 
 Authentication is implemented with NextAuth:
-- OAuth: GitHub and Google (only shown when env vars are configured)
+- OAuth: Google and Microsoft (only shown when env vars are configured)
 - Credentials: Email/Password (stored hashed in the database)
 
 ## Development notes
@@ -49,10 +49,12 @@ Authentication is implemented with NextAuth:
 Set these in `.env.local`:
 - `NEXTAUTH_URL` (example: `http://localhost:3000`)
 - `NEXTAUTH_SECRET`
-- `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`
 - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`
+- `MICROSOFT_CLIENT_ID`, `MICROSOFT_CLIENT_SECRET`
+- `MICROSOFT_TENANT_ID` (optional, defaults to `common`; for single-tenant use your tenant ID)
 - `NEXT_PUBLIC_INACTIVITY_TIMEOUT_MS` (optional, defaults to `300000`)
 - `NEXT_PUBLIC_INACTIVITY_WARNING_WINDOW_MS` (optional, defaults to `30000`)
 
-GitHub OAuth callback URL to configure in your GitHub OAuth App:
-- `http://localhost:3000/api/auth/callback/github`
+OAuth callback URLs:
+- Google: `http://localhost:3000/api/auth/callback/google`
+- Microsoft: `http://localhost:3000/api/auth/callback/azure-ad`

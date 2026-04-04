@@ -1,6 +1,6 @@
 import type { NextAuthOptions } from 'next-auth';
-import GitHubProvider from 'next-auth/providers/github';
 import GoogleProvider from 'next-auth/providers/google';
+import AzureADProvider from 'next-auth/providers/azure-ad';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import bcrypt from 'bcryptjs';
@@ -31,6 +31,10 @@ async function getPlanForUser(userId: string): Promise<'Scout' | 'Analyst' | 'Tr
   return 'Scout';
 }
 
+const microsoftClientId = process.env.MICROSOFT_CLIENT_ID || process.env.AZURE_AD_CLIENT_ID;
+const microsoftClientSecret = process.env.MICROSOFT_CLIENT_SECRET || process.env.AZURE_AD_CLIENT_SECRET;
+const microsoftTenantId = process.env.MICROSOFT_TENANT_ID || process.env.AZURE_AD_TENANT_ID || 'common';
+
 export const authOptions: NextAuthOptions = {
   secret: authSecret,
   adapter: hasDatabase ? PrismaAdapter(prisma) : undefined,
@@ -38,16 +42,17 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt',
   },
   providers: [
-    process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET
-      ? GitHubProvider({
-          clientId: process.env.GITHUB_CLIENT_ID,
-          clientSecret: process.env.GITHUB_CLIENT_SECRET,
-        })
-      : null,
     process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
       ? GoogleProvider({
           clientId: process.env.GOOGLE_CLIENT_ID,
           clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        })
+      : null,
+    microsoftClientId && microsoftClientSecret
+      ? AzureADProvider({
+          clientId: microsoftClientId,
+          clientSecret: microsoftClientSecret,
+          tenantId: microsoftTenantId,
         })
       : null,
     hasDatabase

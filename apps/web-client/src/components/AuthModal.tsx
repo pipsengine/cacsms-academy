@@ -57,7 +57,16 @@ export default function AuthModal({
       const p = await getProviders().catch(() => null);
       const list = Object.values(p || {})
         .filter((x) => x && x.id !== "credentials")
-        .map((x) => ({ id: x.id, label: `Continue with ${x.name}` }));
+        .map((x) => {
+          const providerName =
+            x.id === 'azure-ad'
+              ? 'Microsoft'
+              : x.id === 'google'
+                ? 'Google'
+                : x.name;
+
+          return { id: x.id, label: `Continue with ${providerName}` };
+        });
       setOauthProviders(list);
     };
     if (isOpen) {
