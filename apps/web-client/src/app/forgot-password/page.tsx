@@ -7,6 +7,7 @@ export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [resetLink, setResetLink] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
@@ -14,6 +15,7 @@ export default function ForgotPasswordPage() {
     setBusy(true);
     setError(null);
     setMessage(null);
+    setResetLink(null);
 
     try {
       const response = await fetch('/api/auth/forgot-password', {
@@ -29,6 +31,9 @@ export default function ForgotPasswordPage() {
       }
 
       setMessage(data?.message || 'If that email is registered, a reset link has been sent.');
+      if (typeof data?.resetLink === 'string' && data.resetLink.length > 0) {
+        setResetLink(data.resetLink);
+      }
       setEmail('');
     } catch {
       setError('Something went wrong. Please try again.');
@@ -62,6 +67,14 @@ export default function ForgotPasswordPage() {
           </div>
 
           {message && <div className="rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">{message}</div>}
+          {resetLink && (
+            <div className="rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+              <p className="mb-1 font-semibold">Development reset link</p>
+              <Link href={resetLink} className="break-all underline">
+                {resetLink}
+              </Link>
+            </div>
+          )}
           {error && <div className="rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>}
 
           <button

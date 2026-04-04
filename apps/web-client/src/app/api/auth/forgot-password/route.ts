@@ -15,6 +15,10 @@ function genericResponse() {
   });
 }
 
+function isNonProduction() {
+  return process.env.NODE_ENV !== 'production';
+}
+
 export async function POST(request: Request) {
   try {
     if (!process.env.DATABASE_URL) {
@@ -37,7 +41,7 @@ export async function POST(request: Request) {
     }
 
     const user = await prisma.user.findUnique({ where: { email: normalizedEmail } });
-    if (!user || !isMailConfigured()) {
+    if (!user) {
       return genericResponse();
     }
 
@@ -56,31 +60,34 @@ export async function POST(request: Request) {
 
     const resetLink = `${getBaseUrl()}/reset-password?token=${encodeURIComponent(rawToken)}`;
 
-    await sendEmail({
-      to: normalizedEmail,
-      subject: 'Reset your Cacsms Academy password',
-      text: [
-        'We received a request to reset your password.',
-        `Reset link: ${resetLink}`,
-        'This link expires in 1 hour.',
-        'If you did not request this, you can ignore this email.',
-      ].join('\n\n'),
-      html: `
-        <div style="font-family:Arial,sans-serif;line-height:1.6;color:#111">
-          <h2>Password Reset Request</h2>
-          <p>We received a request to reset your Cacsms Academy password.</p>
-          <p>
-            <a href="${resetLink}" style="display:inline-block;padding:10px 14px;background:#059669;color:#fff;text-decoration:none;border-radius:6px;">
-              Reset Password
-            </a>
-          </p>
-          <p>If the button does not work, copy and paste this link:</p>
-          <p>${resetLink}</p>
-          <p>This link expires in 1 hour.</p>
-          <p>If you did not request this, you can ignore this email.</p>
-        </div>
-      `,
-    });
+    const mailConfigured = isMailConfigured();
+    if (mailConfigured) {
+      await sendEmail({
+        to: normalizedEmail,
+        subject: 'Reset your Cacsms Academy password',
+        text: [
+          'We received a request to reset your password.',
+          `Reset link: ${resetLink}`,
+          'This link expires in 1 hour.',
+          'If you did not request this, you can ignore this email.',
+        ].join('\n\n'),
+        html: `
+          <div style="font-family:Arial,sans-serif;line-height:1.6;color:#111">
+            <h2>Password Reset Request</h2>
+            <p>We received a request to reset your Cacsms Academy password.</p>
+            <p>
+              <a href="${resetLink}" style="display:inline-block;padding:10px 14px;background:#059669;color:#fff;text-decoration:none;border-radius:6px;">
+                Reset Password
+              </a>
+            </p>
+            <p>If the button does not work, copy and paste this link:</p>
+            <p>${resetLink}</p>
+            <p>This link expires in 1 hour.</p>
+            <p>If you did not request this, you can ignore this email.</p>
+          </div>
+        `,
+      });
+    }
 
     await prisma.usageLog.create({
       data: {
@@ -89,6 +96,15 @@ export async function POST(request: Request) {
         usageType: 'auth',
       },
     });
+
+    if (!mailConfigured && isNonProduction()) {
+      console.warn('[auth][forgot-password] SMTP not configured, returning dev reset link:', resetLink);
+      return NextResponse.json({
+        success: true,
+        message: 'Email service is not configured. Use the reset link below (development only).',
+        resetLink,
+      });
+    }
 
     return genericResponse();
   } catch (error) {
