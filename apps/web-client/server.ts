@@ -1,11 +1,23 @@
+// Debug: print DATABASE_URL at startup
+console.log('DATABASE_URL:', process.env.DATABASE_URL);
+
+
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+import dotenv from 'dotenv';
+dotenv.config({ path: path.resolve(__dirname, '.env.local') });
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+
 import { createServer } from 'http';
 import { parse } from 'url';
 import next from 'next';
 import { Server } from 'socket.io';
 import type { Socket } from 'socket.io';
 import type { AddressInfo } from 'node:net';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { getMarketDataService } from './src/lib/market/service.ts';
 import { syncDerivedAlerts } from './src/lib/alerts/service.ts';
 import { startCotWeeklyScheduler } from './src/lib/cot/scheduler.ts';
@@ -18,8 +30,6 @@ if (!process.env.NODE_ENV) {
 
 const dev = process.env.NODE_ENV !== 'production';
 const port = parseInt(process.env.PORT || '3000', 10);
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 const app = next({ dev, dir: __dirname });
 const handle = app.getRequestHandler();
 
